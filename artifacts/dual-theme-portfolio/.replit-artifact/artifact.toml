@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Dual Theme Portfolio"
+description = "A responsive personal portfolio with two distinct art directions: a warm editorial experience and a precise product-grid experience, both sharing one portfolio story and content system."
+version = "1.0.0"
+id = "artifacts/dual-theme-portfolio"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22258
+
+[services.development]
+run = "pnpm --filter @workspace/dual-theme-portfolio run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/dual-theme-portfolio", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/dual-theme-portfolio/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22258"
+BASE_PATH = "/"
