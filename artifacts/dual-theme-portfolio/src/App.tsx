@@ -80,22 +80,6 @@ function FallingLeaves() {
   );
 }
 
-function BlossomBranch({ className = '' }: { className?: string }) {
-  return (
-    <svg className={`blossom-branch editorial-only ${className}`} viewBox="0 0 260 240" aria-hidden="true">
-      <path className="branch-stroke" d="M-12 218 C38 191 42 140 84 111 C119 86 152 66 198 12" />
-      <path className="branch-stroke branch-stroke-light" d="M36 177 C22 149 18 111 30 73 M74 121 C63 96 67 64 86 40 M117 88 C125 61 145 37 167 25" />
-      {[['31', '71'], ['86', '40'], ['167', '25'], ['50', '141'], ['98', '100'], ['147', '62'], ['204', '14']].map(([cx, cy], index) => (
-        <g key={`${cx}-${cy}`} className="blossom" transform={`translate(${cx} ${cy}) rotate(${index % 2 ? 18 : -18})`}>
-          <circle r="7" />
-          <circle className="blossom-core" r="2.1" />
-          <path d="M0-7 L0-12 M7 0 L12 0 M0 7 L0 12 M-7 0 L-12 0" />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 function EditorialPortrait() {
   return (
     <div className="editorial-portrait editorial-only" aria-label="Ink portrait illustration of Alex Morgan">
@@ -155,8 +139,6 @@ function Header() {
 function Hero() {
   return (
     <section id="top" className="section-anchor section-wrap editorial-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
-      <BlossomBranch className="editorial-branch-left" />
-      <BlossomBranch className="editorial-branch-right" />
       <div>
         <Reveal className="mb-8" delay={0}><div className="mono flex items-center gap-3 text-[10px] uppercase tracking-[.2em] opacity-65"><span className="h-2 w-2 bg-current" /> Full-stack developer <span className="opacity-40">/</span> creative technologist</div></Reveal>
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">Digital craft</span><span className="serif block normal-case tracking-[-.05em]">built with</span><span className="block text-[.86em]">intent.</span></Reveal>
@@ -215,7 +197,6 @@ function ProjectVisual({ accent }: { accent: string }) {
 function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-24">
-      <BlossomBranch className="editorial-branch-projects" />
       <div className="section-wrap">
         <Reveal className="mb-12 flex items-end justify-between gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / Selected work</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div><a href="#contact" className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[.16em] opacity-65 transition-opacity hover:opacity-100 sm:flex" data-testid="link-all-projects">Have a project in mind? <ArrowUpRight size={14} /></a></Reveal>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -229,7 +210,6 @@ function Projects() {
 function Skills() {
   return (
     <section id="skills" className="section-anchor border-t border-current/20 py-24">
-      <BlossomBranch className="editorial-branch-skills" />
       <div className="section-wrap">
         <Reveal className="mb-12 grid gap-6 md:grid-cols-[.65fr_1.35fr]"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Capabilities</div><h2 className="section-title display">Tools for<br /><span className="serif normal-case">making.</span></h2></div><p className="max-w-[400px] self-end text-sm leading-7 opacity-70">I’m most useful when the brief is still a little fuzzy. I bring structure to the unknown, then build the smallest thing that can teach us more.</p></Reveal>
         <div className="grid border-l border-t border-current/20 sm:grid-cols-2 lg:grid-cols-4">{skills.map(({ title, icon: Icon, detail }, index) => <Reveal key={title} delay={index * 80} className="border-b border-r border-current/20"><div className="group min-h-[205px] p-5 transition-colors hover:bg-current/[.05]"><Icon size={24} strokeWidth={1.4} /><h3 className="mt-12 display text-lg">{title}</h3><p className="mt-3 text-xs leading-5 opacity-65">{detail}</p></div></Reveal>)}</div>
@@ -252,7 +232,6 @@ function Experience() {
 function Contact() {
   return (
     <section id="contact" className="section-anchor border-t border-current/20 py-24">
-      <BlossomBranch className="editorial-branch-contact" />
       <div className="section-wrap">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
           <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">06 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
