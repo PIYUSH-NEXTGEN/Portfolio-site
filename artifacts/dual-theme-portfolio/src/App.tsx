@@ -83,7 +83,7 @@ function FallingLeaves() {
 function SiteArtwork() {
   return (
     <div className="site-artwork" aria-hidden="true">
-      <img src="/mt-fuji-ukiyo-e.jpg" alt="" />
+      <img src="/mt-fuji-mountain.jpg" alt="" />
       <div className="site-artwork-wash" />
     </div>
   );

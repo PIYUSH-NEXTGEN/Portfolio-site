@@ -86,12 +86,12 @@
   background: #ece4d3;
 }
 .site-artwork img {
-  width: 100%; height: 100%; object-fit: fill; object-position: center top;
-  opacity: .34; filter: saturate(.68) contrast(.86) sepia(.08);
+  width: 100%; height: 100%; object-fit: cover; object-position: center top;
+  opacity: .42; filter: saturate(.72) contrast(.88) sepia(.08);
 }
 .site-artwork-wash {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(236,228,211,.34) 0%, rgba(236,228,211,.52) 45%, rgba(236,228,211,.66) 100%);
+  background: linear-gradient(180deg, rgba(236,228,211,.28) 0%, rgba(236,228,211,.44) 45%, rgba(236,228,211,.6) 100%);
 }
 .site-shell > header, .site-shell > section, .site-shell > footer { position: relative; z-index: 1; }
 .site-shell > header { position: sticky; }
