@@ -80,6 +80,15 @@ function FallingLeaves() {
   );
 }
 
+function SiteArtwork() {
+  return (
+    <div className="site-artwork" aria-hidden="true">
+      <img src="/mt-fuji-ukiyo-e.jpg" alt="" />
+      <div className="site-artwork-wash" />
+    </div>
+  );
+}
+
 function EditorialPortrait() {
   return (
     <div className="editorial-portrait editorial-only" aria-label="Ink portrait illustration of Alex Morgan">
@@ -157,7 +166,6 @@ function Hero() {
       <Reveal className="hero-art relative min-h-[410px] overflow-hidden sm:min-h-[520px]" delay={160}>
         <div className="editorial-hero-panel editorial-only">
           <div className="editorial-panel-index mono">01 / 06</div>
-          <div className="editorial-panel-stamp mono">INK</div>
           <div className="editorial-panel-menu mono">
             <span>01&nbsp; Featured projects</span><span>02&nbsp; About me</span><span>03&nbsp; Skills</span><span>04&nbsp; Experience</span><span>05&nbsp; Get in touch</span>
           </div>
@@ -247,7 +255,7 @@ function Footer() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><SiteArtwork /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
 }
 
 function Router() {
