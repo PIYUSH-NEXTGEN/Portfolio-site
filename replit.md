@@ -1,6 +1,6 @@
-# Dual Theme Portfolio
+# Ink Portfolio
 
-A responsive personal portfolio that lets visitors switch between two distinct art directions while keeping one shared portfolio story.
+A responsive personal portfolio for a full-stack developer and creative technologist, presented as a tactile ink-and-paper editorial experience.
 
 ## Run & Operate
 
@@ -31,18 +31,17 @@ A responsive personal portfolio that lets visitors switch between two distinct a
 ## Architecture decisions
 
 - The site is frontend-only by design; all portfolio content is static and intentionally avoids backend dependencies.
-- The two visual directions share content and anchors so switching themes preserves context and scroll position.
-- Theme choice is persisted in local storage so returning visitors keep their preferred art direction.
-- Both themes use the same semantic section structure while allowing independent visual language and responsive composition.
+- The single visual direction is intentionally kept tactile and editorial, with paper texture, ink branches, red accents, and illustrated details.
+- Decorative motion is subtle and respects the user's reduced-motion preference.
 
 ## Product
 
-Visitors can explore Alex Morgan's work, capabilities, experience, and contact details through either a warm editorial presentation or a crisp technical-grid presentation. The theme switcher is accessible, animated, and works without page reloads.
+Visitors can explore Alex Morgan's work, capabilities, experience, and contact details through a warm editorial presentation inspired by printed portfolios and Japanese woodblock compositions.
 
 ## User preferences
 
 - Keep the portfolio frontend-only with static data until the user asks for backend functionality.
-- Preserve the two themes as clearly different art directions rather than collapsing them into a generic color toggle.
+- Keep the page as one cohesive ink-and-paper art direction; do not reintroduce a second grid theme unless explicitly requested.
 
 ## Gotchas
 

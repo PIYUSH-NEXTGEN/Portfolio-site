@@ -10,8 +10,6 @@ import '@/index.css';
 
 const queryClient = new QueryClient();
 
-type Theme = 'editorial' | 'technical';
-
 const projects = [
   {
     number: '01',
@@ -74,11 +72,10 @@ function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; 
   return <div data-reveal={`${delay}-${className.slice(0, 8)}`} className={`${visible ? 'reveal' : 'opacity-0 translate-y-4'} ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</div>;
 }
 
-function ThemeSwitcher({ theme, setTheme }: { theme: Theme; setTheme: (theme: Theme) => void }) {
+function FallingLeaves() {
   return (
-    <div className="theme-switcher" role="group" aria-label="Choose visual theme" data-testid="theme-switcher">
-      <button type="button" aria-pressed={theme === 'editorial'} onClick={() => setTheme('editorial')} data-testid="button-theme-editorial">INK</button>
-      <button type="button" aria-pressed={theme === 'technical'} onClick={() => setTheme('technical')} data-testid="button-theme-technical">GRID</button>
+    <div className="falling-leaves" aria-hidden="true">
+      {Array.from({ length: 14 }, (_, index) => <span className={`falling-leaf falling-leaf-${index + 1}`} key={index} />)}
     </div>
   );
 }
@@ -102,7 +99,6 @@ function BlossomBranch({ className = '' }: { className?: string }) {
 function EditorialPortrait() {
   return (
     <div className="editorial-portrait editorial-only" aria-label="Ink portrait illustration of Alex Morgan">
-      <div className="portrait-vertical mono">続ける</div>
       <svg viewBox="0 0 300 270" role="img" aria-hidden="true">
         <path className="portrait-wash" d="M59 233 C42 198 57 164 46 130 C35 96 55 59 90 55 C107 30 144 32 165 48 C202 47 219 80 208 111 C236 144 213 191 180 206 C156 220 132 250 93 244Z" />
         <path className="portrait-hair" d="M72 190 C45 153 48 101 80 65 C107 34 153 42 179 72 C159 65 145 80 137 96 C120 93 102 111 99 140 C95 170 104 193 121 211 C98 216 80 207 72 190Z" />
@@ -119,7 +115,6 @@ function EditorialPortrait() {
 function EditorialFuji() {
   return (
     <div className="editorial-fuji editorial-only">
-      <span className="fuji-sun" />
       <svg viewBox="0 0 400 190" aria-hidden="true">
         <path className="mountain-back" d="M0 178 L74 124 L118 145 L177 80 L233 135 L285 111 L347 151 L400 118 L400 190 L0 190Z" />
         <path className="mountain-front" d="M0 183 L81 143 L128 163 L197 79 L269 165 L314 143 L400 177 L400 190 L0 190Z" />
@@ -131,7 +126,7 @@ function EditorialFuji() {
   );
 }
 
-function Header({ theme, setTheme }: { theme: Theme; setTheme: (theme: Theme) => void }) {
+function Header() {
   const [open, setOpen] = useState(false);
   const links = [['about', 'About'], ['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Journey'], ['contact', 'Contact']];
   return (
@@ -141,13 +136,12 @@ function Header({ theme, setTheme }: { theme: Theme; setTheme: (theme: Theme) =>
           <span className="flex h-9 w-9 items-center justify-center border border-current font-mono text-xs font-bold">AM</span>
           <span className="hidden text-xs font-semibold tracking-[.13em] sm:block">ALEX MORGAN <span className="font-mono opacity-50">/ 26</span></span>
         </a>
-        <nav className={`${open ? 'absolute left-4 right-4 top-[66px] flex flex-col border border-current bg-[var(--tech-bg,#ece4d3)] p-4 shadow-lg md:static md:flex md:flex-row md:border-0 md:bg-transparent md:p-0 md:shadow-none' : 'hidden md:flex'} items-center gap-5`} aria-label="Primary navigation">
+        <nav className={`${open ? 'absolute left-4 right-4 top-[66px] flex flex-col border border-current bg-[var(--paper,#ece4d3)] p-4 shadow-lg md:static md:flex md:flex-row md:border-0 md:bg-transparent md:p-0 md:shadow-none' : 'hidden md:flex'} items-center gap-5`} aria-label="Primary navigation">
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
         </nav>
         <div className="flex items-center gap-3">
-          <ThemeSwitcher theme={theme} setTheme={setTheme} />
           <a href="#contact" className="button-primary hidden items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-contact">Start a project <ArrowUpRight size={13} /></a>
           <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
             {open ? <X size={16} /> : <Menu size={16} />}
@@ -178,20 +172,10 @@ function Hero() {
           <span className="mono text-[10px] uppercase tracking-[.18em]">Based in Bengaluru, India</span><span className="h-px w-14 bg-current" /><span className="mono text-[10px] uppercase tracking-[.18em]">Available for select work</span>
         </Reveal>
       </div>
-      <Reveal className="hero-art tech-grid relative min-h-[410px] overflow-hidden sm:min-h-[520px]" delay={160}>
-        <div className="technical-only absolute inset-0">
-          <div className="absolute left-5 top-5 mono text-[10px] opacity-60">01 / 06</div>
-          <div className="absolute right-5 top-5 corner-mark text-xl">+</div>
-          <div className="absolute inset-0 m-auto h-52 w-52 rounded-[35%] border border-current/20 sm:h-64 sm:w-64">
-            <div className="orb absolute inset-10 rounded-[34%] transition-transform duration-500 hover:rotate-6" />
-            <div className="absolute -right-10 top-1/2 mono text-[9px] uppercase tracking-[.16em] [writing-mode:vertical-rl]">make useful things</div>
-          </div>
-          <div className="absolute bottom-6 left-6 max-w-[190px] mono text-[10px] leading-5 opacity-70">CODE / DESIGN<br />BUILD / REPEAT<br />— A MORGAN, 2026</div>
-          <div className="absolute bottom-6 right-6 flex gap-1"><i className="h-2 w-2 bg-current" /><i className="h-2 w-2 bg-current opacity-40" /><i className="h-2 w-2 bg-current opacity-20" /></div>
-        </div>
+      <Reveal className="hero-art relative min-h-[410px] overflow-hidden sm:min-h-[520px]" delay={160}>
         <div className="editorial-hero-panel editorial-only">
           <div className="editorial-panel-index mono">01 / 06</div>
-          <div className="editorial-panel-stamp mono">未来</div>
+          <div className="editorial-panel-stamp mono">INK</div>
           <div className="editorial-panel-menu mono">
             <span>01&nbsp; Featured projects</span><span>02&nbsp; About me</span><span>03&nbsp; Skills</span><span>04&nbsp; Experience</span><span>05&nbsp; Get in touch</span>
           </div>
@@ -265,26 +249,6 @@ function Experience() {
   );
 }
 
-function Metrics() {
-  const metrics = [
-    ['2+', 'years experience'],
-    ['4', 'major projects'],
-    ['50+', 'open-source commits'],
-    ['10+', 'tools mastered'],
-    ['100%', 'curious always'],
-  ];
-  return (
-    <section className="metrics-section border-t border-current/20 py-8">
-      <div className="section-wrap">
-        <div className="mono mb-5 flex items-center justify-between text-[9px] uppercase tracking-[.2em] opacity-60"><span>06 / Some numbers</span><span>small proof, real work</span></div>
-        <div className="metrics-grid grid grid-cols-2 border-l border-t border-current/20 sm:grid-cols-5">
-          {metrics.map(([number, label]) => <div key={label} className="metric-cell border-b border-r border-current/20 px-4 py-5"><strong className="display block text-3xl">{number}</strong><span className="mono mt-2 block text-[9px] uppercase tracking-[.13em] opacity-60">{label}</span></div>)}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Contact() {
   return (
     <section id="contact" className="section-anchor border-t border-current/20 py-24">
@@ -304,9 +268,7 @@ function Footer() {
 }
 
 function Home() {
-  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem('alex-theme') as Theme) || 'editorial');
-  useEffect(() => { localStorage.setItem('alex-theme', theme); }, [theme]);
-  return <main className={`site-shell theme-${theme} ${theme === 'editorial' ? 'paper-noise' : 'tech-grid'}`}><Header theme={theme} setTheme={setTheme} /><Hero /><About /><Projects /><Skills /><Experience /><Metrics /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
 }
 
 function Router() {
