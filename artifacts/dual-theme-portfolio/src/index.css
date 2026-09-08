@@ -78,23 +78,9 @@
 }
 
 /* Shared utilities */
-.site-shell { position: relative; min-height: 100dvh; overflow: hidden; transition: background-color .5s ease, color .5s ease; }
+.site-shell { min-height: 100dvh; overflow: hidden; transition: background-color .5s ease, color .5s ease; }
 .section-wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
 .editorial-only { display: block; }
-.site-artwork {
-  position: absolute; z-index: 0; top: 70px; right: 0; bottom: 0; left: 0; overflow: hidden; pointer-events: none;
-  background: #ece4d3;
-}
-.site-artwork img {
-  width: 100%; height: 100%; object-fit: cover; object-position: center top;
-  opacity: .42; filter: saturate(.72) contrast(.88) sepia(.08);
-}
-.site-artwork-wash {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(236,228,211,.28) 0%, rgba(236,228,211,.44) 45%, rgba(236,228,211,.6) 100%);
-}
-.site-shell > header, .site-shell > section, .site-shell > footer { position: relative; z-index: 1; }
-.site-shell > header { position: sticky; }
 .falling-leaves { position: fixed; z-index: 12; inset: -30px 0 auto; height: 100vh; overflow: hidden; pointer-events: none; }
 .falling-leaf {
   position: absolute; top: -22px; left: var(--leaf-left); width: 10px; height: 15px;
@@ -148,7 +134,7 @@
 }
 .theme-editorial .rule { border-color: var(--line); }
 .theme-editorial .nav {
-  background: rgba(236,228,211,.86); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px);
+  background: rgba(236,228,211,.92); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px);
 }
 .theme-editorial .hero-copy { font-size: clamp(3.3rem, 8vw, 8rem); line-height: .83; }
 .theme-editorial .project-card { background: #e7dcc8; border: 1px solid var(--line); transition: transform .35s ease, box-shadow .35s ease; }
@@ -161,7 +147,7 @@
 .theme-editorial .section-title { font-size: clamp(2.4rem, 5vw, 5rem); line-height: .9; }
 .theme-editorial .hero-art { background: #d9c9ad; border: 1px solid var(--line); }
 .theme-editorial .hero-art .orb { background: #c84d3d; box-shadow: 26px 22px 0 #f0ae78; }
-.theme-editorial .footer { background: rgba(32,42,54,.92); color: #ece4d3; }
+.theme-editorial .footer { background: #202a36; color: #ece4d3; }
 .theme-editorial .editorial-hero { position: relative; }
 .theme-editorial .editorial-hero .hero-copy { position: relative; z-index: 1; }
 .theme-editorial .editorial-hero .hero-copy::after {
