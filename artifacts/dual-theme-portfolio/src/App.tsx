@@ -4,6 +4,7 @@ import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Code2, Cpu, Layers3, Menu, 
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { CursorSlash, HeroKatana, SlashDivider } from '@/components/Katana';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -94,7 +95,8 @@ function FallingLeaves() {
 }
 
 function HeroPhoto() {
-  const [photo, setPhoto] = useState<string | null>(null);
+  const defaultPhoto = `${import.meta.env.BASE_URL}image.png`;
+  const [photo, setPhoto] = useState<string | null>(defaultPhoto);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File | undefined) => {
@@ -175,8 +177,9 @@ function Header() {
 
 function Hero() {
   return (
-    <section id="top" className="section-anchor section-wrap editorial-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
-      <div>
+    <section id="top" className="section-anchor section-wrap editorial-hero katana-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
+      <HeroKatana />
+      <div className="katana-hero-content">
         <Reveal className="mb-8" delay={0}><div className="mono flex items-center gap-3 text-[10px] uppercase tracking-[.2em] opacity-65"><span className="h-2 w-2 bg-current" /> Full-stack developer <span className="opacity-40">/</span> creative technologist</div></Reveal>
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">Digital craft</span><span className="serif block normal-case tracking-[-.05em]">built with</span><span className="block text-[.86em]">intent.</span></Reveal>
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[15px] leading-7 opacity-75" delay={160}>
@@ -191,7 +194,7 @@ function Hero() {
           <span className="mono text-[10px] uppercase tracking-[.18em]">Based in Bengaluru, India</span><span className="h-px w-14 bg-current" /><span className="mono text-[10px] uppercase tracking-[.18em]">Available for select work</span>
         </Reveal>
       </div>
-      <Reveal className="hero-photo-wrap relative min-h-[410px] overflow-hidden sm:min-h-[520px]" delay={160}>
+      <Reveal className="hero-photo-wrap relative min-h-[300px] overflow-hidden sm:min-h-[380px]" delay={160}>
         <HeroPhoto />
       </Reveal>
     </section>
@@ -227,9 +230,10 @@ function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-24">
       <div className="section-wrap">
+        <SlashDivider />
         <Reveal className="mb-12 flex items-end justify-between gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / Selected work</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div><a href="#contact" className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[.16em] opacity-65 transition-opacity hover:opacity-100 sm:flex" data-testid="link-all-projects">Have a project in mind? <ArrowUpRight size={14} /></a></Reveal>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><article className="project-card h-full p-4" data-testid={`card-project-${project.number}`}><div className="mb-3 flex items-center justify-between mono text-[9px] opacity-60"><span>{project.number}</span><span>{project.kind}</span></div><ProjectVisual accent={project.accent} /><h3 className="display text-xl tracking-[-.04em]">{project.name}</h3><p className="mt-3 min-h-[72px] text-xs leading-5 opacity-70">{project.description}</p><div className="mt-4 flex flex-wrap gap-1.5">{project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}</div><a href="#contact" className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-${project.number}`}>Discuss a build <ArrowUpRight size={13} /></a></article></Reveal>)}
+          {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><article className="project-card katana-card h-full p-4" data-testid={`card-project-${project.number}`}><div className="mb-3 flex items-center justify-between mono text-[9px] opacity-60"><span>{project.number}</span><span>{project.kind}</span></div><ProjectVisual accent={project.accent} /><h3 className="display text-xl tracking-[-.04em]">{project.name}</h3><span className="katana-card-line" aria-hidden="true" /><p className="mt-3 min-h-[72px] text-xs leading-5 opacity-70">{project.description}</p><div className="mt-4 flex flex-wrap gap-1.5">{project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}</div><a href="#contact" className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-${project.number}`}>Discuss a build <ArrowUpRight size={13} /></a></article></Reveal>)}
         </div>
       </div>
     </section>
@@ -299,7 +303,7 @@ function Footer() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
 }
 
 function Router() {
