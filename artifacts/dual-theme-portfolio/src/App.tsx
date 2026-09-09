@@ -288,8 +288,9 @@ function Experience() {
 
 function Contact() {
   return (
-    <section id="contact" className="section-anchor border-t border-current/20 py-24">
-      <div className="section-wrap">
+    <section id="contact" className="section-anchor contact-section border-t border-current/20 py-24">
+      <BambooDecoration />
+      <div className="section-wrap contact-inner">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
           <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">06 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
           <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
@@ -300,11 +301,11 @@ function Contact() {
 }
 
 function Footer() {
-  return <footer className="footer border-t border-current/15 py-7"><div className="section-wrap flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">AM</span><span className="text-xs opacity-70">Alex Morgan — full-stack developer & creative technologist</span></div><div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">© 2026 / made with care</div></div></footer>;
+  return <footer className="footer border-t border-current/15 py-7"><div className="section-wrap footer-inner flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">AM</span><span className="text-xs opacity-70">Alex Morgan — full-stack developer & creative technologist</span></div><div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">© 2026 / made with care</div></div></footer>;
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><div className="bamboo-anchor"><BambooDecoration /></div><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
 }
 
 function Router() {

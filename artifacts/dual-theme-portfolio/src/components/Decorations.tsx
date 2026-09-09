@@ -62,12 +62,63 @@ export function DecorativeBranches() {
   );
 }
 
-function BambooStalk({ x, h, nodes }: { x: number; h: number; nodes: number[] }) {
+const INK = '#202a36';
+const LEAF_BLACK = '#1d2733';
+const STALK_FILL = '#f7f1e3';
+const VEIN = '#f7f1e3';
+
+/** Long pointed bamboo leaf with center vein, hung from a thin curved stem. */
+function BambooLeafStem({ x, y, len, droop, flip = false, wind = 'wind-a' }: { x: number; y: number; len: number; droop: number; flip?: boolean; wind?: string }) {
+  const dir = flip ? -1 : 1;
+  const bx = x + dir * len * 0.28;
+  const by = y + droop * 0.5;
+  const tipX = x + dir * len;
+  const tipY = y + droop;
+  const w = len * 0.13;
   return (
-    <g>
-      <rect x={x} y={200 - h} width="10" height={h} rx="4" fill="none" stroke="currentColor" strokeWidth="2" />
-      {nodes.map((ny) => (
-        <line key={ny} x1={x - 2} y1={ny} x2={x + 12} y2={ny} stroke="currentColor" strokeWidth="1.6" />
+    <g className={`bamboo-leaf ${wind}${flip ? ' leaf-flip' : ''}`}>
+      <path
+        d={`M${x},${y} Q${x + dir * len * 0.12},${y + droop * 0.18} ${bx},${by}`}
+        fill="none"
+        stroke={INK}
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d={`M${bx},${by} C${bx + dir * len * 0.3},${by - w} ${bx + dir * len * 0.55},${by - w * 0.7} ${tipX},${tipY} C${bx + dir * len * 0.55},${by + w * 0.9} ${bx + dir * len * 0.28},${by + w * 1.1} ${bx},${by} Z`}
+        fill={LEAF_BLACK}
+      />
+      <path
+        d={`M${bx},${by} L${tipX},${tipY}`}
+        fill="none"
+        stroke={VEIN}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+    </g>
+  );
+}
+
+/** Hollow segmented stalk like the reference: paper fill, ink outline, ring joints, highlight. */
+function BambooStalk({ x, top, bottom, w, joints, leaves }: {
+  x: number; top: number; bottom: number; w: number; joints: number[];
+  leaves: { y: number; len: number; droop: number; flip?: boolean; wind?: string }[];
+}) {
+  return (
+    <g className="bamboo-stalk">
+      <g className="bamboo-stem-sway">
+        <rect x={x - w / 2} y={top} width={w} height={bottom - top} fill={STALK_FILL} stroke={INK} strokeWidth="3" />
+        <line x1={x - w / 2 + 5} y1={top + 6} x2={x - w / 2 + 5} y2={bottom - 6} stroke={INK} strokeWidth="1.4" opacity="0.35" />
+        {joints.map((jy) => (
+          <g key={jy}>
+            <rect x={x - w / 2 - 3} y={jy - 5} width={w + 6} height={10} rx={3} fill={STALK_FILL} stroke={INK} strokeWidth="2.6" />
+            <line x1={x - w / 2 - 3} y1={jy + 1} x2={x + w / 2 + 3} y2={jy + 1} stroke={INK} strokeWidth="1.4" opacity="0.6" />
+          </g>
+        ))}
+      </g>
+      {leaves.map((leaf, i) => (
+        <BambooLeafStem key={`${leaf.y}-${i}`} x={x + (leaf.flip ? -w / 2 : w / 2)} y={leaf.y} len={leaf.len} droop={leaf.droop} flip={leaf.flip} wind={leaf.wind} />
       ))}
     </g>
   );
@@ -84,21 +135,37 @@ export function BambooDecoration() {
       data-testid="bamboo-decoration"
       style={reduce ? undefined : { y: drift }}
     >
-      <svg viewBox="0 0 220 220" focusable="false">
-        <g fill="none" strokeLinecap="round">
-          <BambooStalk x={120} h={150} nodes={[110, 140, 170]} />
-          <BambooStalk x={148} h={118} nodes={[128, 156, 182]} />
-          <BambooStalk x={94} h={96} nodes={[140, 166]} />
-        </g>
-        <g fill="currentColor" opacity="0.8">
-          <ellipse cx="112" cy="72" rx="20" ry="7" transform="rotate(-24 112 72)" />
-          <ellipse cx="150" cy="60" rx="22" ry="7" transform="rotate(14 150 60)" />
-          <ellipse cx="132" cy="48" rx="18" ry="6" transform="rotate(-8 132 48)" />
-          <ellipse cx="166" cy="92" rx="18" ry="6" transform="rotate(28 166 92)" />
-          <ellipse cx="92" cy="96" rx="16" ry="6" transform="rotate(-32 92 96)" />
-          <ellipse cx="182" cy="120" rx="15" ry="5.4" transform="rotate(24 182 120)" />
-        </g>
-        <circle cx="60" cy="168" r="26" fill="currentColor" opacity="0.16" />
+      <svg viewBox="0 0 340 600" focusable="false">
+        <BambooStalk
+          x={120} top={0} bottom={600} w={34} joints={[90, 200, 310, 420, 520]}
+          leaves={[
+            { y: 120, len: 110, droop: 64, flip: true, wind: 'wind-a' },
+            { y: 240, len: 95, droop: 70, wind: 'wind-c' },
+            { y: 380, len: 100, droop: 76, flip: true, wind: 'wind-b' },
+          ]}
+        />
+        <BambooStalk
+          x={200} top={0} bottom={600} w={44} joints={[70, 180, 290, 400, 505]}
+          leaves={[
+            { y: 100, len: 105, droop: 60, wind: 'wind-b' },
+            { y: 320, len: 90, droop: 66, flip: true, wind: 'wind-d' },
+            { y: 450, len: 85, droop: 80, wind: 'wind-a' },
+          ]}
+        />
+        <BambooStalk
+          x={272} top={0} bottom={600} w={30} joints={[110, 215, 320, 425, 525]}
+          leaves={[
+            { y: 150, len: 90, droop: 62, wind: 'wind-c' },
+            { y: 350, len: 95, droop: 88, flip: true, wind: 'wind-d' },
+          ]}
+        />
+        <BambooStalk
+          x={62} top={40} bottom={600} w={24} joints={[150, 260, 370, 470, 560]}
+          leaves={[
+            { y: 190, len: 85, droop: 70, flip: true, wind: 'wind-b' },
+            { y: 410, len: 80, droop: 74, wind: 'wind-c' },
+          ]}
+        />
       </svg>
     </motion.div>
   );

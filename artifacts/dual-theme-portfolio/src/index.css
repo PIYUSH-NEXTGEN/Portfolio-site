@@ -318,14 +318,16 @@
   .katana-frame { width: min(72vw, 330px); right: -70px; top: 64px; opacity: .8; }
   .deco-branch-tl { top: 56px; left: -80px; width: 170px; opacity: .5; }
   .deco-branch-tr, .deco-branch-bl { display: none; }
-  .deco-bamboo { width: 130px; right: -46px; bottom: -30px; opacity: .7; }
+  .theme-editorial .contact-section .section-wrap { padding-right: 0; }
+  .deco-bamboo { display: none; }
 }
 @media (min-width: 768px) and (max-width: 1100px) {
   .katana-frame { width: clamp(360px, 40vw, 520px); right: -110px; top: 40px; }
   .deco-branch-tl { width: 220px; }
   .deco-branch-tr { width: 200px; }
   .deco-branch-bl { display: none; }
-  .deco-bamboo { width: 190px; }
+  .theme-editorial .contact-section .section-wrap { padding-right: clamp(170px, 26vw, 240px); }
+  .deco-bamboo { width: 200px; }
 }
 /* Subtle Japanese branch + bamboo environment (separate from katana) */
 .site-shell { position: relative; }
@@ -338,17 +340,70 @@
 .deco-branch-bl { top: 46%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
 .site-shell > header,
 .site-shell > section,
-.site-shell > footer,
-.bamboo-anchor { position: relative; z-index: 1; }
-.bamboo-anchor { position: relative; overflow: hidden; }
+.site-shell > footer { position: relative; z-index: 1; }
+.theme-editorial .footer { position: relative; overflow: hidden; }
+.theme-editorial .footer-inner { position: relative; z-index: 1; }
+.theme-editorial .contact-section { position: relative; overflow: hidden; }
+.theme-editorial .contact-section .section-wrap { padding-right: clamp(190px, 30vw, 330px); }
+.theme-editorial .contact-inner { position: relative; z-index: 1; }
 .deco-bamboo {
   position: absolute; z-index: 0; pointer-events: none;
-  right: clamp(-70px, -2vw, -24px);
-  bottom: -38px;
-  width: clamp(170px, 20vw, 250px);
-  color: rgba(32, 42, 54, .3);
+  right: 0;
+  top: -20px;
+  bottom: -20px;
+  width: clamp(170px, 22vw, 260px);
+  height: calc(100% + 40px);
+  color: #d9c9ad;
 }
-.deco-bamboo svg { display: block; width: 100%; height: auto; overflow: visible; }
+.deco-bamboo svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* Bamboo wind: stems sway from the base, leaves rustle on independent cycles.
+   Transform-only, GPU-friendly. Origins sit at stem base / leaf attachment. */
+.deco-bamboo .bamboo-stalk { transform-box: fill-box; }
+.deco-bamboo .bamboo-stem-sway {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bamboo-sway 5.3s ease-in-out 0s infinite;
+}
+.deco-bamboo .bamboo-leaf {
+  transform-box: fill-box;
+  transform-origin: 0% 0%;
+  animation: bamboo-leaf-a 4.2s ease-in-out 0s infinite;
+}
+.deco-bamboo .bamboo-leaf.leaf-flip { transform-origin: 100% 0%; }
+.deco-bamboo .bamboo-leaf.wind-b { animation-name: bamboo-leaf-b; animation-duration: 4.8s; animation-delay: -1.3s; }
+.deco-bamboo .bamboo-leaf.wind-c { animation-name: bamboo-leaf-c; animation-duration: 3.5s; animation-delay: -2.1s; }
+.deco-bamboo .bamboo-leaf.wind-d { animation-name: bamboo-leaf-d; animation-duration: 5.3s; animation-delay: -0.6s; }
+@keyframes bamboo-sway {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(0.9deg); }
+  55% { transform: rotate(-0.5deg); }
+  78% { transform: rotate(0.6deg); }
+}
+@keyframes bamboo-leaf-a {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  28% { transform: rotate(2.4deg) translateY(-1px); }
+  58% { transform: rotate(-1.2deg) translateY(0.5px); }
+  80% { transform: rotate(1.4deg) translateY(-0.5px); }
+}
+@keyframes bamboo-leaf-b {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  32% { transform: rotate(-2.1deg) translateY(-1px); }
+  60% { transform: rotate(1.3deg) translateY(0.5px); }
+  84% { transform: rotate(-1deg) translateY(0); }
+}
+@keyframes bamboo-leaf-c {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(1.8deg) translateY(-0.5px); }
+  52% { transform: rotate(-1.6deg) translateY(0.5px); }
+  76% { transform: rotate(1deg) translateY(0); }
+}
+@keyframes bamboo-leaf-d {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  35% { transform: rotate(-1.5deg) translateY(-0.5px); }
+  62% { transform: rotate(1.1deg) translateY(0.5px); }
+  86% { transform: rotate(-0.8deg) translateY(0); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -357,4 +412,6 @@
   .katana-idle { animation: none; }
   .katana-entrance.sheen-play .katana-sheen { animation: none; }
   .cursor-slash-layer { display: none; }
+  .deco-bamboo .bamboo-stem-sway,
+  .deco-bamboo .bamboo-leaf { animation: none; }
 }
