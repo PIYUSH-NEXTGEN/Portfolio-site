@@ -1,6 +1,8 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Code2, Cpu, ExternalLink, Github, Layers3, Linkedin, Mail, MapPin, Menu, PenTool, Terminal, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Code2, Cpu, Layers3, Menu, Terminal, X } from 'lucide-react';
+import { SiLeetcode, SiPeerlist } from 'react-icons/si';
+import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -45,11 +47,22 @@ const projects = [
   },
 ];
 
+const socialLinks = [
+  { label: 'GitHub', href: 'https://github.com', Icon: FaGithub, testId: 'link-nav-github' },
+  { label: 'LinkedIn', href: 'https://linkedin.com', Icon: FaLinkedin, testId: 'link-nav-linkedin' },
+  { label: 'X (Twitter)', href: 'https://x.com', Icon: FaXTwitter, testId: 'link-nav-x' },
+  { label: 'Peerlist', href: 'https://peerlist.io', Icon: SiPeerlist, testId: 'link-nav-peerlist' },
+  { label: 'LeetCode', href: 'https://leetcode.com', Icon: SiLeetcode, testId: 'link-nav-leetcode' },
+  { label: 'dev.to', href: 'https://dev.to', Icon: FaDev, testId: 'link-nav-devto' },
+];
+
 const skills = [
-  { title: 'Frontend', icon: Code2, detail: 'React, Next.js, TypeScript, HTML, CSS, accessibility, motion' },
-  { title: 'Backend', icon: Terminal, detail: 'Node.js, Express, Postgres, GraphQL, REST APIs, systems thinking' },
-  { title: 'Tools', icon: Boxes, detail: 'Git, GitHub, VS Code, Docker, Figma, Linux, CI/CD' },
-  { title: 'Design / others', icon: PenTool, detail: 'Product direction, prototyping, visual systems, facilitation' },
+  { title: 'Languages', icon: Code2, detail: 'TypeScript, JavaScript, Python, Go, SQL, HTML, CSS' },
+  { title: 'Frontend', icon: Layers3, detail: 'React, Next.js, Vite, Tailwind CSS, Framer Motion, accessibility' },
+  { title: 'Backend', icon: Terminal, detail: 'Node.js, Express, REST APIs, GraphQL, Postgres, Prisma, WebSockets' },
+  { title: 'Libraries & Tools', icon: Boxes, detail: 'React Query, Zod, React Hook Form, Recharts, Git, GitHub, VS Code, Figma' },
+  { title: 'Machine Learning', icon: Cpu, detail: 'Python, scikit-learn, TensorFlow, data pipelines, model evaluation, prompt engineering' },
+  { title: 'Deployment & DevOps', icon: ArrowUpRight, detail: 'Docker, CI/CD, Linux, Vercel, Replit, monitoring, env management' },
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
@@ -80,32 +93,53 @@ function FallingLeaves() {
   );
 }
 
-function EditorialPortrait() {
-  return (
-    <div className="editorial-portrait editorial-only" aria-label="Ink portrait illustration of Alex Morgan">
-      <svg viewBox="0 0 300 270" role="img" aria-hidden="true">
-        <path className="portrait-wash" d="M59 233 C42 198 57 164 46 130 C35 96 55 59 90 55 C107 30 144 32 165 48 C202 47 219 80 208 111 C236 144 213 191 180 206 C156 220 132 250 93 244Z" />
-        <path className="portrait-hair" d="M72 190 C45 153 48 101 80 65 C107 34 153 42 179 72 C159 65 145 80 137 96 C120 93 102 111 99 140 C95 170 104 193 121 211 C98 216 80 207 72 190Z" />
-        <path className="portrait-face" d="M126 92 C155 84 185 101 188 130 C193 169 166 192 137 184 C115 179 104 157 108 130 C111 111 116 99 126 92Z" />
-        <path className="portrait-line" d="M132 119 C146 111 166 113 177 124 M162 143 C169 146 176 145 180 141 M139 162 C152 168 165 165 172 157 M113 101 C120 92 131 87 143 87" />
-        <path className="portrait-ink" d="M48 239 C91 219 128 230 174 212 C193 205 210 190 226 166 M51 247 C90 233 123 242 167 224" />
-        <circle className="portrait-sun" cx="218" cy="76" r="37" />
-      </svg>
-      <div className="portrait-caption mono">ALEX / 01</div>
-    </div>
-  );
-}
+function HeroPhoto() {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-function EditorialFuji() {
+  const handleFile = (file: File | undefined) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   return (
-    <div className="editorial-fuji editorial-only">
-      <svg viewBox="0 0 400 190" aria-hidden="true">
-        <path className="mountain-back" d="M0 178 L74 124 L118 145 L177 80 L233 135 L285 111 L347 151 L400 118 L400 190 L0 190Z" />
-        <path className="mountain-front" d="M0 183 L81 143 L128 163 L197 79 L269 165 L314 143 L400 177 L400 190 L0 190Z" />
-        <path className="mountain-snow" d="M197 79 L178 111 L191 106 L197 119 L208 106 L220 119 L215 96Z" />
-        <path className="mountain-ink" d="M17 172 C83 147 116 169 170 133 M232 166 C291 147 331 170 388 153" />
-      </svg>
-      <div className="fuji-label mono">BENGALURU / INDIA</div>
+    <div className="hero-photo-slot" data-testid="hero-photo-slot">
+      {photo ? (
+        <button
+          type="button"
+          className="hero-photo-filled"
+          onClick={() => inputRef.current?.click()}
+          aria-label="Change hero photo"
+          title="Click to change photo"
+        >
+          <img src={photo} alt="Profile photo" />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="hero-photo-empty"
+          onClick={() => inputRef.current?.click()}
+          data-testid="button-hero-photo-upload"
+        >
+          <span className="hero-photo-icon" aria-hidden="true">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.5-3.5a1.5 1.5 0 0 0-2 0L6 21" /></svg>
+          </span>
+          <span className="mono hero-photo-title">Your photo here</span>
+          <span className="hero-photo-sub">Click to upload — portrait works best</span>
+          <span className="mono hero-photo-hint">JPG / PNG</span>
+        </button>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        aria-label="Upload hero photo"
+        data-testid="input-hero-photo"
+        onChange={(event) => handleFile(event.target.files?.[0])}
+      />
     </div>
   );
 }
@@ -115,19 +149,22 @@ function Header() {
   const links = [['about', 'About'], ['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Journey'], ['contact', 'Contact']];
   return (
     <header className="nav sticky top-0 z-20">
-      <div className="section-wrap flex min-h-[70px] items-center justify-between gap-5">
-        <a href="#top" className="flex items-center gap-3" data-testid="link-home">
-          <span className="flex h-9 w-9 items-center justify-center border border-current font-mono text-xs font-bold">AM</span>
-          <span className="hidden text-xs font-semibold tracking-[.13em] sm:block">ALEX MORGAN <span className="font-mono opacity-50">/ 26</span></span>
-        </a>
-        <nav className={`${open ? 'absolute left-4 right-4 top-[66px] flex flex-col border border-current bg-[var(--paper,#ece4d3)] p-4 shadow-lg md:static md:flex md:flex-row md:border-0 md:bg-transparent md:p-0 md:shadow-none' : 'hidden md:flex'} items-center gap-5`} aria-label="Primary navigation">
+      <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2" aria-label="Social links">
+          {socialLinks.map(({ label, href, Icon, testId }) => (
+            <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link">
+              <Icon size={15} />
+            </a>
+          ))}
+        </div>
+        <nav className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-[64px] flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-5 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-7' : 'hidden md:flex'} items-center gap-5 md:gap-5 lg:gap-7`} aria-label="Primary navigation">
           {links.map(([id, label]) => (
-            <a onClick={() => setOpen(false)} href={`#${id}`} className="text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
+            <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
         </nav>
-        <div className="flex items-center gap-3">
-          <a href="#contact" className="button-primary hidden items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-contact">Start a project <ArrowUpRight size={13} /></a>
-          <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <a href="#contact" className="button-primary hidden items-center gap-2 whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-contact">Start a project <ArrowUpRight size={13} /></a>
+          <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 shrink-0 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
             {open ? <X size={16} /> : <Menu size={16} />}
           </button>
         </div>
@@ -154,15 +191,8 @@ function Hero() {
           <span className="mono text-[10px] uppercase tracking-[.18em]">Based in Bengaluru, India</span><span className="h-px w-14 bg-current" /><span className="mono text-[10px] uppercase tracking-[.18em]">Available for select work</span>
         </Reveal>
       </div>
-      <Reveal className="hero-art relative min-h-[410px] overflow-hidden sm:min-h-[520px]" delay={160}>
-        <div className="editorial-hero-panel editorial-only">
-          <div className="editorial-panel-index mono">01 / 06</div>
-          <div className="editorial-panel-menu mono">
-            <span>01&nbsp; Featured projects</span><span>02&nbsp; About me</span><span>03&nbsp; Skills</span><span>04&nbsp; Experience</span><span>05&nbsp; Get in touch</span>
-          </div>
-          <EditorialFuji />
-          <div className="editorial-panel-meta mono">CODE / DESIGN<br />BUILD / REPEAT<br />— A MORGAN, 2026</div>
-        </div>
+      <Reveal className="hero-photo-wrap relative min-h-[410px] overflow-hidden sm:min-h-[520px]" delay={160}>
+        <HeroPhoto />
       </Reveal>
     </section>
   );
@@ -171,11 +201,11 @@ function Hero() {
 function About() {
   return (
     <section id="about" className="section-anchor border-t border-current/20 py-24">
-      <div className="section-wrap grid gap-12 lg:grid-cols-[.85fr_1.15fr]">
-        <Reveal><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / About me</div><h2 className="section-title display max-w-[420px]">Turning ideas into <span className="serif normal-case">interactive</span> experiences.</h2><EditorialPortrait /></Reveal>
+      <div className="section-wrap grid gap-12 lg:grid-cols-[.9fr_1.1fr]">
+        <Reveal><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / About me</div><h2 className="section-title display max-w-[420px]">Turning ideas into <span className="serif normal-case">interactive</span> experiences.</h2></Reveal>
         <div className="grid gap-10 sm:grid-cols-[1.2fr_.8fr]">
           <Reveal delay={100}><p className="serif text-3xl leading-[1.08]">I’m Alex Morgan, a full-stack developer who likes the space between a rough idea and the moment it becomes useful.</p><p className="mt-6 max-w-[520px] text-sm leading-7 opacity-70">For the last 4+ years, I’ve worked across product teams and small studios — shaping systems, shipping interfaces, and asking the slightly annoying questions that make a product clearer.</p></Reveal>
-          <Reveal delay={180} className="border-l border-current/20 pl-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Currently</div><p className="mt-3 text-sm leading-6">Independent<br />building useful things<br /><span className="opacity-55">open to good collaborations</span></p><div className="mt-10 mono text-[10px] uppercase tracking-[.15em] opacity-60">Find me</div><div className="mt-3 flex gap-3"><a className="icon-link" href="https://github.com" target="_blank" rel="noreferrer" aria-label="Alex on GitHub" data-testid="link-github"><Github size={18} /></a><a className="icon-link" href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="Alex on LinkedIn" data-testid="link-linkedin"><Linkedin size={18} /></a><a className="icon-link" href="mailto:alex@example.com" aria-label="Email Alex" data-testid="link-email-about"><Mail size={18} /></a></div></Reveal>
+          <Reveal delay={180} className="border-l border-current/20 pl-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Currently</div><p className="mt-3 text-sm leading-6">Independent<br />building useful things<br /><span className="opacity-55">open to good collaborations</span></p><div className="mono mt-10 text-[10px] uppercase tracking-[.15em] opacity-60">Focus</div><p className="mt-3 text-sm leading-6 opacity-70">Interfaces, systems,<br />and thoughtful tooling</p></Reveal>
         </div>
       </div>
     </section>
@@ -210,8 +240,31 @@ function Skills() {
   return (
     <section id="skills" className="section-anchor border-t border-current/20 py-24">
       <div className="section-wrap">
-        <Reveal className="mb-12 grid gap-6 md:grid-cols-[.65fr_1.35fr]"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Capabilities</div><h2 className="section-title display">Tools for<br /><span className="serif normal-case">making.</span></h2></div><p className="max-w-[400px] self-end text-sm leading-7 opacity-70">I’m most useful when the brief is still a little fuzzy. I bring structure to the unknown, then build the smallest thing that can teach us more.</p></Reveal>
-        <div className="grid border-l border-t border-current/20 sm:grid-cols-2 lg:grid-cols-4">{skills.map(({ title, icon: Icon, detail }, index) => <Reveal key={title} delay={index * 80} className="border-b border-r border-current/20"><div className="group min-h-[205px] p-5 transition-colors hover:bg-current/[.05]"><Icon size={24} strokeWidth={1.4} /><h3 className="mt-12 display text-lg">{title}</h3><p className="mt-3 text-xs leading-5 opacity-65">{detail}</p></div></Reveal>)}</div>
+        <Reveal className="mb-12 grid gap-6 md:grid-cols-[.65fr_1.35fr]">
+          <div>
+            <div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Capabilities</div>
+            <h2 className="section-title display">Tech stack<br /><span className="serif normal-case">I work with.</span></h2>
+          </div>
+          <p className="max-w-[400px] self-end text-sm leading-7 opacity-70">A practical stack for shipping end-to-end — from language fundamentals to production deploys and ML experiments.</p>
+        </Reveal>
+        <div className="skills-grid">
+          {skills.map(({ title, icon: Icon, detail }, index) => (
+            <Reveal key={title} delay={index * 70} className="skills-cell">
+              <div className="skills-card group">
+                <div className="skills-card-top">
+                  <span className="skills-icon"><Icon size={20} strokeWidth={1.6} /></span>
+                  <span className="mono skills-index">0{index + 1}</span>
+                </div>
+                <h3 className="display skills-title">{title}</h3>
+                <div className="skills-tags">
+                  {detail.split(', ').map((tag) => (
+                    <span key={tag} className="mono skills-tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -234,7 +287,7 @@ function Contact() {
       <div className="section-wrap">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
           <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">06 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
-          <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Location</div><p className="mt-2 flex items-center gap-2 text-sm"><MapPin size={14} /> Bengaluru, India</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-3 flex gap-4"><a className="icon-link" href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" data-testid="link-contact-github"><Github size={18} /></a><a className="icon-link" href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" data-testid="link-contact-linkedin"><Linkedin size={18} /></a><a className="icon-link" href="https://x.com" target="_blank" rel="noreferrer" aria-label="X" data-testid="link-contact-x"><ExternalLink size={17} /></a></div></div></div>
+          <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
         </Reveal>
       </div>
     </section>
