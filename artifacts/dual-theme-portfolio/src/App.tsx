@@ -5,6 +5,7 @@ import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { CursorSlash, HeroKatana, SlashDivider } from '@/components/Katana';
+import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -303,7 +304,7 @@ function Footer() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><div className="bamboo-anchor"><BambooDecoration /></div><Footer /></main>;
 }
 
 function Router() {

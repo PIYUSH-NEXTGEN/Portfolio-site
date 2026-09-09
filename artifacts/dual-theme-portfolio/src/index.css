@@ -316,10 +316,40 @@
   .theme-editorial .hero-photo-filled img { min-height: 260px; }
   .theme-editorial .hero-photo-filled img { max-height: 380px; }
   .katana-frame { width: min(72vw, 330px); right: -70px; top: 64px; opacity: .8; }
+  .deco-branch-tl { top: 56px; left: -80px; width: 170px; opacity: .5; }
+  .deco-branch-tr, .deco-branch-bl { display: none; }
+  .deco-bamboo { width: 130px; right: -46px; bottom: -30px; opacity: .7; }
 }
 @media (min-width: 768px) and (max-width: 1100px) {
   .katana-frame { width: clamp(360px, 40vw, 520px); right: -110px; top: 40px; }
+  .deco-branch-tl { width: 220px; }
+  .deco-branch-tr { width: 200px; }
+  .deco-branch-bl { display: none; }
+  .deco-bamboo { width: 190px; }
 }
+/* Subtle Japanese branch + bamboo environment (separate from katana) */
+.site-shell { position: relative; }
+.deco-branches { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.deco-branches > div { position: absolute; color: rgba(32, 42, 54, .2); }
+.deco-branch svg { display: block; width: 100%; height: auto; overflow: visible; }
+.deco-branch.flip { transform: scaleX(-1); }
+.deco-branch-tl { top: 64px; left: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
+.deco-branch-tr { top: 120px; right: -52px; width: clamp(170px, 19vw, 280px); opacity: .7; }
+.deco-branch-bl { top: 46%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
+.site-shell > header,
+.site-shell > section,
+.site-shell > footer,
+.bamboo-anchor { position: relative; z-index: 1; }
+.bamboo-anchor { position: relative; overflow: hidden; }
+.deco-bamboo {
+  position: absolute; z-index: 0; pointer-events: none;
+  right: clamp(-70px, -2vw, -24px);
+  bottom: -38px;
+  width: clamp(170px, 20vw, 250px);
+  color: rgba(32, 42, 54, .3);
+}
+.deco-bamboo svg { display: block; width: 100%; height: auto; overflow: visible; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
