@@ -4,7 +4,9 @@ import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Code2, Cpu, Layers3, Menu, 
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, HeroKatana, SlashDivider } from '@/components/Katana';
+import { AnimatedPortrait } from '@/components/PortraitWind';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -117,7 +119,9 @@ function HeroPhoto() {
           aria-label="Change hero photo"
           title="Click to change photo"
         >
-          <img src={photo} alt="Profile photo" />
+          {photo === defaultPhoto
+            ? <AnimatedPortrait />
+            : <img src={photo} alt="Profile photo" />}
         </button>
       ) : (
         <button
@@ -179,7 +183,6 @@ function Header() {
 function Hero() {
   return (
     <section id="top" className="section-anchor section-wrap editorial-hero katana-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
-      <HeroKatana />
       <div className="katana-hero-content">
         <Reveal className="mb-8" delay={0}><div className="mono flex items-center gap-3 text-[10px] uppercase tracking-[.2em] opacity-65"><span className="h-2 w-2 bg-current" /> Full-stack developer <span className="opacity-40">/</span> creative technologist</div></Reveal>
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">Digital craft</span><span className="serif block normal-case tracking-[-.05em]">built with</span><span className="block text-[.86em]">intent.</span></Reveal>
@@ -195,7 +198,8 @@ function Hero() {
           <span className="mono text-[10px] uppercase tracking-[.18em]">Based in Bengaluru, India</span><span className="h-px w-14 bg-current" /><span className="mono text-[10px] uppercase tracking-[.18em]">Available for select work</span>
         </Reveal>
       </div>
-      <Reveal className="hero-photo-wrap relative min-h-[300px] overflow-hidden sm:min-h-[380px]" delay={160}>
+      <HeroKatana />
+      <Reveal className="hero-photo-wrap relative min-h-[300px] sm:min-h-[380px]" delay={160}>
         <HeroPhoto />
       </Reveal>
     </section>
@@ -318,7 +322,7 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /></TooltipProvider></QueryClientProvider>;
+  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /><IntroSequence /></TooltipProvider></QueryClientProvider>;
 }
 
 export default App;

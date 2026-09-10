@@ -233,36 +233,131 @@
 .magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
-/* Katana accent system: minimal, cinematic, behind content */
-.katana-hero { position: relative; overflow: hidden; }
-.katana-hero-content { position: relative; z-index: 2; }
-.katana-hero .hero-photo-wrap { position: relative; z-index: 2; }
-.katana-frame {
-  position: absolute; z-index: 1; pointer-events: none;
-  right: clamp(-190px, -6vw, -60px);
-  top: clamp(8px, 9%, 84px);
-  width: clamp(430px, 44vw, 720px);
-  color: rgba(32, 42, 54, .24);
-  transform: rotate(-6deg);
+/* Katana backdrop: the sword cut-out (public/katana-ink.png — white removed,
+   border cropped, tinted warm umber by scripts/process-katana.mjs) sits in the
+   EMPTY BACKGROUND SPACE above and to the side of the portrait frame — never
+   touching or crossing the frame's edges. It is strictly behind the frame in
+   z-order, low opacity with a multiply blend so it reads as a warm watermark
+   on the cream paper. rotate(34.6deg) lands the asset's natural -48.6deg axis
+   at -14deg — tsuka LEFT, kissaki up-RIGHT. Hidden below the lg breakpoint
+   where the single-column layout has no safe empty space around the portrait. */
+.katana-hero { position: relative; }
+.katana-backdrop {
+  --katana-cx: 94%; /* katana center x = right:6% → left:94% */
+  --katana-cy: 8%;  /* katana center y */
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
 }
-.katana-scroll, .katana-entrance, .katana-idle { will-change: transform; }
-.katana-svg { display: block; width: 100%; height: auto; overflow: visible; }
-.katana-edge { fill: none; stroke: rgba(246, 240, 226, .45); stroke-width: 1.6; }
-.katana-fuller { fill: none; stroke: rgba(246, 240, 226, .28); stroke-width: 1.1; }
-.katana-collar-line { fill: rgba(246, 240, 226, .6); }
-.katana-ito { fill: none; stroke: rgba(246, 240, 226, .72); stroke-width: 1.2; }
-.katana-sheen { opacity: 0; }
-.katana-entrance { transform-origin: 12% 78%; }
-.katana-entrance.sheen-play .katana-sheen { animation: katana-sheen 1s cubic-bezier(.4, 0, .2, 1) 1 forwards; }
-.katana-idle { animation: katana-idle 9s ease-in-out 2.4s infinite; }
-@keyframes katana-sheen {
-  0% { opacity: 0; transform: translateX(0); }
-  12% { opacity: .55; }
-  100% { opacity: 0; transform: translateX(760px); }
+.katana-scroll, .katana-appear {
+  position: absolute; inset: 0; will-change: transform, opacity;
 }
-@keyframes katana-idle {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(2px) rotate(.35deg); }
+.katana-tilt {
+  --katana-tilt: 34.6deg;
+  position: absolute; left: var(--katana-cx); top: var(--katana-cy);
+  width: clamp(120px, 14vw, 170px);
+  transform: translate(-50%, -50%) rotate(var(--katana-tilt));
+}
+.katana-ink {
+  display: block; width: 100%; height: auto;
+  opacity: .22; mix-blend-mode: multiply;
+  animation: katana-float 13s ease-in-out 2s infinite;
+}
+@keyframes katana-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+@media (max-width: 1023px) {
+  .katana-backdrop { display: none; }
+}
+
+/* ── Animated portrait: "wind in the hair" ──────────────────────────────
+   Layers produced by scripts/slice-portrait.mjs: a static base (strands
+   erased) + 4 transparent strand sprites, each exported as 3 frames — rest,
+   f1 (gentle lift) and f2 (full sway). Motion uses TRUE frame-stepped pixel
+   animation: the frames swap on whole-pixel positions with instant (stepped)
+   transitions, NEVER tweened — so the pixel grid is never broken and there
+   is zero smear, stretch or interpolation artifact. The cycle is rest → f1 →
+   f2 → f1 → rest (a gentle sway). Per-strand duration/delay variance
+   desynchronises the layers. Paused off-screen, static under reduced motion. */
+.hero-photo-filled { position: relative; }
+.portrait-wind {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-start; justify-content: center;
+  pointer-events: none;
+}
+.portrait-canvas {
+  position: relative;
+  height: 100%; max-width: 100%;
+  aspect-ratio: 568 / 570;
+}
+.portrait-base { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.portrait-strand {
+  position: absolute;
+  height: auto;
+  image-rendering: pixelated;
+}
+/* Each strand layer stacks its 3 frames at the same geometry; keyframes
+   cross-fade exactly one frame visible at a time. animation-timing-function
+   steps(4, end) splits the cycle into 4 equal steps with INSTANT jumps (no
+   tween) for crisp pixel-art frame stepping. Cycle: rest(0-25%) → f1(25-50%)
+   → f2(50-75%) → f1(75-100%) → rest — a gentle sway. */
+.portrait-strand-frame {
+  position: absolute; inset: 0;
+  width: 100%; height: auto;
+  image-rendering: pixelated;
+  animation-timing-function: steps(4, end);
+  animation-iteration-count: infinite;
+  will-change: opacity;
+}
+.frame-rest { animation-name: hair-step-rest; }
+.frame-f1   { animation-name: hair-step-f1; opacity: 0; }
+.frame-f2   { animation-name: hair-step-f2; opacity: 0; }
+
+@keyframes hair-step-rest { 0% { opacity:1 } 25% { opacity:0 } 50% { opacity:0 } 75% { opacity:0 } }
+@keyframes hair-step-f1   { 0% { opacity:0 } 25% { opacity:1 } 50% { opacity:0 } 75% { opacity:1 } }
+@keyframes hair-step-f2   { 0% { opacity:0 } 25% { opacity:0 } 50% { opacity:1 } 75% { opacity:0 } }
+
+/* neutralise the generic .hero-photo-filled img rules inside the layered portrait */
+.theme-editorial .hero-photo-filled .portrait-wind img {
+  min-height: 0; max-height: none; background: transparent;
+  object-fit: fill; object-position: auto;
+}
+.portrait-wind[data-paused='true'] .portrait-strand-frame { animation-play-state: paused; }
+
+/* Sakura ring: sprites cut from the original asset (public/sakura-*.png)
+   orbit the katana's center point on slow, varied rings. Orbit rotation +
+   matched counter-rotation keep each petal upright while it circles; a slow
+   wobble on the sprite keeps it alive. Transform/opacity only — GPU-safe. */
+.katana-orbits { position: absolute; inset: 0; }
+.katana-orbit {
+  position: absolute; left: var(--katana-cx, 50%); top: var(--katana-cy, 8%); width: 0; height: 0;
+  animation: katana-orbit-spin var(--orbit-dur) ease-in-out var(--orbit-delay) infinite;
+}
+.katana-orbit-arm {
+  position: absolute; left: 0; top: 0; width: 0; height: 0;
+  /* The rest angle is a phase offset while animating, and keeps the petals
+     scattered (not lined up in a row) when motion is turned off. */
+  transform: rotate(var(--orbit-rest, 0deg)) translateX(var(--orbit-r));
+}
+.katana-orbit-counter {
+  position: absolute; left: 0; top: 0; width: 0; height: 0;
+  animation: katana-orbit-counter var(--orbit-dur) ease-in-out var(--orbit-delay) infinite;
+}
+@keyframes katana-orbit-spin {
+  from { transform: rotate(calc(var(--orbit-dir) * 0deg)); }
+  to   { transform: rotate(calc(var(--orbit-dir) * 360deg)); }
+}
+@keyframes katana-orbit-counter {
+  from { transform: rotate(calc(var(--orbit-dir) * -360deg)); }
+  to   { transform: rotate(calc(var(--orbit-dir) * 0deg)); }
+}
+.katana-petal {
+  position: absolute; left: 0; top: 0; height: auto;
+  transform: translate(-50%, -50%);
+  animation: katana-petal-wobble var(--wobble-dur, 10s) ease-in-out var(--wobble-delay, 0s) infinite;
+}
+@keyframes katana-petal-wobble {
+  0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+  50% { transform: translate(-50%, -50%) rotate(var(--wobble-rot, 12deg)) scale(.9); }
 }
 
 /* Slash divider into Projects */
@@ -315,14 +410,20 @@
   .theme-editorial .hero-photo-filled,
   .theme-editorial .hero-photo-filled img { min-height: 260px; }
   .theme-editorial .hero-photo-filled img { max-height: 380px; }
-  .katana-frame { width: min(72vw, 330px); right: -70px; top: 64px; opacity: .8; }
+  .katana-tilt { width: 56%; }
+  .katana-orbits { transform: scale(.7); transform-origin: 50% var(--katana-cy, 5%); }
   .deco-branch-tl { top: 56px; left: -80px; width: 170px; opacity: .5; }
   .deco-branch-tr, .deco-branch-bl { display: none; }
   .theme-editorial .contact-section .section-wrap { padding-right: 0; }
   .deco-bamboo { display: none; }
 }
+@media (max-width: 520px) {
+  /* Too tight for the orbit ring — keep only the katana accent. */
+  .katana-orbits { display: none; }
+  .katana-tilt { width: 64%; }
+}
 @media (min-width: 768px) and (max-width: 1100px) {
-  .katana-frame { width: clamp(360px, 40vw, 520px); right: -110px; top: 40px; }
+  .katana-tilt { width: 86%; }
   .deco-branch-tl { width: 220px; }
   .deco-branch-tr { width: 200px; }
   .deco-branch-bl { display: none; }
@@ -409,8 +510,8 @@
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
   .falling-leaves { display: none; }
-  .katana-idle { animation: none; }
-  .katana-entrance.sheen-play .katana-sheen { animation: none; }
+  .katana-ink, .katana-orbit, .katana-orbit-counter, .katana-petal { animation: none; }
+  .portrait-strand { animation: none; }
   .cursor-slash-layer { display: none; }
   .deco-bamboo .bamboo-stem-sway,
   .deco-bamboo .bamboo-leaf { animation: none; }

@@ -1,0 +1,240 @@
+/* Cinematic intro sequence — fully self-contained styles.
+   Only transform / opacity / clip-path are animated (60fps-safe). */
+
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: hidden;
+  background: #060709;
+  isolation: isolate;
+}
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* ── Terminal skin (rendered inside each split panel) ─────────────────── */
+.intro-term {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 72% 8%, rgba(30, 36, 46, 0.5), transparent 62%),
+    linear-gradient(160deg, #0a0c10 0%, #060709 55%, #05060a 100%);
+  color: #8b93a1;
+  font-family: var(--font-mono, 'DM Mono'), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.intro-term-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 3px);
+}
+.intro-term-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(140% 120% at 50% 44%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+.intro-term-inner {
+  position: absolute;
+  inset: 0;
+  padding: clamp(24px, 7vw, 88px);
+  display: flex;
+  flex-direction: column;
+}
+.intro-term-top,
+.intro-term-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  opacity: 0;
+}
+.intro-term-bottom {
+  font-size: 9px;
+  letter-spacing: 0.26em;
+}
+.intro-term-body {
+  margin-top: clamp(40px, 12vh, 120px);
+  max-width: 640px;
+}
+.intro-term-title {
+  font-size: clamp(15px, 2.4vw, 22px);
+  letter-spacing: 0.3em;
+  color: #dfe5ec;
+  opacity: 0;
+}
+.intro-term-line {
+  margin-top: 12px;
+  font-size: clamp(11px, 1.35vw, 13.5px);
+  letter-spacing: 0.12em;
+  opacity: 0;
+  transform: translateY(8px);
+}
+.intro-term-line .prompt {
+  opacity: 0.55;
+  margin-right: 10px;
+}
+.intro-term-line.is-ready {
+  color: #dfe5ec;
+  margin-top: 24px;
+}
+.intro-term-line.is-ready + .intro-term-line.is-ready {
+  margin-top: 12px;
+}
+.ready-word {
+  color: #c84d3d;
+}
+.intro-term-status {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  opacity: 0;
+  transform: translateY(8px);
+}
+.intro-term-status-bar {
+  position: relative;
+  width: min(320px, 40vw);
+  height: 1px;
+  background: rgba(139, 147, 161, 0.22);
+  overflow: hidden;
+}
+.intro-term-status-fill {
+  position: absolute;
+  inset: 0;
+  background: rgba(223, 229, 236, 0.75);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.intro-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  margin-left: 8px;
+  vertical-align: -0.15em;
+  background: #dfe5ec;
+  animation: intro-blink 1.05s steps(1) infinite;
+}
+@keyframes intro-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── Screen split panels ────────────────────────────────────────────────
+   Complementary corner-to-corner polygons along the blade angle ("Δ").
+   Together they tile the viewport exactly → one screen before the cut. */
+.intro-panel {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+.intro-panel-a {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  z-index: 1;
+}
+.intro-panel-b {
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  z-index: 1;
+}
+
+/* ── The cut ──────────────────────────────────────────────────────────── */
+.intro-cut {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.intro-cut-halo {
+  stroke: rgba(214, 228, 242, 0.55);
+  stroke-width: 7;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.intro-cut-core {
+  stroke: #eef3f8;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* ── Impact flash ─────────────────────────────────────────────────────── */
+.intro-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #eef3f8;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Katana (uploaded asset) ────────────────────────────────────────────
+   mix-blend-mode on the WRAPPER so the screen blend reaches the terminal
+   backdrop even while the wrapper itself is transformed by GSAP. */
+.intro-katana {
+  --intro-katana-size: min(58vmin, 600px);
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 44%;
+  width: var(--intro-katana-size);
+  height: var(--intro-katana-size);
+  margin-left: calc(var(--intro-katana-size) / -2);
+  margin-top: calc(var(--intro-katana-size) / -2);
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  will-change: transform, opacity;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.intro-katana-img,
+.intro-katana-sheen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  clip-path: inset(1.8% round 2px); /* crops the asset's border frame */
+}
+.intro-katana-img {
+  filter: invert(1) brightness(0.8) contrast(1.08);
+}
+.intro-katana-sheen {
+  filter: invert(1) brightness(2.2) contrast(1.1);
+  opacity: 0;
+  --sheen-x: 140%;
+  -webkit-mask-image: linear-gradient(48deg, transparent 47.5%, #000 50%, transparent 52.5%);
+  mask-image: linear-gradient(48deg, transparent 47.5%, #000 50%, transparent 52.5%);
+  -webkit-mask-size: 320% 320%;
+  mask-size: 320% 320%;
+  -webkit-mask-position: var(--sheen-x) var(--sheen-x);
+  mask-position: var(--sheen-x) var(--sheen-x);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .intro-katana {
+    --intro-katana-size: min(94vw, 420px);
+  }
+  .intro-term-body {
+    margin-top: clamp(32px, 9vh, 64px);
+  }
+  .intro-term-status-bar {
+    width: min(220px, 52vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-cursor {
+    animation: none;
+  }
+}

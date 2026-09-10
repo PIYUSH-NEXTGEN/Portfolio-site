@@ -1,84 +1,110 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 /**
- * Minimal, premium katana accent for the ink-and-paper portfolio.
- * Inline SVG (stays sharp, no raster assets) drawn in currentColor so it
- * inherits the editorial ink token. Blade / collar / guard / handle are
- * separate groups so they can be animated individually.
+ * Katana backdrop for the hero — derived from the uploaded asset
+ * (public/katana.png) via scripts/process-katana.mjs, which cuts the border
+ * frame, removes the white background and splits the artwork into:
+ *
+ *   public/katana-ink.png  — the sword alone (transparent, warm-umber ink)
+ *   public/sakura-<n>.png  — each detached petal / flower as its own sprite
+ *
+ * The sword is a quiet BACKGROUND layer behind the portrait: the photo slot
+ * (z-index 1) occludes it, it renders at ~20% opacity like a watermark, and
+ * rotate(34.6deg) lands the asset's natural -48.6deg axis at -14deg —
+ * tsuka left, kissaki up-right, roughly parallel to the portrait's top edge.
+ * The sakura sprites orbit the blade's center point on slow, varied rings.
  */
-const BLADE_PATH =
-  'M168,86 C320,66 470,44 622,14 C630,22 630,32 620,42 C470,74 320,98 172,112 Z';
+const KATANA_INK_SRC = `${import.meta.env.BASE_URL}katana-ink.png`;
 
-function KatanaBlade() {
-  const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
-  const clipId = `katana-blade-${uid}`;
-  const sheenId = `katana-sheen-${uid}`;
-  return (
-    <svg viewBox="20 0 640 170" role="img" aria-label="Minimal katana illustration" className="katana-svg" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <clipPath id={clipId}>
-          <path d={BLADE_PATH} />
-        </clipPath>
-        <linearGradient id={sheenId} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {/* Blade: long diagonal silhouette traced from the uploaded katana */}
-      <path d={BLADE_PATH} fill="currentColor" />
-      <path d="M176,108 C330,92 470,70 614,40" className="katana-edge" />
-      <path d="M184,93 C330,75 460,57 598,31" className="katana-fuller" />
-      {/* Habaki collar */}
-      <rect x="150" y="82" width="18" height="30" fill="currentColor" />
-      <rect x="150" y="82" width="3" height="30" className="katana-collar-line" />
-      {/* Tsuba guard + tsuka handle + kashira cap (uploaded silhouette language) */}
-      <ellipse cx="138" cy="97" rx="9" ry="24" fill="none" stroke="currentColor" strokeWidth="6" />
-      <path d="M50,86 L126,84 L128,110 L52,112 Z" fill="currentColor" />
-      <path d="M66,98 l8,-9 8,9 -8,9 Z M90,98 l8,-9 8,9 -8,9 Z M114,97 l8,-9 8,9 -8,9 Z" className="katana-ito" />
-      <rect x="40" y="84" width="10" height="30" rx="2" fill="currentColor" />
-      {/* One-time highlight swept along the blade */}
-      <g clipPath={`url(#${clipId})`}>
-        <g transform="skewX(-16)">
-          <rect x="-180" y="-40" width="54" height="270" fill={`url(#${sheenId})`} className="katana-sheen" />
-        </g>
-      </g>
-    </svg>
-  );
-}
+/** Sakura ring — sizes/radii tuned to hug the COMPACT katana watermark
+ *  (120-170px wide, centered top-right at --katana-cx/cy). Petals circle the
+ *  blade's center point on tight rings that stay in the empty background
+ *  space above/right of the portrait — radii scaled to the smaller sword. */
+const SAKURA = [
+  { src: 'sakura-1.png', size: 18, radius: 52, rest: 24,   dur: 30, delay: -6,  dir: 1,  opacity: .6,  wobble: 11, wdelay: -2.1, wrot: 14 },
+  { src: 'sakura-2.png', size: 14, radius: 38, rest: 151,  dur: 24, delay: -15, dir: -1, opacity: .52, wobble: 9,  wdelay: -4.6, wrot: -12 },
+  { src: 'sakura-3.png', size: 14, radius: 60, rest: 283,  dur: 27, delay: -3,  dir: 1,  opacity: .58, wobble: 12, wdelay: -7.3, wrot: 10 },
+  { src: 'sakura-4.png', size: 15, radius: 30, rest: 74,   dur: 21, delay: -9,  dir: -1, opacity: .48, wobble: 8,  wdelay: -1.2, wrot: -16 },
+  { src: 'sakura-5.png', size: 15, radius: 48, rest: 337,  dur: 26, delay: -19, dir: 1,  opacity: .55, wobble: 10, wdelay: -5.9, wrot: 12 },
+  { src: 'sakura-6.png', size: 13, radius: 34, rest: 102,  dur: 29, delay: -12, dir: -1, opacity: .5,  wobble: 13, wdelay: -8.4, wrot: -10 },
+  { src: 'sakura-7.png', size: 14, radius: 56, rest: 205,  dur: 23, delay: -5,  dir: 1,  opacity: .54, wobble: 9,  wdelay: -3.4, wrot: 15 },
+  { src: 'sakura-8.png', size: 11, radius: 26, rest: 260,  dur: 18, delay: -22, dir: -1, opacity: .45, wobble: 8,  wdelay: -6.7, wrot: -14 },
+];
 
 export function HeroKatana() {
   const reduce = useReducedMotion() === true;
   const { scrollY } = useScroll();
-  const scrollDrift = useTransform(scrollY, [0, 720], [0, 64]);
-  const scrollTilt = useTransform(scrollY, [0, 720], [0, 5]);
-  const scrollFade = useTransform(scrollY, [0, 720], [1, 0.2]);
-  const [sheenPlayed, setSheenPlayed] = useState(false);
-
-  useEffect(() => {
-    if (reduce) return;
-    const timer = window.setTimeout(() => setSheenPlayed(true), 1050);
-    return () => window.clearTimeout(timer);
-  }, [reduce]);
+  // Scroll-linked parallax: the backdrop drifts up and fades slightly faster
+  // than the page, deepening the layer separation. Transform/opacity only.
+  const scrollDrift = useTransform(scrollY, [0, 720], [0, -26]);
+  const scrollFade = useTransform(scrollY, [0, 720], [1, 0.3]);
 
   return (
-    <div className="katana-frame" aria-hidden="true" data-testid="hero-katana">
+    <div className="katana-backdrop" aria-hidden="true" data-testid="hero-katana">
       <motion.div
         className="katana-scroll"
-        style={reduce ? undefined : { y: scrollDrift, rotate: scrollTilt, opacity: scrollFade }}
+        style={reduce ? undefined : { y: scrollDrift, opacity: scrollFade }}
       >
         <motion.div
-          className={`katana-entrance${sheenPlayed ? ' sheen-play' : ''}`}
-          initial={reduce ? { opacity: 1 } : { x: 72, y: -34, rotate: -19, opacity: 0 }}
-          animate={{ x: 0, y: 0, rotate: -14, opacity: 1 }}
-          transition={reduce ? { duration: 0 } : { duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="katana-appear"
+          initial={reduce ? { opacity: 1 } : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={reduce ? { duration: 0 } : { duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
         >
-          <div className="katana-idle">
-            <KatanaBlade />
+          <div className="katana-tilt">
+            <img className="katana-ink" src={KATANA_INK_SRC} alt="" draggable={false} />
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Sakura ring: each sprite circles the katana's center point on its
+          own ring (orbit + matched counter-rotation keeps it upright; a slow
+          wobble on the sprite keeps it alive). CSS transforms only. */}
+      <div className="katana-orbits">
+        {SAKURA.map(p => (
+          <span
+            key={p.src}
+            className="katana-orbit"
+            style={{
+              '--orbit-dur': `${p.dur}s`,
+              '--orbit-delay': `${p.delay}s`,
+              '--orbit-dir': p.dir,
+            } as React.CSSProperties}
+          >
+            <span
+              className="katana-orbit-arm"
+              style={{
+                '--orbit-r': `${p.radius}px`,
+                '--orbit-rest': `${p.rest}deg`,
+              } as React.CSSProperties}
+            >
+              <span
+                className="katana-orbit-counter"
+                style={{
+                  '--orbit-dur': `${p.dur}s`,
+                  '--orbit-delay': `${p.delay}s`,
+                  '--orbit-dir': p.dir,
+                } as React.CSSProperties}
+              >
+                <img
+                  className="katana-petal"
+                  src={`${import.meta.env.BASE_URL}${p.src}`}
+                  alt=""
+                  draggable={false}
+                  style={{
+                    width: p.size,
+                    opacity: p.opacity,
+                    '--wobble-dur': `${p.wobble}s`,
+                    '--wobble-delay': `${p.wdelay}s`,
+                    '--wobble-rot': `${p.wrot}deg`,
+                  } as React.CSSProperties}
+                />
+              </span>
+            </span>
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -163,3 +189,4 @@ export function CursorSlash() {
 
   return <div ref={layerRef} className="cursor-slash-layer" aria-hidden="true" />;
 }
+
