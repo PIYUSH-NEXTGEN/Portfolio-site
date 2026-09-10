@@ -233,37 +233,16 @@
 .magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
-/* Katana backdrop: the sword cut-out (public/katana-ink.png — white removed,
-   border cropped, tinted warm umber by scripts/process-katana.mjs) sits in the
-   EMPTY BACKGROUND SPACE above and to the side of the portrait frame — never
-   touching or crossing the frame's edges. It is strictly behind the frame in
-   z-order, low opacity with a multiply blend so it reads as a warm watermark
-   on the cream paper. rotate(34.6deg) lands the asset's natural -48.6deg axis
-   at -14deg — tsuka LEFT, kissaki up-RIGHT. Hidden below the lg breakpoint
-   where the single-column layout has no safe empty space around the portrait. */
+/* Sakura backdrop: the flower sprites (public/sakura-*.png) orbit the empty
+   background space above/right of the portrait frame — never touching or
+   crossing the frame's edges. Strictly behind the frame in z-order, low
+   opacity so they read as a warm watermark on the cream paper. Hidden below
+   the lg breakpoint where the single-column layout has no safe empty space. */
 .katana-hero { position: relative; }
 .katana-backdrop {
-  --katana-cx: 94%; /* katana center x = right:6% → left:94% */
-  --katana-cy: 8%;  /* katana center y */
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-}
-.katana-scroll, .katana-appear {
-  position: absolute; inset: 0; will-change: transform, opacity;
-}
-.katana-tilt {
-  --katana-tilt: 34.6deg;
-  position: absolute; left: var(--katana-cx); top: var(--katana-cy);
-  width: clamp(120px, 14vw, 170px);
-  transform: translate(-50%, -50%) rotate(var(--katana-tilt));
-}
-.katana-ink {
-  display: block; width: 100%; height: auto;
-  opacity: .22; mix-blend-mode: multiply;
-  animation: katana-float 13s ease-in-out 2s infinite;
-}
-@keyframes katana-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -7px; }
+  --katana-cx: 94%; /* flower cluster center x — top-right corner, empty space */
+  --katana-cy: 8%;  /* flower cluster center y — above the portrait frame */
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
 }
 @media (max-width: 1023px) {
   .katana-backdrop { display: none; }
