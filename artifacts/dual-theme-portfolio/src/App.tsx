@@ -6,7 +6,6 @@ import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, HeroKatana, SlashDivider } from '@/components/Katana';
-import { AnimatedPortrait } from '@/components/PortraitWind';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -99,6 +98,7 @@ function FallingLeaves() {
 
 function HeroPhoto() {
   const defaultPhoto = `${import.meta.env.BASE_URL}image.png`;
+  const defaultGif = `${import.meta.env.BASE_URL}profilepicture.gif`;
   const [photo, setPhoto] = useState<string | null>(defaultPhoto);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -119,9 +119,10 @@ function HeroPhoto() {
           aria-label="Change hero photo"
           title="Click to change photo"
         >
-          {photo === defaultPhoto
-            ? <AnimatedPortrait />
-            : <img src={photo} alt="Profile photo" />}
+          <img
+            src={photo === defaultPhoto ? defaultGif : photo}
+            alt="Profile photo"
+          />
         </button>
       ) : (
         <button
@@ -198,10 +199,12 @@ function Hero() {
           <span className="mono text-[10px] uppercase tracking-[.18em]">Based in Bengaluru, India</span><span className="h-px w-14 bg-current" /><span className="mono text-[10px] uppercase tracking-[.18em]">Available for select work</span>
         </Reveal>
       </div>
-      <HeroKatana />
-      <Reveal className="hero-photo-wrap relative min-h-[300px] sm:min-h-[380px]" delay={160}>
-        <HeroPhoto />
-      </Reveal>
+      <div className="katana-hero-photo">
+        <HeroKatana />
+        <Reveal className="hero-photo-wrap relative min-h-[300px] sm:min-h-[380px]" delay={160}>
+          <HeroPhoto />
+        </Reveal>
+      </div>
     </section>
   );
 }

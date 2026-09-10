@@ -1,42 +1,65 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 /**
- * Sakura backdrop for the hero — derived from the uploaded asset
+ * Katana + sakura backdrop for the hero — derived from the uploaded asset
  * (public/katana.png) via scripts/process-katana.mjs, which cuts the border
  * frame, removes the white background and splits the artwork into:
  *
+ *   public/katana-ink.png  — the sword alone (transparent, warm-umber ink)
  *   public/sakura-<n>.png  — each detached petal / flower as its own sprite
  *
- * The sakura sprites orbit the empty background space above/right of the
- * portrait frame on slow, varied rings — a quiet watermark on the cream paper.
+ * Layout guarantee: the backdrop lives INSIDE the right-column wrapper
+ * (.katana-hero-photo) in a reserved strip ABOVE the portrait frame — the
+ * frame sits below it (margin-top reserves the space), so the sword can never
+ * touch or cross the frame's edges by construction. z-index 0 keeps it strictly
+ * behind the photo slot (z-index 1). It renders at ~20% opacity with a multiply
+ * blend so it reads as a warm watermark on the cream paper, rotated so the
+ * asset's natural axis lands at -14deg — tsuka LEFT, kissaki up-RIGHT.
+ * Hidden below the lg breakpoint where the single-column layout has no safe
+ * empty space around the portrait.
  */
+const KATANA_INK_SRC = `${import.meta.env.BASE_URL}katana-ink.png`;
 
-/** Sakura ring — sizes/radii tuned to hug the COMPACT katana watermark
- *  (120-170px wide, centered top-right at --katana-cx/cy). Petals circle the
- *  blade's center point on tight rings that stay in the empty background
- *  space above/right of the portrait — radii scaled to the smaller sword. */
+/** Sakura ring — tight orbits around the blade's center point. Original sizes
+ *  and opacities, balanced against the ~20% katana watermark. */
 const SAKURA = [
-  { src: 'sakura-1.png', size: 28, radius: 52, rest: 24,   dur: 30, delay: -6,  dir: 1,  opacity: .8,  wobble: 11, wdelay: -2.1, wrot: 14 },
-  { src: 'sakura-2.png', size: 22, radius: 38, rest: 151,  dur: 24, delay: -15, dir: -1, opacity: .72, wobble: 9,  wdelay: -4.6, wrot: -12 },
-  { src: 'sakura-3.png', size: 22, radius: 60, rest: 283,  dur: 27, delay: -3,  dir: 1,  opacity: .78, wobble: 12, wdelay: -7.3, wrot: 10 },
-  { src: 'sakura-4.png', size: 24, radius: 30, rest: 74,   dur: 21, delay: -9,  dir: -1, opacity: .68, wobble: 8,  wdelay: -1.2, wrot: -16 },
-  { src: 'sakura-5.png', size: 24, radius: 48, rest: 337,  dur: 26, delay: -19, dir: 1,  opacity: .75, wobble: 10, wdelay: -5.9, wrot: 12 },
-  { src: 'sakura-6.png', size: 20, radius: 34, rest: 102,  dur: 29, delay: -12, dir: -1, opacity: .7,  wobble: 13, wdelay: -8.4, wrot: -10 },
-  { src: 'sakura-7.png', size: 22, radius: 56, rest: 205,  dur: 23, delay: -5,  dir: 1,  opacity: .74, wobble: 9,  wdelay: -3.4, wrot: 15 },
-  { src: 'sakura-8.png', size: 18, radius: 26, rest: 260,  dur: 18, delay: -22, dir: -1, opacity: .65, wobble: 8,  wdelay: -6.7, wrot: -14 },
+  { src: 'sakura-1.png', size: 18, radius: 52, rest: 24,   dur: 30, delay: -6,  dir: 1,  opacity: .6,  wobble: 11, wdelay: -2.1, wrot: 14 },
+  { src: 'sakura-2.png', size: 14, radius: 38, rest: 151,  dur: 24, delay: -15, dir: -1, opacity: .52, wobble: 9,  wdelay: -4.6, wrot: -12 },
+  { src: 'sakura-3.png', size: 14, radius: 60, rest: 283,  dur: 27, delay: -3,  dir: 1,  opacity: .58, wobble: 12, wdelay: -7.3, wrot: 10 },
+  { src: 'sakura-4.png', size: 15, radius: 30, rest: 74,   dur: 21, delay: -9,  dir: -1, opacity: .48, wobble: 8,  wdelay: -1.2, wrot: -16 },
+  { src: 'sakura-5.png', size: 15, radius: 48, rest: 337,  dur: 26, delay: -19, dir: 1,  opacity: .55, wobble: 10, wdelay: -5.9, wrot: 12 },
+  { src: 'sakura-6.png', size: 13, radius: 34, rest: 102,  dur: 29, delay: -12, dir: -1, opacity: .5,  wobble: 13, wdelay: -8.4, wrot: -10 },
+  { src: 'sakura-7.png', size: 14, radius: 56, rest: 205,  dur: 23, delay: -5,  dir: 1,  opacity: .54, wobble: 9,  wdelay: -3.4, wrot: 15 },
+  { src: 'sakura-8.png', size: 11, radius: 26, rest: 260,  dur: 18, delay: -22, dir: -1, opacity: .45, wobble: 8,  wdelay: -6.7, wrot: -14 },
 ];
 
 export function HeroKatana() {
   const reduce = useReducedMotion() === true;
   const { scrollY } = useScroll();
-  // Scroll-linked parallax: the sakura drift up and fade slightly faster
+  // Scroll-linked parallax: the backdrop drifts up and fades slightly faster
   // than the page, deepening the layer separation. Transform/opacity only.
   const scrollDrift = useTransform(scrollY, [0, 720], [0, -26]);
   const scrollFade = useTransform(scrollY, [0, 720], [1, 0.3]);
 
   return (
     <div className="katana-backdrop" aria-hidden="true" data-testid="hero-katana">
+      <motion.div
+        className="katana-scroll"
+        style={reduce ? undefined : { y: scrollDrift, opacity: scrollFade }}
+      >
+        <motion.div
+          className="katana-appear"
+          initial={reduce ? { opacity: 1 } : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={reduce ? { duration: 0 } : { duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.35 }}
+        >
+          <div className="katana-tilt">
+            <img className="katana-ink" src={KATANA_INK_SRC} alt="" draggable={false} />
+          </div>
+        </motion.div>
+      </motion.div>
+
       {/* Sakura ring: each sprite circles the katana's center point on its
           own ring (orbit + matched counter-rotation keeps it upright; a slow
           wobble on the sprite keeps it alive). CSS transforms only. */}

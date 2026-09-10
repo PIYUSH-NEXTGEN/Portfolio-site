@@ -233,82 +233,74 @@
 .magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
-/* Sakura backdrop: the flower sprites (public/sakura-*.png) orbit the empty
-   background space above/right of the portrait frame — never touching or
-   crossing the frame's edges. Strictly behind the frame in z-order, low
-   opacity so they read as a warm watermark on the cream paper. Hidden below
-   the lg breakpoint where the single-column layout has no safe empty space. */
+/* Katana backdrop: the sword cut-out (public/katana-ink.png — white removed,
+   border cropped, tinted warm umber by scripts/process-katana.mjs) sits in a
+   RESERVED STRIP above the portrait frame — never touching or crossing the
+   frame's edges. .katana-hero-photo is the positioning context; the frame's
+   top margin reserves the strip, so separation holds by construction at every
+   breakpoint. The backdrop is strictly behind the frame in z-order (0 vs 1),
+   low opacity with a multiply blend so it reads as a warm watermark on the
+   cream paper. rotate(34.6deg) lands the asset's natural -48.6deg axis at
+   -14deg — tsuka LEFT, kissaki up-RIGHT. The sakura ring orbits the blade
+   centre on tight rings inside the same strip. Hidden below the lg breakpoint
+   where the single-column layout has no safe empty space around the portrait. */
 .katana-hero { position: relative; }
+.katana-hero-photo { position: relative; }
+/* Reserve the empty strip on lg+ only (the backdrop is hidden below lg, so no
+   gap is reserved there): frame starts 190px below the column top; strip is
+   the top 170px of that gap. The katana (max 140px wide, rotated bbox ~175px
+   wide × ~189px tall, centred at 74px) ends ~169px — clears the frame by ~21px;
+   the widest petal orbit (60px r + 9px half-sprite) ends ~143px. */
+.katana-hero-photo .hero-photo-wrap { position: relative; z-index: 1; }
+@media (min-width: 1024px) {
+  .katana-hero-photo .hero-photo-wrap { margin-top: 190px; }
+}
 .katana-backdrop {
-  --katana-cx: 94%; /* flower cluster center x — top-right corner, empty space */
-  --katana-cy: 8%;  /* flower cluster center y — above the portrait frame */
-  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  position: absolute; left: 0; right: 0; top: 0; height: 170px; z-index: 0;
+  pointer-events: none; overflow: visible;
+  --katana-cx: 50%; /* blade centre x within the strip */
+  --katana-cy: 74px; /* blade centre y within the strip */
+}
+.katana-scroll, .katana-appear {
+  position: absolute; inset: 0; will-change: transform, opacity;
+}
+.katana-tilt {
+  --katana-tilt: 34.6deg;
+  position: absolute; left: var(--katana-cx); top: var(--katana-cy);
+  width: clamp(110px, 12vw, 140px);
+  transform: translate(-50%, -50%) rotate(var(--katana-tilt));
+}
+.katana-ink {
+  display: block; width: 100%; height: auto;
+  opacity: .22; mix-blend-mode: multiply;
+  animation: katana-float 13s ease-in-out 2s infinite;
+}
+@keyframes katana-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
 }
 @media (max-width: 1023px) {
   .katana-backdrop { display: none; }
 }
 
-/* ── Animated portrait: "wind in the hair" ──────────────────────────────
-   Layers produced by scripts/slice-portrait.mjs: a static base (strands
-   erased) + 4 transparent strand sprites, each exported as 3 frames — rest,
-   f1 (gentle lift) and f2 (full sway). Motion uses TRUE frame-stepped pixel
-   animation: the frames swap on whole-pixel positions with instant (stepped)
-   transitions, NEVER tweened — so the pixel grid is never broken and there
-   is zero smear, stretch or interpolation artifact. The cycle is rest → f1 →
-   f2 → f1 → rest (a gentle sway). Per-strand duration/delay variance
-   desynchronises the layers. Paused off-screen, static under reduced motion. */
+/* ── Hero portrait: animated GIF ───────────────────────────────────────
+   The default hero portrait is public/profilepicture.gif (540x376, 22
+   frames), rendered as a plain <img>. It is sized by the generic
+   .theme-editorial .hero-photo-filled img rules (object-fit contain,
+   top-centred, #111 backdrop) exactly like an uploaded photo. */
 .hero-photo-filled { position: relative; }
-.portrait-wind {
-  position: absolute; inset: 0;
-  display: flex; align-items: flex-start; justify-content: center;
-  pointer-events: none;
-}
-.portrait-canvas {
-  position: relative;
-  height: 100%; max-width: 100%;
-  aspect-ratio: 568 / 570;
-}
-.portrait-base { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
-.portrait-strand {
-  position: absolute;
-  height: auto;
-  image-rendering: pixelated;
-}
-/* Each strand layer stacks its 3 frames at the same geometry; keyframes
-   cross-fade exactly one frame visible at a time. animation-timing-function
-   steps(4, end) splits the cycle into 4 equal steps with INSTANT jumps (no
-   tween) for crisp pixel-art frame stepping. Cycle: rest(0-25%) → f1(25-50%)
-   → f2(50-75%) → f1(75-100%) → rest — a gentle sway. */
-.portrait-strand-frame {
-  position: absolute; inset: 0;
-  width: 100%; height: auto;
-  image-rendering: pixelated;
-  animation-timing-function: steps(4, end);
-  animation-iteration-count: infinite;
-  will-change: opacity;
-}
-.frame-rest { animation-name: hair-step-rest; }
-.frame-f1   { animation-name: hair-step-f1; opacity: 0; }
-.frame-f2   { animation-name: hair-step-f2; opacity: 0; }
-
-@keyframes hair-step-rest { 0% { opacity:1 } 25% { opacity:0 } 50% { opacity:0 } 75% { opacity:0 } }
-@keyframes hair-step-f1   { 0% { opacity:0 } 25% { opacity:1 } 50% { opacity:0 } 75% { opacity:1 } }
-@keyframes hair-step-f2   { 0% { opacity:0 } 25% { opacity:0 } 50% { opacity:1 } 75% { opacity:0 } }
-
-/* neutralise the generic .hero-photo-filled img rules inside the layered portrait */
-.theme-editorial .hero-photo-filled .portrait-wind img {
-  min-height: 0; max-height: none; background: transparent;
-  object-fit: fill; object-position: auto;
-}
-.portrait-wind[data-paused='true'] .portrait-strand-frame { animation-play-state: paused; }
 
 /* Sakura ring: sprites cut from the original asset (public/sakura-*.png)
-   orbit the katana's center point on slow, varied rings. Orbit rotation +
+   orbit the katana's center point on slow, varied rings INSIDE the reserved
+   170px strip above the portrait frame. The orbit origin is the strip-centred
+   --katana-cx/--katana-cy (50% / 74px of the backdrop), with radii ≤ 60px and
+   sprite sizes ≤ 18px — the farthest pixel stays ~27px above the frame's top
+   edge, so petals can never drift onto the portrait. Orbit rotation +
    matched counter-rotation keep each petal upright while it circles; a slow
    wobble on the sprite keeps it alive. Transform/opacity only — GPU-safe. */
-.katana-orbits { position: absolute; inset: 0; }
+.katana-orbits { position: absolute; inset: 0; overflow: visible; }
 .katana-orbit {
-  position: absolute; left: var(--katana-cx, 50%); top: var(--katana-cy, 8%); width: 0; height: 0;
+  position: absolute; left: var(--katana-cx, 50%); top: var(--katana-cy, 74px); width: 0; height: 0;
   animation: katana-orbit-spin var(--orbit-dur) ease-in-out var(--orbit-delay) infinite;
 }
 .katana-orbit-arm {
@@ -389,20 +381,15 @@
   .theme-editorial .hero-photo-filled,
   .theme-editorial .hero-photo-filled img { min-height: 260px; }
   .theme-editorial .hero-photo-filled img { max-height: 380px; }
-  .katana-tilt { width: 56%; }
-  .katana-orbits { transform: scale(.7); transform-origin: 50% var(--katana-cy, 5%); }
   .deco-branch-tl { top: 56px; left: -80px; width: 170px; opacity: .5; }
   .deco-branch-tr, .deco-branch-bl { display: none; }
   .theme-editorial .contact-section .section-wrap { padding-right: 0; }
   .deco-bamboo { display: none; }
 }
 @media (max-width: 520px) {
-  /* Too tight for the orbit ring — keep only the katana accent. */
-  .katana-orbits { display: none; }
-  .katana-tilt { width: 64%; }
+  .theme-editorial .editorial-hero { padding-top: 88px; }
 }
 @media (min-width: 768px) and (max-width: 1100px) {
-  .katana-tilt { width: 86%; }
   .deco-branch-tl { width: 220px; }
   .deco-branch-tr { width: 200px; }
   .deco-branch-bl { display: none; }
@@ -490,7 +477,6 @@
   .reveal { opacity: 1; transform: none; }
   .falling-leaves { display: none; }
   .katana-ink, .katana-orbit, .katana-orbit-counter, .katana-petal { animation: none; }
-  .portrait-strand { animation: none; }
   .cursor-slash-layer { display: none; }
   .deco-bamboo .bamboo-stem-sway,
   .deco-bamboo .bamboo-leaf { animation: none; }
