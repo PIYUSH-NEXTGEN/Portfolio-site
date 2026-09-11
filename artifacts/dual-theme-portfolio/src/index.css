@@ -521,15 +521,26 @@
   position: absolute; top: 0; left: -0.5px; width: 1px; height: 42px;
   background: currentColor; opacity: .4;
 }
-/* Hanging katana — the SAME sword as the hero background katana, but from a
+/* Hanging katana — the SAME sword as the hero background katana, from a
    dedicated pre-rotated, tight-cropped sprite (public/katana-hang.png: tip
    down, handle up, 138x621) so it renders as a real katana instead of a
-   diagonal sliver inside a square canvas (the old rotate() approach shrank
-   the visible blade to a pin). Hangs straight from the rope's end. */
+   diagonal sliver inside a square canvas. Rendered WITHOUT blend modes on
+   purpose: the sprite already carries the dark ink colour, and plain opacity
+   can never be isolated away by a parent stacking context (multiply can).
+   If the sprite ever fails to load, the component swaps to katana-ink.png
+   and .nav-katana-blade-fallback restores the old rotated rendering. */
 .nav-katana-blade {
-  position: absolute; top: 40px; left: 0; width: 30px; height: auto;
+  position: absolute; top: 40px; left: 0; width: 34px; height: auto;
+  max-width: none; /* Tailwind preflight's img{max-width:100%} resolves
+                      against the 0px-wide swing pivot and collapses the
+                      sword to 0x0 — this restores its real size */
   transform: translateX(-50%);
-  mix-blend-mode: multiply; opacity: .6;
+  opacity: .85;
+}
+.nav-katana-blade-fallback {
+  width: 48px; top: 74px;
+  transform: translate(-50%, -50%) rotate(138.6deg);
+  mix-blend-mode: multiply;
 }
 @keyframes nav-katana-sway {
   from { transform: rotate(11deg); }

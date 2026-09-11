@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 /**
@@ -115,16 +115,19 @@ export function HeroKatana() {
 }
 
 export function NavKatana() {
+  const [src, setSrc] = useState(KATANA_HANG_SRC);
+  const fallback = src !== KATANA_HANG_SRC;
   return (
     <div className="nav-katana" aria-hidden="true" data-testid="nav-katana">
       <div className="nav-katana-swing">
         <span className="nav-katana-pin" />
         <span className="nav-katana-rope" />
         <img
-          className="nav-katana-blade"
-          src={KATANA_HANG_SRC}
+          className={`nav-katana-blade${fallback ? ' nav-katana-blade-fallback' : ''}`}
+          src={src}
           alt=""
           draggable={false}
+          onError={() => setSrc(KATANA_INK_SRC)}
         />
       </div>
     </div>
