@@ -53,7 +53,7 @@ export function DecorativeBranches() {
         <BranchSpray />
       </motion.div>
       <motion.div className="deco-branch-tr" style={reduce ? undefined : { y: driftB }}>
-        <BranchSpray flip />
+        <BranchSpray />
       </motion.div>
       <motion.div className="deco-branch-bl" style={reduce ? undefined : { y: driftB }}>
         <BranchSpray flip />

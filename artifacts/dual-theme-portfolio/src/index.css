@@ -145,7 +145,7 @@
 .theme-editorial .button-quiet:hover { background: rgba(255,255,255,.25); transform: translateY(-2px); }
 .theme-editorial .accent-stamp { color: #c84d3d; border: 1px solid #c84d3d; transform: rotate(-4deg); }
 .theme-editorial .section-title { font-size: clamp(2.4rem, 5vw, 5rem); line-height: .9; }
-.theme-editorial .hero-photo-wrap { background: #d9c9ad; border: 1px solid var(--line); max-width: 400px; justify-self: end; width: 100%; }
+.theme-editorial .hero-photo-wrap { background: #d9c9ad; border: 1px solid var(--line); max-width: 320px; justify-self: end; width: 100%; }
 .theme-editorial .nav .section-wrap { padding-top: 6px; padding-bottom: 6px; }
 .theme-editorial .nav-link { position: relative; padding: 6px 2px; }
 .theme-editorial .nav-link::after {
@@ -153,13 +153,28 @@
   background: currentColor; transition: right .25s ease;
 }
 .theme-editorial .nav-link:hover::after { right: 0; }
+/* Navbar social icon pills — brand slide-up hover (Font Awesome–style):
+   white disc at rest; on hover a brand-coloured disc slides up from the bottom
+   while the logo rotates a full turn and turns white. --brand set per link. */
 .theme-editorial .social-link {
+  position: relative; overflow: hidden; z-index: 1;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 999px;
-  color: inherit; opacity: .75; transition: transform .22s ease, opacity .22s ease, background-color .22s ease, color .22s ease;
+  width: 30px; height: 30px;
+  background: #fff; border: 1px solid rgba(32, 42, 54, .28); border-radius: 999px;
+  color: #202a36; opacity: .85;
+  transition: transform .25s ease, opacity .25s ease, border-color .25s ease;
 }
-.theme-editorial .social-link:hover { opacity: 1; transform: translateY(-2px); background: #f7cd9c; border-color: #f0ae78; color: #4a2f16; }
-.theme-editorial .social-link svg { display: block; }
+.theme-editorial .social-link svg { position: relative; z-index: 3; display: block; transition: color .45s ease, transform .45s ease; }
+.theme-editorial .social-link::before {
+  content: ''; position: absolute; top: 100%; left: 0;
+  width: 100%; height: 100%;
+  background: var(--brand, #000); border-radius: inherit;
+  transition: top .35s ease;
+  z-index: 2;
+}
+.theme-editorial .social-link:hover { opacity: 1; transform: translateY(-2px); border-color: var(--brand, #000); }
+.theme-editorial .social-link:hover svg { color: #fff; transform: rotateY(360deg); }
+.theme-editorial .social-link:hover::before { top: 0; }
 .theme-editorial .hero-art .orb { background: #c84d3d; box-shadow: 26px 22px 0 #f0ae78; }
 .theme-editorial .footer { background: #202a36; color: #ece4d3; }
 .theme-editorial .editorial-hero { position: relative; }
@@ -170,7 +185,7 @@
 }
 .theme-editorial .hero-photo-slot { position: absolute; inset: 12px; }
 .theme-editorial .hero-photo-empty {
-  width: 100%; height: 100%; min-height: 300px;
+  width: 100%; height: 100%; min-height: 240px;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   background:
     linear-gradient(rgba(32,42,54,.055) 1px, transparent 1px),
@@ -189,8 +204,8 @@
 .hero-photo-title { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
 .hero-photo-sub { font-size: 13px; opacity: .7; }
 .hero-photo-hint { font-size: 9px; letter-spacing: .18em; opacity: .55; border: 1px solid rgba(58,68,81,.35); padding: 4px 8px; }
-.theme-editorial .hero-photo-filled { width: 100%; height: 100%; min-height: 300px; padding: 0; border: 0; cursor: pointer; background: #111; }
-.theme-editorial .hero-photo-filled img { width: 100%; height: 100%; min-height: 300px; max-height: 440px; object-fit: contain; object-position: center top; display: block; background: #111; }
+.theme-editorial .hero-photo-filled { width: 100%; height: 100%; min-height: 240px; padding: 0; border: 0; cursor: pointer; background: #111; }
+.theme-editorial .hero-photo-filled img { width: 100%; height: 100%; min-height: 240px; max-height: 340px; object-fit: contain; object-position: center top; display: block; background: #111; }
 .skills-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -288,8 +303,8 @@
   .theme-editorial .hero-photo-slot { inset: 8px; }
   .theme-editorial .hero-photo-empty,
   .theme-editorial .hero-photo-filled,
-  .theme-editorial .hero-photo-filled img { min-height: 260px; }
-  .theme-editorial .hero-photo-filled img { max-height: 380px; }
+  .theme-editorial .hero-photo-filled img { min-height: 210px; }
+  .theme-editorial .hero-photo-filled img { max-height: 300px; }
   .deco-branch-tl { top: 56px; left: -80px; width: 170px; opacity: .5; }
   .deco-branch-tr, .deco-branch-bl { display: none; }
   .theme-editorial .contact-section .section-wrap { padding-right: 0; }
@@ -310,9 +325,8 @@
 .deco-branches { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .deco-branches > div { position: absolute; color: rgba(32, 42, 54, .2); }
 .deco-branch svg { display: block; width: 100%; height: auto; overflow: visible; }
-.deco-branch.flip { transform: scaleX(-1); }
 .deco-branch-tl { top: 64px; left: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
-.deco-branch-tr { top: 120px; right: -52px; width: clamp(170px, 19vw, 280px); opacity: .7; }
+.deco-branch-tr { top: 120px; right: 0; width: clamp(170px, 19vw, 280px); opacity: .7; }
 .deco-branch-bl { top: 46%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
 .site-shell > header,
 .site-shell > section,
@@ -390,21 +404,22 @@
   .deco-bamboo .bamboo-leaf { animation: none; }
 }
 
-/* Branches sway in the wind. The horizontal flip uses the independent `scale`
-   property and the sway uses the independent `rotate` property so the two
+/* Branches bob vertically (top → bottom) for a natural, downward flow. The horizontal flip uses the independent `scale`
+   property and the motion uses the independent `rotate`/`translate` properties so the two
    compose without overwriting each other — embedding scaleX(-1) inside the
    keyframes' `transform` shifted the mirrored artwork (pivot was no longer at
    its mirrored root) and exposed the cut end of the right-hand branch. */
-.deco-branch { transform-origin: 50% 96%; animation: branch-sway 7.6s ease-in-out infinite; will-change: rotate; }
-.deco-branch.flip { scale: -1 1; animation-duration: 8.8s; }
+.deco-branch { transform-origin: 50% 96%; animation: branch-sway 5.2s ease-in-out infinite; will-change: rotate, translate; }
+.deco-branch.flip { scale: -1 1; animation-duration: 5.8s; }
 .deco-branch-tl .deco-branch { animation-delay: -1.4s; }
-.deco-branch-tr .deco-branch { animation-delay: -3.1s; animation-duration: 6.9s; }
-.deco-branch-bl .deco-branch { animation-delay: -5.2s; animation-duration: 9.4s; }
+.deco-branch-tr .deco-branch { animation-delay: -3.1s; animation-duration: 4.8s; }
+.deco-branch-bl .deco-branch { animation-delay: -5.2s; animation-duration: 6.2s; }
 @keyframes branch-sway {
-  0%, 100% { rotate: 0deg; }
-  28% { rotate: 1.5deg; }
-  56% { rotate: -1.1deg; }
-  80% { rotate: 0.7deg; }
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  18% { rotate: 1.4deg; translate: 0 4px; }
+  42% { rotate: -0.9deg; translate: 0 8px; }
+  62% { rotate: 1.8deg; translate: 0 10px; }
+  82% { rotate: -0.6deg; translate: 0 4px; }
 }
 
 /* Katana hanging from the ENDING LINE (bottom edge) of the navbar — a small
@@ -421,7 +436,7 @@
 .nav-katana-swing {
   position: absolute; top: 0; left: 50%; width: 0; height: 0;
   transform-origin: 50% 0;
-  animation: nav-katana-sway 3.4s ease-in-out -0.6s infinite alternate;
+  animation: nav-katana-sway 2.2s ease-in-out -0.6s infinite alternate;
 }
 .nav-katana-rope {
   position: absolute; top: 0; left: 3.5px; width: 1px; height: 46px;

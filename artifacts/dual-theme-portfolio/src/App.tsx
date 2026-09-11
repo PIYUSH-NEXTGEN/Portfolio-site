@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Code2, Cpu, Layers3, Menu, Terminal, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
@@ -52,12 +52,12 @@ const projects = [
 ];
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com', Icon: FaGithub, testId: 'link-nav-github' },
-  { label: 'LinkedIn', href: 'https://linkedin.com', Icon: FaLinkedin, testId: 'link-nav-linkedin' },
-  { label: 'X (Twitter)', href: 'https://x.com', Icon: FaXTwitter, testId: 'link-nav-x' },
-  { label: 'Peerlist', href: 'https://peerlist.io', Icon: SiPeerlist, testId: 'link-nav-peerlist' },
-  { label: 'LeetCode', href: 'https://leetcode.com', Icon: SiLeetcode, testId: 'link-nav-leetcode' },
-  { label: 'dev.to', href: 'https://dev.to', Icon: FaDev, testId: 'link-nav-devto' },
+  { label: 'GitHub', href: 'https://github.com', Icon: FaGithub, testId: 'link-nav-github', color: '#24292e' },
+  { label: 'LinkedIn', href: 'https://linkedin.com', Icon: FaLinkedin, testId: 'link-nav-linkedin', color: '#0077b5' },
+  { label: 'X (Twitter)', href: 'https://x.com', Icon: FaXTwitter, testId: 'link-nav-x', color: '#000000' },
+  { label: 'Peerlist', href: 'https://peerlist.io', Icon: SiPeerlist, testId: 'link-nav-peerlist', color: '#00aa45' },
+  { label: 'LeetCode', href: 'https://leetcode.com', Icon: SiLeetcode, testId: 'link-nav-leetcode', color: '#ffa116' },
+  { label: 'dev.to', href: 'https://dev.to', Icon: FaDev, testId: 'link-nav-devto', color: '#000000' },
 ];
 
 const skills = [
@@ -160,8 +160,8 @@ function Header() {
     <header className="nav sticky top-0 z-20">
       <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2" aria-label="Social links">
-          {socialLinks.map(({ label, href, Icon, testId }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link">
+          {socialLinks.map(({ label, href, Icon, testId, color }) => (
+            <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link" style={{ '--brand': color } as CSSProperties}>
               <Icon size={18} />
             </a>
           ))}
@@ -187,7 +187,6 @@ function Hero() {
   return (
     <section id="top" className="section-anchor section-wrap editorial-hero katana-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
       <div className="katana-hero-content">
-        <Reveal className="mb-8" delay={0}><div className="mono flex items-center gap-3 text-[10px] uppercase tracking-[.2em] opacity-65"><span className="h-2 w-2 bg-current" /> Full-stack developer <span className="opacity-40">/</span> creative technologist</div></Reveal>
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">Digital craft</span><span className="serif block normal-case tracking-[-.05em]">built with</span><span className="block text-[.86em]">intent.</span></Reveal>
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[15px] leading-7 opacity-75" delay={160}>
           <strong className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">Alex Morgan</strong>
@@ -202,7 +201,7 @@ function Hero() {
         </Reveal>
       </div>
       <div className="katana-hero-photo">
-        <Reveal className="hero-photo-wrap relative min-h-[300px] sm:min-h-[380px]" delay={160}>
+        <Reveal className="hero-photo-wrap relative min-h-[240px] sm:min-h-[320px]" delay={160}>
           <HeroPhoto />
         </Reveal>
       </div>
