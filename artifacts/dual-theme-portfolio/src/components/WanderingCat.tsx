@@ -4,8 +4,8 @@ import { useReducedMotion } from 'framer-motion';
 /**
  * A tiny ink cat (the uploaded attached_assets/cat.png, processed into
  * public/cat.png) that lives IN THE BACKGROUND of the page — same layer
- * family as the branch decorations and the katana watermark (z-index 0,
- * multiply blend, low opacity).
+ * family as the branch decorations (z-index 0, multiply blend, low
+ * opacity).
  *
  * Behaviour, per request:
  * - It SCROLLS WITH the website: absolutely positioned inside the document

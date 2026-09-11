@@ -158,7 +158,7 @@
   width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 999px;
   color: inherit; opacity: .75; transition: transform .22s ease, opacity .22s ease, background-color .22s ease, color .22s ease;
 }
-.theme-editorial .social-link:hover { opacity: 1; transform: translateY(-2px); background: #e8b4c4; border-color: #d89aaf; color: #4a1f2c; }
+.theme-editorial .social-link:hover { opacity: 1; transform: translateY(-2px); background: #f7cd9c; border-color: #f0ae78; color: #4a2f16; }
 .theme-editorial .social-link svg { display: block; }
 .theme-editorial .hero-art .orb { background: #c84d3d; box-shadow: 26px 22px 0 #f0ae78; }
 .theme-editorial .footer { background: #202a36; color: #ece4d3; }
@@ -233,103 +233,12 @@
 .magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
-/* Katana backdrop: the sword cut-out (public/katana-ink.png — white removed,
-   border cropped, tinted warm umber by scripts/process-katana.mjs) sits in a
-   RESERVED STRIP above the portrait frame — never touching or crossing the
-   frame's edges. .katana-hero-photo is the positioning context; the frame's
-   top margin reserves the strip, so separation holds by construction at every
-   breakpoint. The backdrop is strictly behind the frame in z-order (0 vs 1),
-   low opacity with a multiply blend so it reads as a warm watermark on the
-   cream paper. rotate(34.6deg) lands the asset's natural -48.6deg axis at
-   -14deg — tsuka LEFT, kissaki up-RIGHT. The sakura ring orbits the blade
-   centre on tight rings inside the same strip. Hidden below the lg breakpoint
-   where the single-column layout has no safe empty space around the portrait. */
-.katana-hero { position: relative; }
-.katana-hero-photo { position: relative; }
-/* Reserve the empty strip on lg+ only (the backdrop is hidden below lg, so no
-   gap is reserved there): frame starts 190px below the column top; strip is
-   the top 170px of that gap. The katana (max 140px wide, rotated bbox ~175px
-   wide × ~189px tall, centred at 74px) ends ~169px — clears the frame by ~21px;
-   the widest petal orbit (60px r + 9px half-sprite) ends ~143px. */
-.katana-hero-photo .hero-photo-wrap { position: relative; z-index: 1; }
-@media (min-width: 1024px) {
-  .katana-hero-photo .hero-photo-wrap { margin-top: 190px; }
-}
-.katana-backdrop {
-  position: absolute; left: 0; right: 0; top: 0; height: 170px; z-index: 0;
-  pointer-events: none; overflow: visible;
-  --katana-cx: 50%; /* blade centre x within the strip */
-  --katana-cy: 74px; /* blade centre y within the strip */
-}
-.katana-scroll, .katana-appear {
-  position: absolute; inset: 0; will-change: transform, opacity;
-}
-.katana-tilt {
-  --katana-tilt: 34.6deg;
-  position: absolute; left: var(--katana-cx); top: var(--katana-cy);
-  width: clamp(110px, 12vw, 140px);
-  transform: translate(-50%, -50%) rotate(var(--katana-tilt));
-}
-.katana-ink {
-  display: block; width: 100%; height: auto;
-  opacity: .22; mix-blend-mode: multiply;
-  animation: katana-float 13s ease-in-out 2s infinite;
-}
-@keyframes katana-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -7px; }
-}
-@media (max-width: 1023px) {
-  .katana-backdrop { display: none; }
-}
-
 /* ── Hero portrait: animated GIF ───────────────────────────────────────
    The default hero portrait is public/profilepicture.gif (540x376, 22
    frames), rendered as a plain <img>. It is sized by the generic
    .theme-editorial .hero-photo-filled img rules (object-fit contain,
    top-centred, #111 backdrop) exactly like an uploaded photo. */
 .hero-photo-filled { position: relative; }
-
-/* Sakura ring: sprites cut from the original asset (public/sakura-*.png)
-   orbit the katana's center point on slow, varied rings INSIDE the reserved
-   170px strip above the portrait frame. The orbit origin is the strip-centred
-   --katana-cx/--katana-cy (50% / 74px of the backdrop), with radii ≤ 60px and
-   sprite sizes ≤ 18px — the farthest pixel stays ~27px above the frame's top
-   edge, so petals can never drift onto the portrait. Orbit rotation +
-   matched counter-rotation keep each petal upright while it circles; a slow
-   wobble on the sprite keeps it alive. Transform/opacity only — GPU-safe. */
-.katana-orbits { position: absolute; inset: 0; overflow: visible; }
-.katana-orbit {
-  position: absolute; left: var(--katana-cx, 50%); top: var(--katana-cy, 74px); width: 0; height: 0;
-  animation: katana-orbit-spin var(--orbit-dur) ease-in-out var(--orbit-delay) infinite;
-}
-.katana-orbit-arm {
-  position: absolute; left: 0; top: 0; width: 0; height: 0;
-  /* The rest angle is a phase offset while animating, and keeps the petals
-     scattered (not lined up in a row) when motion is turned off. */
-  transform: rotate(var(--orbit-rest, 0deg)) translateX(var(--orbit-r));
-}
-.katana-orbit-counter {
-  position: absolute; left: 0; top: 0; width: 0; height: 0;
-  animation: katana-orbit-counter var(--orbit-dur) ease-in-out var(--orbit-delay) infinite;
-}
-@keyframes katana-orbit-spin {
-  from { transform: rotate(calc(var(--orbit-dir) * 0deg)); }
-  to   { transform: rotate(calc(var(--orbit-dir) * 360deg)); }
-}
-@keyframes katana-orbit-counter {
-  from { transform: rotate(calc(var(--orbit-dir) * -360deg)); }
-  to   { transform: rotate(calc(var(--orbit-dir) * 0deg)); }
-}
-.katana-petal {
-  position: absolute; left: 0; top: 0; height: auto;
-  transform: translate(-50%, -50%);
-  animation: katana-petal-wobble var(--wobble-dur, 10s) ease-in-out var(--wobble-delay, 0s) infinite;
-}
-@keyframes katana-petal-wobble {
-  0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-  50% { transform: translate(-50%, -50%) rotate(var(--wobble-rot, 12deg)) scale(.9); }
-}
 
 /* Slash divider into Projects */
 .slash-divider { margin: 0 0 34px; }
@@ -476,7 +385,6 @@
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
   .falling-leaves { display: none; }
-  .katana-ink, .katana-orbit, .katana-orbit-counter, .katana-petal { animation: none; }
   .cursor-slash-layer { display: none; }
   .deco-bamboo .bamboo-stem-sway,
   .deco-bamboo .bamboo-leaf { animation: none; }
@@ -499,11 +407,13 @@
   80% { rotate: 0.7deg; }
 }
 
-/* Katana hanging from the ENDING LINE (bottom edge) of the navbar — pinned
-   just left of the Start-a-project button, rope + blade dangle below the bar
-   over the hero. The header is sticky (positioned), so `top: 100%` lands the
-   pin exactly on the navbar's bottom border line. Same katana asset as the
-   hero backdrop (public/katana-ink.png). */
+/* Katana hanging from the ENDING LINE (bottom edge) of the navbar — a small
+   sword (24px wide) just left of the Start-a-project button, rope + blade
+   dangle below the bar over the hero. The header is sticky (positioned), so
+   `top: 100%` lands the rope exactly on the navbar's bottom border line. The
+   rope is aligned with the handle's long axis (it sits ~16px right of the
+   sprite's geometric centre) and reaches the MIDDLE of the handle (tsuka),
+   not its corner. */
 .nav-katana {
   position: absolute; top: 100%; right: min(190px, 17vw);
   width: 42px; height: 104px; pointer-events: none; z-index: 25;
@@ -513,12 +423,8 @@
   transform-origin: 50% 0;
   animation: nav-katana-sway 3.4s ease-in-out -0.6s infinite alternate;
 }
-.nav-katana-pin {
-  position: absolute; top: -4px; left: -3.5px; width: 7px; height: 7px;
-  border-radius: 9999px; background: currentColor; opacity: .55;
-}
 .nav-katana-rope {
-  position: absolute; top: 0; left: -0.5px; width: 1px; height: 42px;
+  position: absolute; top: 0; left: 3.5px; width: 1px; height: 46px;
   background: currentColor; opacity: .4;
 }
 /* Hanging katana — the SAME sword as the hero background katana, from a
@@ -530,7 +436,7 @@
    If the sprite ever fails to load, the component swaps to katana-ink.png
    and .nav-katana-blade-fallback restores the old rotated rendering. */
 .nav-katana-blade {
-  position: absolute; top: 40px; left: 0; width: 34px; height: auto;
+  position: absolute; top: 34px; left: 0; width: 24px; height: auto;
   max-width: none; /* Tailwind preflight's img{max-width:100%} resolves
                       against the 0px-wide swing pivot and collapses the
                       sword to 0x0 — this restores its real size */
@@ -538,7 +444,7 @@
   opacity: .85;
 }
 .nav-katana-blade-fallback {
-  width: 48px; top: 74px;
+  width: 38px; top: 60px;
   transform: translate(-50%, -50%) rotate(138.6deg);
   mix-blend-mode: multiply;
 }

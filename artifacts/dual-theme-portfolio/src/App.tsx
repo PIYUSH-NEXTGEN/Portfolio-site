@@ -5,7 +5,7 @@ import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
-import { CursorSlash, HeroKatana, NavKatana, SlashDivider } from '@/components/Katana';
+import { CursorSlash, NavKatana, SlashDivider } from '@/components/Katana';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import { Toaster } from '@/components/ui/toaster';
@@ -162,7 +162,7 @@ function Header() {
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2" aria-label="Social links">
           {socialLinks.map(({ label, href, Icon, testId }) => (
             <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link">
-              <Icon size={15} />
+              <Icon size={18} />
             </a>
           ))}
         </div>
@@ -202,7 +202,6 @@ function Hero() {
         </Reveal>
       </div>
       <div className="katana-hero-photo">
-        <HeroKatana />
         <Reveal className="hero-photo-wrap relative min-h-[300px] sm:min-h-[380px]" delay={160}>
           <HeroPhoto />
         </Reveal>
