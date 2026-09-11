@@ -6,7 +6,7 @@
   inset: 0;
   z-index: 120;
   overflow: hidden;
-  background: #060709;
+  background: transparent;
   isolation: isolate;
 }
 
@@ -47,10 +47,28 @@
 .intro-term-bottom {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 10px;
   letter-spacing: 0.22em;
   opacity: 0;
 }
+.intro-term-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.intro-term-brand-name {
+  margin-left: 6px;
+}
+.intro-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+.intro-dot-r { background: #c84d3d; }
+.intro-dot-y { background: #b98a3c; }
+.intro-dot-g { background: #4f7a52; }
 .intro-term-bottom {
   font-size: 9px;
   letter-spacing: 0.26em;
@@ -65,16 +83,43 @@
   color: #dfe5ec;
   opacity: 0;
 }
+.intro-term-sub {
+  margin-top: 10px;
+  font-size: clamp(10px, 1.1vw, 12px);
+  letter-spacing: 0.18em;
+  color: #6b7280;
+  opacity: 0;
+  transform: translateY(8px);
+}
+.intro-term-rule {
+  margin-top: 16px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(139, 147, 161, 0.28), transparent);
+  opacity: 0;
+  transform: translateY(8px);
+}
 .intro-term-line {
   margin-top: 12px;
   font-size: clamp(11px, 1.35vw, 13.5px);
   letter-spacing: 0.12em;
   opacity: 0;
   transform: translateY(8px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .intro-term-line .prompt {
   opacity: 0.55;
   margin-right: 10px;
+}
+.intro-term-line .line-text {
+  color: #8b93a1;
+}
+.intro-term-line .line-ok {
+  color: #7fa88a;
+}
+.intro-term-line .line-meta {
+  color: #5f6673;
 }
 .intro-term-line.is-ready {
   color: #dfe5ec;
@@ -126,8 +171,10 @@
 }
 
 /* ── Screen split panels ────────────────────────────────────────────────
-   Complementary corner-to-corner polygons along the blade angle ("Δ").
-   Together they tile the viewport exactly → one screen before the cut. */
+   Jagged complementary polygons along the blade path: the cut edge is a
+   zigzag that mirrors across the diagonal, so the two shards of screen
+   read as freshly shattered glass. Together they tile the viewport
+   exactly → one screen before the cut. */
 .intro-panel {
   position: absolute;
   inset: 0;
@@ -135,16 +182,21 @@
   will-change: transform, opacity;
 }
 .intro-panel-a {
-  clip-path: polygon(0 0, 100% 0, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 84% 14%, 79% 21%, 73% 20%, 67% 29%, 61% 30%, 55% 39%, 48% 40%, 43% 48%, 36% 50%, 31% 58%, 23% 60%, 18% 69%, 11% 71%, 6% 81%, 0 84%, 0 100%);
   z-index: 1;
 }
 .intro-panel-b {
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(100% 0, 84% 14%, 79% 21%, 73% 20%, 67% 29%, 61% 30%, 55% 39%, 48% 40%, 43% 48%, 36% 50%, 31% 58%, 23% 60%, 18% 69%, 11% 71%, 6% 81%, 0 84%, 0 100%, 100% 100%);
   z-index: 1;
 }
 
-/* ── The cut ──────────────────────────────────────────────────────────── */
-.intro-cut {
+/* ── The cut ─────────────────────────────────────────────────────────── */
+/* (deleted) Cut / crack / flash / shockwave / spark rules were removed so
+   no orange slash line can ever paint — blade + shake + falling halves only. */
+
+/* ── Spider cracks radiating from the cut ─────────────────────────────── */
+.intro-cracks-unused { display: none; }
+.intro-cracks-x {
   position: absolute;
   inset: 0;
   z-index: 3;
@@ -152,28 +204,112 @@
   height: 100%;
   pointer-events: none;
 }
-.intro-cut-halo {
-  stroke: rgba(214, 228, 242, 0.55);
-  stroke-width: 7;
+.intro-cracks-group polyline {
+  fill: none;
+  stroke: rgba(200, 77, 61, 0); /* dead rule — zero orange by design */
+  stroke-width: 2.5;
   stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
   opacity: 0;
-}
-.intro-cut-core {
-  stroke: #eef3f8;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  filter: none; /* dead rule — zero orange by design */
 }
 
-/* ── Impact flash ─────────────────────────────────────────────────────── */
-.intro-flash {
+/* ── Removed effects (kept as display:none guards so stale markup/JS hooks
+   can never paint a line, ring, or flash) ─────────────────────────────── */
+.intro-flash,
+.intro-slash-flash,
+.intro-shockwave,
+.intro-spark {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+/* ── Diagonal slash flash that blooms along the blade path ────────────── */
+.intro-slash-flash-x {
+  position: absolute;
+  left: -25%;
+  top: -25%;
+  width: 150%;
+  height: 150%;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    to top left,
+    transparent 43%,
+    rgba(238, 243, 248, 0.75) 49.2%,
+    #ffffff 50%,
+    rgba(238, 243, 248, 0.75) 50.8%,
+    transparent 57%
+  );
+  transform: scale(0.6) rotate(0.001deg);
+  transform-origin: 50% 50%;
+}
+
+/* ── Shockwave ring bursting from the cut's midpoint ──────────────────── */
+.intro-shockwave-unused { display: none; }
+.intro-shockwave-x-dead {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12vmin;
+  height: 12vmin;
+  margin-left: -6vmin;
+  margin-top: -6vmin;
+  z-index: 4;
+  pointer-events: none;
+  border-radius: 9999px;
+  border: 2px solid rgba(238, 243, 248, 0.85);
+  box-shadow:
+    0 0 24px rgba(238, 243, 248, 0.35),
+    inset 0 0 18px rgba(238, 243, 248, 0.25);
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+/* ── Glass shards + ember sparks bursting from the cut ────────────────── */
+.intro-shards {
   position: absolute;
   inset: 0;
-  z-index: 4;
-  background: #eef3f8;
-  opacity: 0;
+  z-index: 5;
   pointer-events: none;
+  overflow: hidden;
+}
+.intro-shard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  opacity: 0;
+  background: linear-gradient(135deg, rgba(32, 36, 44, 0.98), rgba(12, 14, 18, 0.85));
+  clip-path: polygon(50% 0, 100% 55%, 62% 100%, 0 72%);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}
+.intro-shard-1 { width: 14px; height: 18px; }
+.intro-shard-2 { width: 9px; height: 12px; }
+.intro-shard-3 { width: 18px; height: 11px; }
+.intro-shard-4 { width: 7px; height: 10px; }
+.intro-shard-5 { width: 12px; height: 15px; }
+.intro-shard-6 { width: 20px; height: 13px; }
+.intro-shard-7 { width: 8px; height: 8px; }
+.intro-shard-8 { width: 15px; height: 10px; }
+.intro-shard-9 { width: 10px; height: 14px; }
+.intro-shard-10 { width: 6px; height: 9px; }
+.intro-shard-11 { width: 13px; height: 13px; }
+.intro-shard-12 { width: 9px; height: 16px; }
+.intro-shard-13 { width: 16px; height: 9px; }
+.intro-shard-14 { width: 7px; height: 7px; }
+.intro-spark {
+  display: none; /* sparks removed — no ember dots, no orange streaks */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  opacity: 0;
+  background: radial-gradient(circle, #ffffff 0%, rgba(223, 229, 236, 0.9) 55%, rgba(223, 229, 236, 0) 75%);
+  box-shadow: 0 0 6px rgba(223, 229, 236, 0.7);
 }
 
 /* ── Katana (uploaded asset) ────────────────────────────────────────────
@@ -195,32 +331,35 @@
   opacity: 0;
   mix-blend-mode: screen;
 }
-.intro-katana-img,
-.intro-katana-sheen {
+.intro-katana-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   clip-path: inset(1.8% round 2px); /* crops the asset's border frame */
+  /* Orientation fix (independent of GSAP's `transform`): the source PNG is
+     handle-up / edge-down, so flip it 180° → handle DOWN, edge UP. */
+  rotate: 180deg;
 }
 .intro-katana-img {
-  filter: invert(1) brightness(0.8) contrast(1.08);
+  filter: invert(1) saturate(0) brightness(0.9) contrast(1.08) drop-shadow(0 0 14px rgba(223, 233, 244, 0.35));
 }
-.intro-katana-sheen {
-  filter: invert(1) brightness(2.2) contrast(1.1);
+/* Curved slash-arc trail that follows the blade's swing. The timeline drives
+   --arc-x (dash draw) and opacity; the trail blooms then evaporates. */
+.intro-katana-arc-unused {
+  position: absolute;
+  inset: -22%;
+  width: 144%;
+  height: 144%;
   opacity: 0;
-  --sheen-x: 140%;
-  -webkit-mask-image: linear-gradient(48deg, transparent 47.5%, #000 50%, transparent 52.5%);
-  mask-image: linear-gradient(48deg, transparent 47.5%, #000 50%, transparent 52.5%);
-  -webkit-mask-size: 320% 320%;
-  mask-size: 320% 320%;
-  -webkit-mask-position: var(--sheen-x) var(--sheen-x);
-  mask-position: var(--sheen-x) var(--sheen-x);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+  overflow: visible;
+  filter: none; /* dead rule — zero orange by design */
 }
-
+.intro-katana-arc-path-unused {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
 @media (max-width: 767px) {
   .intro-katana {
     --intro-katana-size: min(94vw, 420px);
@@ -238,3 +377,35 @@
     animation: none;
   }
 }
+
+.intro-shard-15 { width: 11px; height: 17px; }
+.intro-shard-16 { width: 19px; height: 12px; }
+.intro-shard-17 { width: 8px; height: 11px; }
+.intro-shard-18 { width: 14px; height: 14px; }
+.intro-shard-19 { width: 6px; height: 12px; }
+.intro-shard-20 { width: 17px; height: 10px; }
+.intro-shard-21 { width: 10px; height: 10px; }
+.intro-shard-22 { width: 12px; height: 18px; }
+
+.intro-term-status-pct { color: #b98a3c; min-width: 44px; text-align: right; opacity: 0; transform: translateY(8px); }
+.intro-waiting {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #6b7280;
+  opacity: 0;
+  transform: translateY(8px);
+}
+.intro-spinner {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 9999px;
+  border: 2px solid rgba(139, 147, 161, 0.25);
+  border-top-color: #b98a3c;
+  animation: intro-spin 0.9s linear infinite;
+}
+@keyframes intro-spin { to { transform: rotate(360deg); } }

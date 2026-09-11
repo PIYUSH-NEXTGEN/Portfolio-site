@@ -5,11 +5,14 @@ import { ScreenSplit } from './ScreenSplit';
 import './intro.css';
 
 /**
- * Cinematic page-load intro.
+ * Cinematic page-load intro (7s total).
  *
- * Flow: terminal boot → katana enters (the actual uploaded katana asset) →
- * katana strikes → the terminal screen is cut along the blade path → the two
- * screen panels physically separate → the real portfolio underneath is revealed.
+ * Story, from the visitor's POV: the site looks like it is still loading
+ * (terminal boot STALLS mid-load — progress bar stuck ~62%, spinner running,
+ * never "READY") — then a katana thrusts in FROM THE VIEWER's side (huge +
+ * blurred, snapping into focus), swings 180 degrees THROUGH the screen, the
+ * screen breaks into 2 halves that fall away, and the portfolio underneath
+ * stands alone. The overlay unmounts and never reappears.
  *
  * Orchestrated by ONE master GSAP timeline. The portfolio renders underneath
  * from the start; this overlay is purely visual and unmounts when finished.
@@ -59,13 +62,14 @@ export function IntroSequence() {
     };
 
     // Safety net: force-unlock even if the GSAP timeline never completes.
-    const failSafe = window.setTimeout(finish, 9000);
+    const failSafe = window.setTimeout(finish, 8000);
 
     let ctx: ReturnType<typeof gsap.context> | null = null;
     try {
       ctx = gsap.context(() => {
-        const unlock = () => {
+        const finishOverlay = () => {
           if (rootRef.current) rootRef.current.style.pointerEvents = 'none';
+          finish();
         };
 
       const tl = gsap.timeline({ defaults: { ease: 'power2.out' }, onComplete: finish });
@@ -80,72 +84,97 @@ export function IntroSequence() {
         )
         .to(
           '[data-intro="line"]',
-          { autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.15, ease: 'power3.out' },
+          { autoAlpha: 1, y: 0, duration: 0.32, stagger: 0.16, ease: 'power3.out' },
           0.3,
         )
         .to('[data-intro="status"]', { autoAlpha: 1, y: 0, duration: 0.35 }, 0.55)
         .fromTo(
           '[data-intro="status-fill"]',
           { scaleX: 0 },
-          { scaleX: 1, duration: 0.8, ease: 'power1.inOut' },
+          { scaleX: 0.62, duration: 2.4, ease: 'power1.inOut' },
           0.6,
         )
-        .to('[data-intro="ready-1"]', { autoAlpha: 1, y: 0, duration: 0.3 }, 1.38)
-        .to('[data-intro="ready-2"]', { autoAlpha: 1, y: 0, duration: 0.3 }, 1.5);
+        .to('[data-intro="waiting"]', { autoAlpha: 1, y: 0, duration: 0.3 }, 1.5)
+        .to('[data-intro="status-pct"]', { autoAlpha: 1, y: 0, duration: 0.3 }, 0.6)
+        .to('[data-intro="status-fill"]', { scaleX: 0.6, duration: 0.25, yoyo: true, repeat: 5 }, 3.1);
 
-      // ── 2 · KATANA ENTERS along its own axis (heavy, precise) ────────
+      // ── 2 · KATANA THRUSTS IN FROM THE USER SIDE — huge + blurred (close to
+      // the camera), snaps into focus at screen centre, blade raised for the swing
       tl.fromTo(
         '[data-intro="katana"]',
-        { x: '36vmax', y: '-32vmax', autoAlpha: 0, rotation: -2 },
-        { x: '0vmax', y: '0vmax', autoAlpha: 1, rotation: 0, duration: 0.44, ease: 'power3.out' },
-        1.5,
+        { scale: 3.4, x: '0vmax', y: '38vmax', autoAlpha: 0, rotation: 140, filter: 'blur(10px)' },
+        { scale: 1.35, x: '0vmax', y: '0vmax', autoAlpha: 1, rotation: 118, filter: 'blur(0px)', duration: 0.55, ease: 'power2.out' },
+        3.9,
       )
-        // draw back before the strike — the chamber
-        .to('[data-intro="katana"]', { x: '3vmax', y: '-2.6vmax', duration: 0.15, ease: 'power2.inOut' }, 1.98)
-        // metallic light sweeps along the blade during the chamber
-        .fromTo(
-          '[data-intro="katana"] .intro-katana-sheen',
-          { autoAlpha: 0, '--sheen-x': '140%' },
-          { autoAlpha: 0.85, '--sheen-x': '-40%', duration: 0.5, ease: 'power1.inOut' },
-          1.96,
-        )
-        .to('[data-intro="katana"] .intro-katana-sheen', { autoAlpha: 0, duration: 0.18 }, 2.5);
+        // hover: the blade floats, weightless, before the draw
+        .to('[data-intro="katana"]', { y: '1.2vmax', rotation: 122, duration: 0.17, ease: 'sine.inOut' }, 4.45)
+        // chamber — hauls back up, coiling the 180° swing
+        .to('[data-intro="katana"]', { x: '6vmax', y: '-5vmax', rotation: 140, duration: 0.32, ease: 'power3.in' }, 4.62);
 
-      // ── 3 · THE STRIKE ───────────────────────────────────────────────
+      // ── 3 · THE 180° SWING — the blade alone sweeps rotation 140 → -40
+      // travelling top-right → bottom-left; blade + shake + shards only ──
       tl.to(
         '[data-intro="katana"]',
-        { x: '-62vmax', y: '56vmax', rotation: 5, duration: 0.28, ease: 'power4.in' },
-        2.16,
+        {
+          keyframes: [
+            { x: '-10vmax', y: '10vmax', rotation: 80, duration: 0.1, ease: 'power4.in' },
+            { x: '-26vmax', y: '26vmax', rotation: 20, duration: 0.12, ease: 'power3.in' },
+            { x: '-44vmax', y: '44vmax', rotation: -40, duration: 0.14, ease: 'power2.in' },
+          ],
+        },
+        4.94,
       )
-        // the cut reveals corner-to-corner with the blade, top-right → bottom-left
-        .to('[data-intro="cut-core"]', { strokeDashoffset: 0, duration: 0.24, ease: 'power2.in' }, 2.18)
-        .fromTo('[data-intro="cut-halo"]', { opacity: 0 }, { opacity: 0.5, duration: 0.07 }, 2.2)
-        .to('[data-intro="cut-halo"]', { opacity: 0, duration: 0.3 }, 2.3)
-        // restrained white flash as the glass parts
-        .fromTo('[data-intro="flash"]', { opacity: 0 }, { opacity: 0.15, duration: 0.05 }, 2.2)
-        .to('[data-intro="flash"]', { opacity: 0, duration: 0.22 }, 2.26)
-        // tiny camera shake, then stillness
-        .fromTo('[data-intro="stage"]', { x: 0, y: 0 }, { x: 5, y: -3, duration: 0.05, ease: 'power1.in' }, 2.18)
-        .to('[data-intro="stage"]', { x: -4, y: 3, duration: 0.06 }, 2.23)
-        .to('[data-intro="stage"]', { x: 0, y: 0, duration: 0.09 }, 2.29)
-        .to('[data-intro="katana"]', { autoAlpha: 0, duration: 0.2 }, 2.55);
+        .fromTo(
+          '[data-intro="katana"] .intro-katana-img',
+          { scaleX: 1, scaleY: 1 },
+          { scaleX: 1.06, scaleY: 0.94, duration: 0.1, ease: 'power2.in' },
+          5.0,
+        )
+        .to('[data-intro="katana"] .intro-katana-img', { scaleX: 1, scaleY: 1, duration: 0.24 }, 5.1)
+        .fromTo(
+          '[data-intro="shards"] .intro-shard',
+          { opacity: 1, x: 0, y: 0, rotation: 0 },
+          {
+            opacity: 0,
+            duration: 0.85,
+            ease: 'power2.in',
+            stagger: { each: 0.01, from: 'random' },
+            x: () => `${gsap.utils.random(-30, 30)}vmax`,
+            y: () => `${gsap.utils.random(-8, 55)}vmax`,
+            rotation: () => gsap.utils.random(-720, 720),
+          },
+          5.1,
+        )
+        // (no spark burst — zero orange streaks by design)
+        .fromTo('[data-intro="stage"]', { x: 0, y: 0 }, { x: 9, y: -6, duration: 0.05 }, 5.06)
+        .to('[data-intro="stage"]', { x: -6, y: 4, duration: 0.07 }, 5.11)
+        .to('[data-intro="stage"]', { x: 0, y: 0, duration: 0.1 }, 5.18)
+        // follow-through: the blade keeps travelling off-screen bottom-left
+        .to('[data-intro="katana"]', { x: '-70vmax', y: '70vmax', rotation: -52, duration: 0.24 }, 5.3)
+        .to('[data-intro="katana"]', { autoAlpha: 0, duration: 0.18 }, 5.48);
 
-      // ── 4 · SCREEN SPLITS ─ panels part along the cut's perpendicular
-      tl.to(
-        '[data-intro="panel-a"]',
-        { x: '-30vmax', y: '-30vmax', rotation: -1.4, duration: 0.6, ease: 'power3.inOut' },
-        2.48,
-      )
+      // ── 4 · SCREEN BREAKS APART — the two halves shudder, tilt, then fall
+      // away with gravity, tumbling off-screen while fading ─────────────────
+      tl.to('[data-intro="panel-a"]', { x: '1vmax', y: '1vmax', rotation: -0.4, duration: 0.08 }, 5.08)
+        .to('[data-intro="panel-b"]', { x: '-1vmax', y: '-1vmax', rotation: 0.4, duration: 0.08 }, 5.08)
+        // halves leave fully opaque; the root background is hard-cut to
+        // transparent at the same instant so the site shows through directly
+        .set(rootRef.current, { backgroundColor: 'rgba(6,7,9,0)' }, 5.24)
+        .to(
+          '[data-intro="panel-a"]',
+          { x: '-22vmax', y: '58vmax', rotation: -14, autoAlpha: 0, duration: 0.7, ease: 'power2.in' },
+          5.24,
+        )
         .to(
           '[data-intro="panel-b"]',
-          { x: '30vmax', y: '30vmax', rotation: 1.4, duration: 0.6, ease: 'power3.inOut' },
-          2.48,
+          { x: '24vmax', y: '64vmax', rotation: 12, autoAlpha: 0, duration: 0.75, ease: 'power2.in' },
+          5.26,
         )
-        // ── 5 · shards dissolve — the portfolio stands alone
-        .to('[data-intro="panel-a"]', { autoAlpha: 0, duration: 0.32, ease: 'power1.out' }, 2.95)
-        .to('[data-intro="panel-b"]', { autoAlpha: 0, duration: 0.32, ease: 'power1.out' }, 2.95)
-        .to('[data-intro="cut-core"]', { autoAlpha: 0, duration: 0.25 }, 2.95)
-        .call(unlock, undefined, 3.1);
+        // ── 5 · reveal — kill the overlay's dark backdrop the instant the
+        // halves part, so the site shows THROUGH the split (never a black
+        // beat); then fade the whole root fast and unmount
+        .to(rootRef.current, { autoAlpha: 0, duration: 0.5, ease: 'power1.in' }, 5.5)
+        .call(finishOverlay, undefined, 6.1);
       }, rootRef);
     } catch {
       // A thrown tween/setup error must never leave the page scroll-locked.

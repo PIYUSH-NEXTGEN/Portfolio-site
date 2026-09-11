@@ -3,15 +3,15 @@ import { TerminalBoot } from './TerminalBoot';
 /**
  * The screen that gets cut open.
  *
- * Two full-viewport copies of the terminal, clipped into complementary
- * diagonal polygons that run corner-to-corner (top-right → bottom-left),
- * matching the katana's blade angle in the uploaded asset. Before the strike
- * the polygons tile the viewport perfectly → one seamless screen. After the
- * strike the master timeline parts them along the cut's perpendicular.
- *
- * Between the panels sits the cut line (a thin bright core with a soft halo,
- * revealed with a dash animation as the blade travels), plus a short-lived
- * white flash at the moment of impact.
+ * Two full-viewport copies of the terminal, clipped into jagged,
+ * complementary diagonal polygons that run corner-to-corner
+ * (top-right → bottom-left), matching the katana's swing path.
+ * Before the strike the polygons tile the viewport perfectly → one
+ * seamless screen. After the strike the master timeline breaks them —
+ * they tilt and fall away (no crack lines, no rings, no spark streaks) with
+ * gravity while dark glass shards burst from the cut; the overlay background
+ * turns transparent as the halves part so the portfolio shows through
+ * instantly — no black gap — then the overlay unmounts.
  */
 export function ScreenSplit() {
   return (
@@ -22,34 +22,12 @@ export function ScreenSplit() {
       <div className="intro-panel intro-panel-b" data-intro="panel-b" aria-hidden="true">
         <TerminalBoot />
       </div>
-      <svg
-        className="intro-cut"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <line
-          data-intro="cut-halo"
-          className="intro-cut-halo"
-          x1="100"
-          y1="0"
-          x2="0"
-          y2="100"
-          pathLength={1}
-          vectorEffect="non-scaling-stroke"
-        />
-        <line
-          data-intro="cut-core"
-          className="intro-cut-core"
-          x1="100"
-          y1="0"
-          x2="0"
-          y2="100"
-          pathLength={1}
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
-      <div className="intro-flash" data-intro="flash" />
+      
+      <div className="intro-shards" data-intro="shards" aria-hidden="true">
+        {Array.from({ length: 22 }, (_, i) => (
+          <span key={i} className={`intro-shard intro-shard-${i + 1}`} />
+        ))}
+      </div>
     </>
   );
 }

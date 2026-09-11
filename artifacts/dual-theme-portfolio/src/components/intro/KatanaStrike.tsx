@@ -6,16 +6,20 @@
  * silhouette luminous silver) + mix-blend-mode: screen on the wrapper
  * (makes the inverted background perfectly transparent over the terminal).
  *
- * A second copy of the same asset carries a moving gradient mask — a narrow
- * band of light that sweeps along the blade during the chamber (the
- * "polished metal catching light" moment), driven by --sheen-x.
+ * No trail / arc SVG on purpose — the blade alone does the 180-degree cut
+ * with zero lingering orange lines.
+ *
+ * ORIENTATION FIX: the asset itself points the wrong way for this swing
+ * (handle up / edge down), so the <img> is flipped 180° via the INDEPENDENT
+ * CSS `rotate` property. GSAP's transforms never touch `rotate` (they use
+ * `rotation` → `transform`), so the flip survives the whole timeline:
+ * handle ends DOWN, cutting edge faces UP through the entire cut.
  */
 export function KatanaStrike() {
   const src = `${import.meta.env.BASE_URL}katana.png`;
   return (
     <div className="intro-katana" data-intro="katana" aria-hidden="true">
       <img className="intro-katana-img" src={src} alt="" draggable={false} />
-      <img className="intro-katana-sheen" src={src} alt="" draggable={false} />
     </div>
   );
 }

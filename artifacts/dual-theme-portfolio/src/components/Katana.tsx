@@ -20,6 +20,9 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
  * empty space around the portrait.
  */
 const KATANA_INK_SRC = `${import.meta.env.BASE_URL}katana-ink.png`;
+/** Pre-verticalized cut of the SAME sword (scripts output): tip down, handle
+ *  up, tight-cropped — so the hanging nav katana needs no CSS rotation. */
+const KATANA_HANG_SRC = `${import.meta.env.BASE_URL}katana-hang.png`;
 
 /** Sakura ring — tight orbits around the blade's center point. Original sizes
  *  and opacities, balanced against the ~20% katana watermark. */
@@ -106,6 +109,23 @@ export function HeroKatana() {
             </span>
           </span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+export function NavKatana() {
+  return (
+    <div className="nav-katana" aria-hidden="true" data-testid="nav-katana">
+      <div className="nav-katana-swing">
+        <span className="nav-katana-pin" />
+        <span className="nav-katana-rope" />
+        <img
+          className="nav-katana-blade"
+          src={KATANA_HANG_SRC}
+          alt=""
+          draggable={false}
+        />
       </div>
     </div>
   );

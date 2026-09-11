@@ -5,8 +5,9 @@ import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
-import { CursorSlash, HeroKatana, SlashDivider } from '@/components/Katana';
+import { CursorSlash, HeroKatana, NavKatana, SlashDivider } from '@/components/Katana';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
+import { WanderingCat } from '@/components/WanderingCat';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -171,6 +172,7 @@ function Header() {
           ))}
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <NavKatana />
           <a href="#contact" className="button-primary hidden items-center gap-2 whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-contact">Start a project <ArrowUpRight size={13} /></a>
           <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 shrink-0 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
             {open ? <X size={16} /> : <Menu size={16} />}
@@ -312,7 +314,7 @@ function Footer() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><About /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
 }
 
 function Router() {
