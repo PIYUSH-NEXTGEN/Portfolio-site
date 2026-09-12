@@ -145,7 +145,7 @@
 .theme-editorial .button-quiet:hover { background: rgba(255,255,255,.25); transform: translateY(-2px); }
 .theme-editorial .accent-stamp { color: #c84d3d; border: 1px solid #c84d3d; transform: rotate(-4deg); }
 .theme-editorial .section-title { font-size: clamp(2.4rem, 5vw, 5rem); line-height: .9; }
-.theme-editorial .hero-photo-wrap { background: #d9c9ad; border: 1px solid var(--line); max-width: 320px; justify-self: end; width: 100%; }
+.theme-editorial .hero-photo-wrap { background: #d9c9ad; border: 1px solid var(--line); max-width: 320px; justify-self: start; width: 100%; }
 .theme-editorial .nav .section-wrap { padding-top: 6px; padding-bottom: 6px; }
 .theme-editorial .nav-link { position: relative; padding: 6px 2px; }
 .theme-editorial .nav-link::after {
@@ -205,7 +205,7 @@
 .hero-photo-sub { font-size: 13px; opacity: .7; }
 .hero-photo-hint { font-size: 9px; letter-spacing: .18em; opacity: .55; border: 1px solid rgba(58,68,81,.35); padding: 4px 8px; }
 .theme-editorial .hero-photo-filled { width: 100%; height: 100%; min-height: 240px; padding: 0; border: 0; cursor: pointer; background: #111; }
-.theme-editorial .hero-photo-filled img { width: 100%; height: 100%; min-height: 240px; max-height: 340px; object-fit: contain; object-position: center top; display: block; background: #111; }
+.theme-editorial .hero-photo-filled img { width: 100%; height: 100%; max-height: 340px; object-fit: cover; object-position: center top; display: block; background: #111; }
 .skills-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -325,8 +325,8 @@
 .deco-branches { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .deco-branches > div { position: absolute; color: rgba(32, 42, 54, .2); }
 .deco-branch svg { display: block; width: 100%; height: auto; overflow: visible; }
-.deco-branch-tl { top: 64px; left: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
-.deco-branch-tr { top: 120px; right: 0; width: clamp(170px, 19vw, 280px); opacity: .7; }
+.deco-branch-tl { top: 56px; left: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
+.deco-branch-tr { top: 56px; right: -24px; width: clamp(170px, 19vw, 280px); opacity: .7; }
 .deco-branch-bl { top: 46%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
 .site-shell > header,
 .site-shell > section,
@@ -409,11 +409,11 @@
    compose without overwriting each other — embedding scaleX(-1) inside the
    keyframes' `transform` shifted the mirrored artwork (pivot was no longer at
    its mirrored root) and exposed the cut end of the right-hand branch. */
-.deco-branch { transform-origin: 50% 96%; animation: branch-sway 5.2s ease-in-out infinite; will-change: rotate, translate; }
-.deco-branch.flip { scale: -1 1; animation-duration: 5.8s; }
+.deco-branch { transform-origin: 50% 96%; animation: branch-sway 9s ease-in-out infinite; will-change: rotate, translate; }
+.deco-branch.flip { scale: -1 1; animation-duration: 9.6s; }
 .deco-branch-tl .deco-branch { animation-delay: -1.4s; }
-.deco-branch-tr .deco-branch { animation-delay: -3.1s; animation-duration: 4.8s; }
-.deco-branch-bl .deco-branch { animation-delay: -5.2s; animation-duration: 6.2s; }
+.deco-branch-tr .deco-branch { animation-delay: -3.1s; animation-duration: 8.5s; }
+.deco-branch-bl .deco-branch { animation-delay: -5.2s; animation-duration: 10s; }
 @keyframes branch-sway {
   0%, 100% { rotate: 0deg; translate: 0 0; }
   18% { rotate: 1.4deg; translate: 0 4px; }
