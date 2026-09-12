@@ -136,7 +136,7 @@
 .theme-editorial .nav {
   background: rgba(236,228,211,.92); border-bottom: 1px solid var(--line); backdrop-filter: blur(12px);
 }
-.theme-editorial .hero-copy { font-size: clamp(3.3rem, 8vw, 8rem); line-height: .83; }
+.theme-editorial .hero-copy { font-size: clamp(2.5rem, 6vw, 5.5rem); line-height: .83; }
 .theme-editorial .project-card { background: #e7dcc8; border: 1px solid var(--line); transition: transform .35s ease, box-shadow .35s ease; }
 .theme-editorial .project-card:hover { transform: translateY(-7px) rotate(-.4deg); box-shadow: 9px 9px 0 rgba(32,42,54,.13); }
 .theme-editorial .button-primary { background: #202a36; color: #ece4d3; border: 1px solid #202a36; }
@@ -160,7 +160,7 @@
   position: relative; overflow: hidden; z-index: 1;
   display: inline-flex; align-items: center; justify-content: center;
   width: 30px; height: 30px;
-  background: #fff; border: 1px solid rgba(32, 42, 54, .28); border-radius: 999px;
+  background: #ece4d3; border: 1px solid rgba(32, 42, 54, .28); border-radius: 999px;
   color: #202a36; opacity: .85;
   transition: transform .25s ease, opacity .25s ease, border-color .25s ease;
 }
@@ -220,11 +220,11 @@
 .skills-card-top { display: flex; align-items: center; justify-content: space-between; }
 .skills-icon {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 42px; height: 42px; border: 1px solid #d89aaf; border-radius: 999px;
-  background: #f3d3de; color: #7c2f42;
+  width: 42px; height: 42px; border: 1px solid rgba(32, 42, 54, .3); border-radius: 999px;
+  background: #f6f0e2; color: #202a36;
   transition: background-color .25s ease, transform .25s ease;
 }
-.theme-editorial .skills-card:hover .skills-icon { background: #e8b4c4; transform: translateY(-2px) rotate(-4deg); }
+.theme-editorial .skills-card:hover .skills-icon { background: #e7dcc8; transform: translateY(-2px) rotate(-4deg); }
 .skills-index { font-size: 10px; letter-spacing: .18em; opacity: .5; }
 .skills-title { font-size: 1.35rem; line-height: 1.1; margin: 0; }
 .skills-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
@@ -248,11 +248,11 @@
 .magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
-/* ── Hero portrait: animated GIF ───────────────────────────────────────
-   The default hero portrait is public/profilepicture.gif (540x376, 22
-   frames), rendered as a plain <img>. It is sized by the generic
-   .theme-editorial .hero-photo-filled img rules (object-fit contain,
-   top-centred, #111 backdrop) exactly like an uploaded photo. */
+/* ── Hero portrait: profile photo ───────────────────────────────────────
+   The default hero portrait is public/pfp.png, rendered as a plain <img>.
+   It is sized by the generic .theme-editorial .hero-photo-filled img rules
+   (object-fit cover, top-centred, #111 backdrop) exactly like an
+   uploaded photo. */
 .hero-photo-filled { position: relative; }
 
 /* Slash divider into Projects */
@@ -297,7 +297,7 @@
 
 @media (max-width: 767px) {
   .section-wrap { width: min(100% - 32px, 1180px); }
-  .theme-editorial .hero-copy { font-size: clamp(3.45rem, 17vw, 6.3rem); }
+  .theme-editorial .hero-copy { font-size: clamp(2.5rem, 12vw, 5rem); }
   .theme-editorial .editorial-hero { padding-top: 94px; }
   .theme-editorial .editorial-hero .hero-copy::after { left: 63%; top: 22%; width: 150px; }
   .theme-editorial .hero-photo-slot { inset: 8px; }
@@ -326,7 +326,7 @@
 .deco-branches > div { position: absolute; color: rgba(32, 42, 54, .2); }
 .deco-branch svg { display: block; width: 100%; height: auto; overflow: visible; }
 .deco-branch-tl { top: 56px; left: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
-.deco-branch-tr { top: 56px; right: -24px; width: clamp(170px, 19vw, 280px); opacity: .7; }
+.deco-branch-tr { top: 56px; right: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
 .deco-branch-bl { top: 46%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
 .site-shell > header,
 .site-shell > section,
@@ -409,18 +409,8 @@
    compose without overwriting each other — embedding scaleX(-1) inside the
    keyframes' `transform` shifted the mirrored artwork (pivot was no longer at
    its mirrored root) and exposed the cut end of the right-hand branch. */
-.deco-branch { transform-origin: 50% 96%; animation: branch-sway 9s ease-in-out infinite; will-change: rotate, translate; }
-.deco-branch.flip { scale: -1 1; animation-duration: 9.6s; }
-.deco-branch-tl .deco-branch { animation-delay: -1.4s; }
-.deco-branch-tr .deco-branch { animation-delay: -3.1s; animation-duration: 8.5s; }
-.deco-branch-bl .deco-branch { animation-delay: -5.2s; animation-duration: 10s; }
-@keyframes branch-sway {
-  0%, 100% { rotate: 0deg; translate: 0 0; }
-  18% { rotate: 1.4deg; translate: 0 4px; }
-  42% { rotate: -0.9deg; translate: 0 8px; }
-  62% { rotate: 1.8deg; translate: 0 10px; }
-  82% { rotate: -0.6deg; translate: 0 4px; }
-}
+.deco-branch { transform-origin: 50% 96%; will-change: rotate, translate; }
+.deco-branch.flip { scale: -1 1; }
 
 /* Katana hanging from the ENDING LINE (bottom edge) of the navbar — a small
    sword (24px wide) just left of the Start-a-project button, rope + blade

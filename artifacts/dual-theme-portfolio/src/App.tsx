@@ -11,6 +11,7 @@ import { WanderingCat } from '@/components/WanderingCat';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import Journey from '@/pages/journey';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import '@/index.css';
 
@@ -97,9 +98,10 @@ function FallingLeaves() {
   );
 }
 
+export { FallingLeaves };
+
 function HeroPhoto() {
-  const defaultPhoto = `${import.meta.env.BASE_URL}image.png`;
-  const defaultGif = `${import.meta.env.BASE_URL}profilepicture.gif`;
+  const defaultPhoto = `${import.meta.env.BASE_URL}pfp.png`;
   const [photo, setPhoto] = useState<string | null>(defaultPhoto);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -121,7 +123,7 @@ function HeroPhoto() {
           title="Click to change photo"
         >
           <img
-            src={photo === defaultPhoto ? defaultGif : photo}
+            src={photo}
             alt="Profile photo"
           />
         </button>
@@ -191,6 +193,7 @@ function Hero() {
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[15px] leading-7 opacity-75" delay={160}>
           <strong className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">ML &amp; BACKEND ENGINNER</strong>
           <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">CS 2029</span>
+          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
           <span className="mt-3 block">CS student building at the intersection of Machine Learning and Backend Engineering.<br />Interested in developing scalable APIs, data-driven systems, and intelligent applications from the ground up.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
@@ -225,7 +228,7 @@ function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-24">
       <div className="section-wrap">
-        <Reveal className="mb-12 flex items-end justify-between gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div><a href="#contact" className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[.16em] opacity-65 transition-opacity hover:opacity-100 sm:flex" data-testid="link-all-projects">Have a project in mind? <ArrowUpRight size={14} /></a></Reveal>
+        <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div></Reveal>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><article className="project-card katana-card h-full p-4" data-testid={`card-project-${project.number}`}><div className="mb-3 flex items-center justify-between mono text-[9px] opacity-60"><span>{project.number}</span><span>{project.kind}</span></div><ProjectVisual accent={project.accent} /><h3 className="display text-xl tracking-[-.04em]">{project.name}</h3><span className="katana-card-line" aria-hidden="true" /><p className="mt-3 min-h-[72px] text-xs leading-5 opacity-70">{project.description}</p><div className="mt-4 flex flex-wrap gap-1.5">{project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}</div><a href="#contact" className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-${project.number}`}>Discuss a build <ArrowUpRight size={13} /></a></article></Reveal>)}
         </div>
@@ -238,11 +241,8 @@ function Skills() {
   return (
     <section id="skills" className="section-anchor border-t border-current/20 py-24">
       <div className="section-wrap">
-        <Reveal className="mb-12 grid gap-6 md:grid-cols-[.65fr_1.35fr]">
-          <div>
-            <div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Capabilities</div>
-            <h2 className="section-title display">Tech stack<br /><span className="serif normal-case">I work with.</span></h2>
-          </div>
+        <Reveal className="mb-12">
+          <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title display">Tech stack<br /><span className="serif normal-case">I work with.</span></h2></div>
         </Reveal>
         <div className="skills-grid">
           {skills.map(({ title, icon: Icon, detail }, index) => (
@@ -262,17 +262,9 @@ function Skills() {
             </Reveal>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-function Experience() {
-  return (
-    <section id="experience" className="section-anchor border-t border-current/20 py-24">
-      <div className="section-wrap grid gap-12 lg:grid-cols-[.72fr_1.28fr]">
-        <Reveal><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">05 / Journey</div><h2 className="section-title display">The long<br /><span className="serif normal-case">version.</span></h2><p className="mt-7 max-w-[280px] text-sm leading-6 opacity-65">A non-linear path through engineering, design, and the quiet discipline of finishing.</p></Reveal>
-        <div className="divide-y divide-current/20 border-y border-current/20">{[['2024 — now', 'Independent / creative technologist', 'Building selected digital products with people who care about the details.'], ['2022 — 2024', 'TechNova / frontend developer', 'Led a small interface team, shipped a design system, and made performance a feature.'], ['2020 — 2022', 'Westmark Studio / engineer', 'Built commerce and editorial experiences for ambitious independent brands.'], ['2016 — 2020', 'B.Tech in Computer Science', 'The beginning: too many side projects, not enough sleep, a useful foundation.']].map(([date, role, description], index) => <Reveal key={date} delay={index * 80}><div className="grid gap-3 py-6 sm:grid-cols-[.28fr_.72fr]"><div className="mono text-[10px] uppercase tracking-[.13em] opacity-60">{date}</div><div><h3 className="display text-lg">{role}</h3><p className="mt-2 max-w-[470px] text-sm leading-6 opacity-65">{description}</p></div></div></Reveal>)}</div>
+        <Reveal className="mt-12 flex justify-center" delay={630}>
+          <a href="/journey" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-view-journey">View journey <ArrowRight size={14} /></a>
+        </Reveal>
       </div>
     </section>
   );
@@ -284,7 +276,7 @@ function Contact() {
       <BambooDecoration />
       <div className="section-wrap contact-inner">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
-          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">06 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
+          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">05 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
           <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
         </Reveal>
       </div>
@@ -297,11 +289,11 @@ function Footer() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Experience /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Contact /><Footer /></main>;
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route path="/journey" component={Journey} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
 }
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {

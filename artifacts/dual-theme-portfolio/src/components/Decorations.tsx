@@ -7,7 +7,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
  * always behind content. Motion is transform/opacity only.
  */
 
-function BranchSpray({ flip = false }: { flip?: boolean }) {
+function BranchSpray({ flip = false, sparse = false }: { flip?: boolean; sparse?: boolean }) {
   return (
     <svg
       viewBox="0 0 320 220"
@@ -18,10 +18,10 @@ function BranchSpray({ flip = false }: { flip?: boolean }) {
       <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
         <path d="M8,212 C60,170 96,150 150,128 C200,108 244,84 306,44" />
         <path d="M70,176 C92,160 104,148 118,128" />
-        <path d="M128,140 C150,128 160,116 170,98" />
+        {(!sparse || true) && <path d="M128,140 C150,128 160,116 170,98" />}
         <path d="M196,108 C216,96 228,86 238,70" />
-        <path d="M52,190 C66,184 76,178 84,168" />
-        <path d="M156,126 C168,122 176,116 182,108" />
+        {!sparse && <path d="M52,190 C66,184 76,178 84,168" />}
+        {(!sparse || true) && <path d="M156,126 C168,122 176,116 182,108" />}
       </g>
       <g fill="currentColor" opacity="0.85">
         <ellipse cx="118" cy="124" rx="7" ry="4.4" transform="rotate(-24 118 124)" />
@@ -30,32 +30,28 @@ function BranchSpray({ flip = false }: { flip?: boolean }) {
         <ellipse cx="178" cy="100" rx="6" ry="3.8" transform="rotate(22 178 100)" />
         <ellipse cx="240" cy="66" rx="7" ry="4.4" transform="rotate(-24 240 66)" />
         <ellipse cx="246" cy="72" rx="6" ry="3.8" transform="rotate(18 246 72)" />
-        <ellipse cx="84" cy="164" rx="6.4" ry="4" transform="rotate(-22 84 164)" />
-        <ellipse cx="90" cy="170" rx="5.4" ry="3.4" transform="rotate(20 90 170)" />
-        <ellipse cx="272" cy="48" rx="6.4" ry="4" transform="rotate(-20 272 48)" />
+        {!sparse && <ellipse cx="84" cy="164" rx="6.4" ry="4" transform="rotate(-22 84 164)" />}
+        {!sparse && <ellipse cx="90" cy="170" rx="5.4" ry="3.4" transform="rotate(20 90 170)" />}
+        {(!sparse || true) && <ellipse cx="272" cy="48" rx="6.4" ry="4" transform="rotate(-20 272 48)" />}
         <circle cx="112" cy="134" r="2.4" />
         <circle cx="184" cy="104" r="2.4" />
         <circle cx="252" cy="76" r="2.4" />
-        <circle cx="96" cy="174" r="2.2" />
+        {!sparse && <circle cx="96" cy="174" r="2.2" />}
       </g>
     </svg>
   );
 }
 
 export function DecorativeBranches() {
-  const reduce = useReducedMotion() === true;
-  const { scrollY } = useScroll();
-  const driftA = useTransform(scrollY, [0, 1400], [0, 22]);
-  const driftB = useTransform(scrollY, [0, 1400], [0, -18]);
   return (
     <div className="deco-branches" aria-hidden="true" data-testid="decorative-branches">
-      <motion.div className="deco-branch-tl" style={reduce ? undefined : { y: driftA }}>
+      <motion.div className="deco-branch-tl">
         <BranchSpray />
       </motion.div>
-      <motion.div className="deco-branch-tr" style={reduce ? undefined : { y: driftB }}>
-        <BranchSpray />
+      <motion.div className="deco-branch-tr">
+        <BranchSpray flip sparse />
       </motion.div>
-      <motion.div className="deco-branch-bl" style={reduce ? undefined : { y: driftB }}>
+      <motion.div className="deco-branch-bl">
         <BranchSpray flip />
       </motion.div>
     </div>
