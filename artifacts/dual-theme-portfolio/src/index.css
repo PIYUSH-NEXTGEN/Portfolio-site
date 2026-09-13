@@ -735,3 +735,139 @@
   .wandering-cat .cat-sprite { transition: none !important; animation: none !important; }
   .wandering-cat .cat-img, .wandering-cat .cat-legs { animation: none !important; }
 }
+
+/* ── Journey page (/journey) ───────────────────────────────────────────
+   An interactive programming-journey timeline in the editorial paper
+   language: a scroll-drawn ink spine, pop-in chapter nodes, expandable
+   milestone cards, filterable eras, count-up stats and skill bars.
+   Everything honours the global prefers-reduced-motion kill switch. */
+
+/* Stats strip — hairline grid via 1px gaps over a darker backdrop */
+.journey-stats {
+  display: grid; gap: 1px; grid-template-columns: repeat(2, 1fr);
+  background: rgba(58, 68, 81, .2); border: 1px solid rgba(58, 68, 81, .25);
+}
+@media (min-width: 640px) { .journey-stats { grid-template-columns: repeat(4, 1fr); } }
+.journey-stat { background: #f6f0e2; padding: 22px 18px 18px; }
+.journey-stat-number { font-size: 2.5rem; line-height: 1; color: #202a36; }
+
+/* Hero rule that draws itself across the page */
+.reveal .journey-rule-draw { animation: journey-rule-draw 1.1s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes journey-rule-draw { from { scale: 0 1; } to { scale: 1 1; } }
+
+/* Filter tabs — same underline treatment as the home nav-link */
+.journey-tab {
+  position: relative; padding: 7px 2px;
+  font-size: 10px; letter-spacing: .17em; text-transform: uppercase;
+  opacity: .6; transition: opacity .25s ease, color .25s ease;
+}
+.journey-tab::after {
+  content: ''; position: absolute; left: 0; right: 100%; bottom: 0; height: 2px;
+  background: #c84d3d; transition: right .3s ease;
+}
+.journey-tab:hover { opacity: 1; }
+.journey-tab.journey-tab-active { opacity: 1; color: #c84d3d; }
+.journey-tab.journey-tab-active::after { right: 0; }
+
+/* Timeline: a vertical spine that fills with scroll progress. On mobile it
+   hugs the left edge; from lg it splits the page down the middle and the
+   milestone cards alternate sides around it. */
+.journey-timeline { position: relative; }
+.journey-spine { position: absolute; top: 8px; bottom: 8px; left: 15px; width: 2px; background: rgba(58,68,81,.16); }
+.journey-spine-fill {
+  position: absolute; top: 0; left: 0; width: 100%;
+  height: calc(var(--journey-progress, 0) * 100%);
+  background: linear-gradient(180deg, #c84d3d, #202a36);
+}
+.journey-row { position: relative; padding-left: 48px; }
+.journey-node {
+  position: absolute; left: 0; top: 24px; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border: 1px solid rgba(58,68,81,.4);
+  border-radius: 999px; background: #f6f0e2; color: #202a36;
+  box-shadow: 0 0 0 4px rgba(246,240,226,.9);
+}
+.reveal .journey-node { animation: journey-node-pop .55s cubic-bezier(.34,1.56,.64,1) both; animation-delay: var(--node-delay, 0ms); }
+@keyframes journey-node-pop { from { scale: .2; opacity: 0; } to { scale: 1; opacity: 1; } }
+
+@media (min-width: 1024px) {
+  .journey-spine { left: 50%; margin-left: -1px; }
+  .journey-row { padding-left: 0; display: grid; grid-template-columns: 1fr 88px 1fr; align-items: center; }
+  .journey-node { position: static; grid-column: 2; grid-row: 1; justify-self: center; }
+  .journey-row-even .journey-card { grid-column: 1; grid-row: 1; justify-self: end; }
+  .journey-row-odd .journey-card { grid-column: 3; grid-row: 1; justify-self: start; }
+  /* Little ink connector from the node to its card */
+  .journey-card { position: relative; }
+  .journey-row-even .journey-card::after,
+  .journey-row-odd .journey-card::after {
+    content: ''; position: absolute; top: 50%; width: 40px; height: 1px;
+    background: rgba(58,68,81,.25);
+  }
+  .journey-row-even .journey-card::after { right: -44px; }
+  .journey-row-odd .journey-card::after { left: -44px; }
+}
+
+/* Milestone card — sibling of skills-card; expands via the 0fr→1fr grid
+   trick so the accordion animates to content height without JS math. */
+.journey-card {
+  width: 100%; max-width: 560px;
+  border: 1px solid rgba(58,68,81,.25); border-radius: 2px;
+  background: rgba(246,240,226,.6);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
+}
+.journey-card:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(34,38,47,.1); background: #f6f0e2; border-color: rgba(200,77,61,.45); }
+.journey-card-trigger { display: block; width: 100%; padding: 18px 20px 14px; text-align: left; cursor: pointer; }
+.journey-chevron { transition: transform .35s ease; }
+.journey-card-open .journey-chevron { transform: rotate(180deg); }
+.journey-detail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.2,.7,.2,1); }
+.journey-card-open .journey-detail { grid-template-rows: 1fr; }
+.journey-detail-inner { overflow: hidden; }
+
+/* Scroll-to-top — editorial ink disc, slides up from the bottom-right corner
+   once the page is scrolled, then glides the viewport back to the top
+   (window.scrollTo with behavior:'smooth' + the site's smooth scroll-behavior).
+   HIGHLIGHTED: filled in the brand coral with a pulsing attention ring so it
+   never goes unnoticed. */
+.scroll-top-button {
+  position: fixed; right: 22px; bottom: 22px; z-index: 30;
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; border-radius: 999px;
+  border: 1px solid rgba(163,58,43,.65);
+  background: #c84d3d; color: #f6f0e2;
+  box-shadow: 0 12px 30px rgba(200,77,61,.38);
+  opacity: 0; visibility: hidden; transform: translateY(14px) scale(.9);
+  transition:
+    opacity .35s ease,
+    transform .35s cubic-bezier(.34,1.56,.64,1),
+    visibility 0s linear .35s,
+    background-color .25s ease,
+    box-shadow .25s ease;
+}
+.scroll-top-button.scroll-top-visible {
+  opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+  transition:
+    opacity .35s ease,
+    transform .35s cubic-bezier(.34,1.56,.64,1),
+    background-color .25s ease,
+    box-shadow .25s ease;
+}
+/* Pulsing attention ring — a soft coral halo that breathes outward. */
+.scroll-top-button::after {
+  content: ''; position: absolute; inset: -3px;
+  border-radius: 999px; border: 1.5px solid rgba(200,77,61,.55);
+  opacity: 0; pointer-events: none;
+}
+.scroll-top-button.scroll-top-visible::after { animation: scroll-top-pulse 2.1s ease-out infinite; }
+@keyframes scroll-top-pulse {
+  0%   { opacity: .8; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.55); }
+  100% { opacity: 0;  transform: scale(1.55); }
+}
+.scroll-top-button:hover {
+  background: #a33a2b; transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 16px 34px rgba(200,77,61,.5);
+}
+.scroll-top-button:focus-visible { outline: 2px solid #202a36; outline-offset: 3px; }
+@media (max-width: 639px) { .scroll-top-button { right: 14px; bottom: 14px; width: 42px; height: 42px; } }
+
+

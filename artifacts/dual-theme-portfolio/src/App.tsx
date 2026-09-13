@@ -1,5 +1,5 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Rocket, Settings, Trophy, UsersRound, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Rocket, Settings, Trophy, UsersRound, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -9,7 +9,7 @@ import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import NotFound from '@/pages/not-found';
 import Journey from '@/pages/journey';
-import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
+import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import '@/index.css';
 
 const projects = [
@@ -68,12 +68,12 @@ const projects = [
 ];
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com', Icon: FaGithub, testId: 'link-nav-github', color: '#24292e' },
-  { label: 'LinkedIn', href: 'https://linkedin.com', Icon: FaLinkedin, testId: 'link-nav-linkedin', color: '#0077b5' },
-  { label: 'X (Twitter)', href: 'https://x.com', Icon: FaXTwitter, testId: 'link-nav-x', color: '#000000' },
-  { label: 'Peerlist', href: 'https://peerlist.io', Icon: SiPeerlist, testId: 'link-nav-peerlist', color: '#00aa45' },
-  { label: 'LeetCode', href: 'https://leetcode.com', Icon: SiLeetcode, testId: 'link-nav-leetcode', color: '#ffa116' },
-  { label: 'dev.to', href: 'https://dev.to', Icon: FaDev, testId: 'link-nav-devto', color: '#000000' },
+  { label: 'GitHub', href: 'https://github.com/PIYUSH-NEXTGEN', Icon: FaGithub, testId: 'link-nav-github', color: '#24292e' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/piyush-baraskar-994ab6337', Icon: FaLinkedin, testId: 'link-nav-linkedin', color: '#0077b5' },
+  { label: 'X (Twitter)', href: 'https://x.com/Piyush_NextGen', Icon: FaXTwitter, testId: 'link-nav-x', color: '#000000' },
+  { label: 'Peerlist', href: 'https://peerlist.io/piyush_nextgen', Icon: SiPeerlist, testId: 'link-nav-peerlist', color: '#00aa45' },
+  { label: 'LeetCode', href: 'https://leetcode.com/u/Piyush_NextGen/', Icon: SiLeetcode, testId: 'link-nav-leetcode', color: '#ffa116' },
+  { label: 'dev.to', href: 'https://dev.to/piyushnextgen', Icon: FaDev, testId: 'link-nav-devto', color: '#000000' },
 ];
 
 const skills = [
@@ -133,7 +133,31 @@ function FallingLeaves() {
   );
 }
 
-export { FallingLeaves };
+export { FallingLeaves, socialLinks, ScrollToTop };
+
+/* Scroll-to-top: a small ink disc that slides up from the corner once you've
+   scrolled into the page, and glides the viewport back to the top smoothly. */
+function ScrollToTop() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 420);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Scroll back to top"
+      title="Back to top"
+      data-testid="button-scroll-top"
+      className={`scroll-top-button ${visible ? 'scroll-top-visible' : ''}`}
+    >
+      <ArrowUp size={15} />
+    </button>
+  );
+}
 
 function HeroPhoto() {
   const defaultPhoto = `${import.meta.env.BASE_URL}pfp.png`;
@@ -220,7 +244,7 @@ function Header() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
-  const links = [['about', 'About'], ['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Journey'], ['contact', 'Contact']];
+  const links = [['about', 'About'], ['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Experience'], ['contact', 'Contact']];
   return (
     <header className="nav sticky top-0 z-20">
       <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
@@ -235,6 +259,7 @@ function Header() {
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
+          <Link href="/journey" onClick={() => setOpen(false)} className="nav-link flex items-center gap-1 text-[10px] font-medium uppercase tracking-[.17em] text-[#c84d3d] opacity-90 transition-opacity hover:opacity-100" data-testid="link-nav-journey-route">Journey <ArrowUpRight size={11} /></Link>
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <NavKatana />
@@ -374,9 +399,6 @@ function Skills() {
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-12 flex justify-center" delay={630}>
-          <a href="/journey" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-view-journey">View journey <ArrowRight size={14} /></a>
-        </Reveal>
       </div>
     </section>
   );
@@ -492,6 +514,10 @@ function Experience() {
           <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
           <Reveal><ResumeCard /></Reveal>
         </div>
+
+        <Reveal className="mt-12 flex justify-center" delay={120}>
+          <Link href="/journey" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-view-journey">View journey <ArrowRight size={14} /></Link>
+        </Reveal>
       </div>
     </section>
   );
@@ -533,7 +559,7 @@ function Contact() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Experience /><Contact /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Experience /><Contact /><ScrollToTop /></main>;
 }
 
 function Router() {
