@@ -358,58 +358,103 @@ function Skills() {
   );
 }
 
+function ResumeCard() {
+  const [open, setOpen] = useState(false);
+  const base = import.meta.env.BASE_URL;
+  const resumePdf = `${base}resume.pdf`;
+  const resumeImg = `${base}resume-1.png`;
+  return (
+    <div className={`resume-card ${open ? 'resume-card-open' : ''}`}>
+      <div className="resume-sheet">
+        <div className="resume-sheet-top">
+          <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">{open ? 'Full resume' : 'Resume — preview'}</div>
+          <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">PDF · 1 page</div>
+        </div>
+
+        <div className={`resume-unroll ${open ? 'resume-unroll-open' : ''}`}>
+          <div className="resume-unroll-frame">
+            <img src={resumeImg} alt="Piyush Baraskar — resume" data-testid="img-resume" />
+          </div>
+          <div className="resume-fold" aria-hidden="true" />
+        </div>
+
+        <div className={`resume-expand ${open ? 'resume-expand-open' : ''}`} aria-hidden={!open}>
+          <div className="overflow-hidden">
+            <div className="resume-roll">
+              <a href={resumePdf} target="_blank" rel="noreferrer" className="resume-download" data-testid="link-resume-download" tabIndex={open ? 0 : -1}>
+                Download PDF <ArrowUpRight size={13} />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="resume-toggle"
+        aria-expanded={open}
+        data-testid="button-resume-toggle"
+      >
+        <span>{open ? 'Close resume' : 'View resume'}</span>
+        <ChevronDown size={13} className={open ? 'rotate-180' : ''} />
+      </button>
+    </div>
+  );
+}
+
 function Experience() {
   return (
-    <section id="experience" className="section-anchor border-t border-current/20 py-16">
+    <section id="experience" className="section-anchor border-t border-current/20 py-12">
       <div className="section-wrap">
-        <Reveal className="mb-12">
+        <Reveal className="mb-8">
           <div>
-            <div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / EXPERIENCE, ACHIEVEMENTS &amp; COMMUNITY</div>
+            <div className="mono mb-3 text-[10px] uppercase tracking-[.2em] opacity-60">04 / EXPERIENCE, ACHIEVEMENTS &amp; COMMUNITY</div>
             <h2 className="section-title display">The record<br /><span className="serif normal-case">I’m building.</span></h2>
-            <p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Experience, a few things I’m proud of, the programming community I lead — and a resume sheet that fills in as the next chapter lands.</p>
+            <p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Experience, a few things I’m proud of, the programming community I lead — and a resume sheet that fills in as the next chapter lands.</p>
           </div>
         </Reveal>
 
-        <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">Experience</Reveal>
+        <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Experience</Reveal>
         <div className="divide-y divide-current/20 border-y border-current/20">
           {experience.map(([date, role, description]) => (
-            <div key={date} className="grid gap-3 py-6 sm:grid-cols-[.28fr_.72fr]">
+            <div key={date} className="grid gap-2 py-4 sm:grid-cols-[.28fr_.72fr]">
               <div className="mono text-[10px] uppercase tracking-[.13em] opacity-60">{date}</div>
               <div>
                 <h3 className="display text-lg">{role}</h3>
-                <p className="mt-2 max-w-[470px] text-sm leading-6 opacity-65">{description}</p>
+                <p className="mt-1.5 max-w-[470px] text-sm leading-6 opacity-65">{description}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-20">
-          <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">Achievements</Reveal>
-          <div className="grid items-stretch gap-6 sm:grid-cols-3">
+        <div className="mt-10">
+          <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Achievements</Reveal>
+          <div className="grid items-stretch gap-4 sm:grid-cols-3">
             {achievements.map(({ Icon, title, detail }, index) => (
               <Reveal key={title} delay={index * 90} className="achievement-card">
                 <div className="flex items-center gap-3">
-                  <span className="achievement-icon"><Icon size={20} strokeWidth={1.6} /></span>
+                  <span className="achievement-icon"><Icon size={18} strokeWidth={1.6} /></span>
                   <span className="mono skills-index">0{index + 1}</span>
                 </div>
-                <h3 className="display text-lg mt-5">{title}</h3>
-                <p className="mt-2 text-sm leading-6 opacity-70">{detail}</p>
+                <h3 className="display text-lg mt-3">{title}</h3>
+                <p className="mt-1.5 text-sm leading-5 opacity-70">{detail}</p>
               </Reveal>
             ))}
           </div>
         </div>
 
-        <div className="mt-20">
-          <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">The community</Reveal>
+        <div className="mt-10">
+          <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">The community</Reveal>
           <Reveal className="community-card">
-            <div className="grid gap-8 sm:grid-cols-[.9fr_1.1fr] sm:items-start">
+            <div className="grid gap-6 sm:grid-cols-[.9fr_1.1fr] sm:items-start">
               <div>
-                <span className="community-mark"><Rocket size={24} strokeWidth={1.6} /></span>
-                <h3 className="display text-xl mt-5">My coding<br /><span className="serif normal-case">community.</span></h3>
+                <span className="community-mark"><Rocket size={21} strokeWidth={1.6} /></span>
+                <h3 className="display text-xl mt-4">My coding<br /><span className="serif normal-case">community.</span></h3>
               </div>
               <div>
-                <p className="text-sm leading-7 opacity-70 max-w-[460px]">A hands-on programming community where members learn by building — from Python fundamentals to shipping real APIs and ML models together.</p>
-                <ul className="mt-7 space-y-3">
+                <p className="text-sm leading-6 opacity-70 max-w-[460px]">A hands-on programming community where members learn by building — from Python fundamentals to shipping real APIs and ML models together.</p>
+                <ul className="mt-5 space-y-2">
                   {communityPoints.map((point) => (
                     <li key={point} className="community-point">{point}</li>
                   ))}
@@ -419,28 +464,9 @@ function Experience() {
           </Reveal>
         </div>
 
-        <div className="mt-20">
-          <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
-          <Reveal className="resume-sheet">
-            <div className="resume-sheet-top">
-              <div>
-                <div className="resume-sheet-name">PIYUSH BARASKAR</div>
-                <div className="resume-sheet-role">ML &amp; Backend Engineer</div>
-              </div>
-              <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">Blank sheet — ready when you are</div>
-            </div>
-            <div className="resume-frame">
-              <div className="resume-frame-title">Experience</div>
-              <div className="resume-rule" aria-hidden="true" />
-              <div className="resume-frame-body"><span>·</span></div>
-              <div className="resume-frame-title mt-8">Projects &amp; community</div>
-              <div className="resume-rule" aria-hidden="true" />
-              <div className="resume-frame-body"><span>·</span></div>
-              <div className="resume-frame-title mt-8">Education</div>
-              <div className="resume-rule" aria-hidden="true" />
-              <div className="resume-frame-body mb-2"><span>·</span></div>
-            </div>
-          </Reveal>
+        <div className="mt-10">
+          <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
+          <Reveal><ResumeCard /></Reveal>
         </div>
       </div>
     </section>

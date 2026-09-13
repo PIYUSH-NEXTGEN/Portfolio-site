@@ -295,7 +295,7 @@
    feature card; the resume is rendered as a blank A4-style sheet with
    roomy gutters and faint guide rules so content can be dropped in. */
 .theme-editorial .achievement-card {
-  display: flex; flex-direction: column; gap: 14px; padding: 22px;
+  display: flex; flex-direction: column; gap: 10px; padding: 16px;
   border: 1px solid rgba(58,68,81,.22); border-radius: 2px;
   background: rgba(255,255,255,.35);
   transition: transform .25s ease, border-color .25s ease;
@@ -303,16 +303,16 @@
 .theme-editorial .achievement-card:hover { transform: translateY(-2px); border-color: rgba(200,130,155,.6); }
 .theme-editorial .achievement-icon {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; border: 1px solid rgba(58,68,81,.3);
+  width: 34px; height: 34px; border: 1px solid rgba(58,68,81,.3);
   border-radius: 999px; color: #c84d3d;
 }
 .theme-editorial .community-card {
   border: 1px solid rgba(58,68,81,.32); border-radius: 2px;
-  padding: 42px 0; background: rgba(216,203,183,.4);
+  padding: 26px 0; background: rgba(216,203,183,.4);
 }
 .theme-editorial .community-mark {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 52px; height: 52px; border: 1px solid rgba(58,68,81,.3);
+  width: 44px; height: 44px; border: 1px solid rgba(58,68,81,.3);
   border-radius: 999px; color: #c84d3d;
 }
 .theme-editorial .community-point {
@@ -322,9 +322,9 @@
 .theme-editorial .community-point::before { content: '✦'; color: #c84d3d; font-size: 11px; }
 /* Resume — blank sheet, well spaced so content fits */
 .theme-editorial .resume-sheet {
-  background: #f7f2e8; color: #202a36;
-  border: 1px solid rgba(58,68,81,.25); border-radius: 2px;
-  box-shadow: var(--shadow); padding: 46px 54px;
+  background: #f4eede; color: #202a36;
+  border: 1px solid rgba(58,68,81,.42); border-radius: 2px;
+  box-shadow: var(--shadow); padding: 30px 36px;
   position: relative;
 }
 .theme-editorial .resume-sheet::before {
@@ -333,17 +333,98 @@
 }
 .theme-editorial .resume-sheet-top {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 14px; padding-bottom: 24px; border-bottom: 1px dashed rgba(58,68,81,.32);
+  gap: 12px; padding-bottom: 16px; border-bottom: 1px dashed rgba(58,68,81,.32);
 }
-.theme-editorial .resume-sheet-name { font-size: 16px; letter-spacing: .04em; font-weight: 600; }
-.theme-editorial .resume-sheet-role { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin-top: 5px; opacity: .7; }
-.theme-editorial .resume-frame { margin-top: 30px; }
+.theme-editorial .resume-sheet-name { font-size: 15px; letter-spacing: .04em; font-weight: 600; }
+.theme-editorial .resume-sheet-role { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin-top: 4px; opacity: .7; }
+.theme-editorial .resume-frame { margin-top: 18px; }
 .theme-editorial .resume-frame-title {
   font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
-  color: rgba(32,42,54,.55); margin-bottom: 14px;
+  color: rgba(32,42,54,.55); margin-bottom: 8px;
 }
 .theme-editorial .resume-rule { border-top: 1px dashed rgba(58,68,81,.18); }
-.theme-editorial .resume-frame-body { padding: 72px 0 0; }
+.theme-editorial .resume-frame-body { padding: 24px 0 0; }
+.theme-editorial .resume-unroll-frame {
+  margin-top: 6px; position: relative;
+  border-top: 1px dashed rgba(58,68,81,.18);
+  background: transparent;
+  max-height: 240px; overflow: hidden;
+  transition: max-height 1.1s cubic-bezier(.25,.8,.25,1);
+}
+.theme-editorial .resume-unroll-open .resume-unroll-frame { max-height: 900px; overflow: hidden; }
+.theme-editorial .resume-unroll-frame img {
+  display: block; margin: 0 auto;
+  width: 100%; max-width: 560px; height: auto;
+  min-height: 0; flex: none; align-self: flex-start;
+  border: 1px solid rgba(58,68,81,.28);
+  background: #ffffff;
+}
+.theme-editorial .resume-unroll-open .resume-unroll-frame img {
+  width: 100%; max-width: 560px; height: auto;
+  object-fit: unset; object-position: unset;
+}
+.theme-editorial .resume-fold { position: relative; height: 16px; opacity: 1; transition: opacity .5s ease; }
+.theme-editorial .resume-unroll-open .resume-fold { opacity: 0; }
+.theme-editorial .resume-fold::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 3px;
+  background: rgba(200,77,61,.22);
+}
+.theme-editorial .resume-fold::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 14px;
+  background: linear-gradient(180deg, rgba(58,68,81,.05), rgba(58,68,81,.16));
+}
+/* Embedded resume image */
+.theme-editorial .resume-viewer {
+  margin-top: 6px;
+  border-top: 1px dashed rgba(58,68,81,.18);
+  display: flex; justify-content: center;
+  padding: 18px 0 0;
+}
+.theme-editorial .resume-viewer img {
+  display: block; width: 100%; max-width: 640px; height: auto;
+  border: 1px solid rgba(58,68,81,.28); box-shadow: var(--shadow);
+  background: #ffffff;
+}
+.theme-editorial .resume-download {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 16px;
+  font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: #c84d3d; transition: color .2s ease;
+}
+.theme-editorial .resume-download:hover { color: #a33a2b; }
+/* Expandable resume card — slow rolling unroll */
+.theme-editorial .resume-card { position: relative; perspective: 1200px; }
+.theme-editorial .resume-sheet { overflow: clip; }
+.theme-editorial .resume-expand {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 1.1s cubic-bezier(.25,.8,.25,1);
+}
+.theme-editorial .resume-expand-open { grid-template-rows: 1fr; }
+.theme-editorial .resume-expand > .overflow-hidden { min-height: 0; overflow: hidden; }
+.theme-editorial .resume-expand .resume-roll {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .6s ease .35s, transform 1.1s cubic-bezier(.25,.8,.25,1) .05s;
+}
+.theme-editorial .resume-expand-open .resume-roll {
+  transform: translateY(0);
+  opacity: 1;
+}
+.theme-editorial .resume-toggle {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; margin-top: 14px;
+  border: 1px solid rgba(58,68,81,.32); border-radius: 2px;
+  padding: 11px; cursor: pointer;
+  background: rgba(236,228,211,.35);
+  font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: #c84d3d; transition: background-color .2s ease;
+}
+.theme-editorial .resume-toggle:hover { background: rgba(200,77,61,.14); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-editorial .resume-expand { transition: none; }
+  .theme-editorial .resume-expand .resume-roll { transition: none; }
+  .theme-editorial .resume-unroll-frame { transition: none; }
+  .theme-editorial .resume-fold { transition: none; }
+}
 
 /* ── Hero portrait: profile photo ───────────────────────────────────────
    The default hero portrait is public/pfp.png, rendered as a plain <img>.
