@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, Code2, Database, Menu, Settings, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Menu, Settings, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -25,6 +25,11 @@ const projects = [
     description: 'A calm operations cockpit for teams turning messy inputs into decisions they can trust.',
     stack: ['React', 'Node.js', 'Postgres'],
     accent: 'coral',
+    url: 'https://kintsugi.vercel.app',
+    github: 'https://github.com/PIYUSH-NEXTGEN/kintsugi',
+    year: '2026',
+    details: 'Kintsugi turns scattered signals — tickets, deploys, incidents — into one calm cockpit. Every metric is annotated, decisions are traceable, and nothing ships without its story attached.',
+    highlights: ['Unified incident and deploy timeline', 'Annotated metrics with review threads', 'Keyboard-first ops workflow'],
   },
   {
     number: '02',
@@ -33,6 +38,11 @@ const projects = [
     description: 'A faster, more human storefront system for independent makers and small-batch goods.',
     stack: ['Next.js', 'Stripe', 'Prisma'],
     accent: 'gold',
+    url: 'https://akari-commerce.vercel.app',
+    github: 'https://github.com/PIYUSH-NEXTGEN/akari-commerce',
+    year: '2026',
+    details: 'Akari replaces cookie-cutter storefronts with a builder that respects the maker’s eye. Checkout feels like a conversation, not a funnel, and inventory stays honest in real time.',
+    highlights: ['Headless storefront builder', 'One-tap Stripe checkout flow', 'Real-time inventory sync'],
   },
   {
     number: '03',
@@ -41,6 +51,11 @@ const projects = [
     description: 'A collaborative workspace that gives creative teams a shared surface for early ideas.',
     stack: ['TypeScript', 'WebSockets', 'Figma'],
     accent: 'blue',
+    url: 'https://sora-studio.vercel.app',
+    github: 'https://github.com/PIYUSH-NEXTGEN/sora-studio',
+    year: '2026',
+    details: 'Sora is a shared canvas for early creative chaos. Moodboards, references and rough sketches live on one surface that syncs live across the room — no save button required.',
+    highlights: ['Live multi-user canvas', 'Moodboard and reference boards', 'Versioned sketch history'],
   },
   {
     number: '04',
@@ -49,6 +64,11 @@ const projects = [
     description: 'A lightweight API layer that makes complex workflows legible, observable, and quick.',
     stack: ['Go', 'GraphQL', 'Docker'],
     accent: 'ink',
+    url: 'https://mono-api.vercel.app',
+    github: 'https://github.com/PIYUSH-NEXTGEN/mono-api',
+    year: '2026',
+    details: 'Mono wraps complex workflows in a single legible API — typed contracts, automatic logging, and a query graph that shows exactly what ran, when, and why.',
+    highlights: ['Typed contract layer', 'Automatic request tracing', 'One-command Docker deploy'],
   },
 ];
 
@@ -62,12 +82,12 @@ const socialLinks = [
 ];
 
 const skills = [
-  { title: 'Programming Languages', icon: Code2, detail: 'Python, Golang, SQL, JS/TS, C++' },
-  { title: 'Libraries', icon: Boxes, detail: 'NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn, TensorFlow' },
-  { title: 'Backend', icon: Settings, detail: 'FastAPI, Pydantic' },
-  { title: 'Databases', icon: Database, detail: 'MySQL, PostgreSQL, SQL alchemy' },
-  { title: 'Deployment', icon: ArrowUpRight, detail: 'Render, Vercel' },
-  { title: 'Machine Learning', icon: Brain, detail: 'Supervised, Unsupervised, Data analysis' },
+  { title: 'Programming Languages', icon: Code2, detail: 'Python, Golang, SQL, JS/TS, C++', anim: 'wiggle' },
+  { title: 'Libraries', icon: Boxes, detail: 'NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn, TensorFlow', anim: 'slide' },
+  { title: 'Backend', icon: Settings, detail: 'FastAPI, Pydantic', anim: 'spin' },
+  { title: 'Databases', icon: Database, detail: 'MySQL, PostgreSQL, SQL alchemy', anim: 'revolve' },
+  { title: 'Deployment', icon: ArrowUpRight, detail: 'Render, Vercel', anim: 'glide' },
+  { title: 'Machine Learning & AI', icon: Brain, detail: 'Supervised, Unsupervised, Neural Networks, Data analysis', anim: 'pulse' },
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
@@ -211,10 +231,10 @@ function Hero() {
   );
 }
 
-function ProjectVisual({ accent }: { accent: string }) {
+function ProjectVisual({ accent, year, expanded }: { accent: string; year: string; expanded: boolean }) {
   const background = accent === 'coral' ? '#d5c3ad' : accent === 'gold' ? '#d7d5bd' : accent === 'blue' ? '#bdccd0' : '#c9ced0';
-  return <div className="relative mb-5 h-44 overflow-hidden border border-current/20 p-4" style={{ backgroundColor: background }}>
-    <div className="absolute left-4 top-4 mono text-[9px] opacity-60">PREVIEW / 2026</div>
+  return <div className="project-visual relative mb-5 overflow-hidden border border-current/20 p-4" style={{ backgroundColor: background, height: expanded ? '13rem' : '11rem' }}>
+    <div className="absolute left-4 top-4 mono text-[9px] opacity-60">PREVIEW / {year}</div>
     <div className="absolute bottom-5 left-5 right-5 top-12 border border-current/25 bg-black/10 p-3">
       <div className="mb-3 flex gap-1"><span className="h-1.5 w-1.5 rounded-full bg-current" /><span className="h-1.5 w-1.5 rounded-full bg-current opacity-35" /><span className="h-1.5 w-1.5 rounded-full bg-current opacity-15" /></div>
       <div className="grid h-20 grid-cols-[.8fr_1.2fr] gap-2"><div className="border border-current/15 p-2"><div className="h-2 w-1/2 bg-current/40" /><div className="mt-3 h-8 w-full bg-current/15" /></div><div className="border border-current/15 p-2"><div className="h-2 w-1/3 bg-current/40" /><div className="mt-3 flex h-8 items-end gap-1">{[35,60,42,78,50,88,63].map((height, index) => <span key={index} className="flex-1 bg-current/35" style={{ height: `${height}%` }} />)}</div></div></div>
@@ -222,13 +242,64 @@ function ProjectVisual({ accent }: { accent: string }) {
   </div>;
 }
 
+function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+  const [open, setOpen] = useState(false);
+  const toggle = () => setOpen(!open);
+  return (
+    <article
+      className={`project-card katana-card p-4 ${open ? 'project-card-open' : ''}`}
+      data-testid={`card-project-${project.number}`}
+      onClick={toggle}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggle();
+        }
+      }}
+      tabIndex={0}
+      aria-expanded={open}
+      aria-label={`${project.name} — project details`}
+    >
+      <div className="mb-3 flex items-center justify-between mono text-[9px] opacity-60">
+        <span>{project.number}</span>
+        <span className="flex items-center gap-1">{project.kind}<ChevronDown size={12} className={open ? 'rotate-180' : ''} /></span>
+      </div>
+      <ProjectVisual accent={project.accent} year={project.year} expanded={open} />
+      <h3 className="display text-xl tracking-[-.04em]">{project.name}</h3>
+      <span className="katana-card-line" aria-hidden="true" />
+      <p className="mt-3 min-h-[72px] text-xs leading-5 opacity-70">{project.description}</p>
+      <div className="mt-4 flex flex-wrap gap-1.5">{project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}</div>
+      <div className={`project-expand ${open ? 'project-expand-open' : ''}`}>
+        <div className="project-expand-inner">
+          <div className="project-more border-t border-dashed border-current/20" aria-hidden={!open}>
+            <p className="mt-3 text-xs leading-5 opacity-85">{project.details}</p>
+            <ul className="project-highlights mt-3">
+              {project.highlights.map((item) => (
+                <li key={item} className="flex items-start gap-1.5 text-[10px] leading-4 opacity-80">
+                  <span className="shrink-0 text-[#c84d3d]" aria-hidden="true">✦</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mono mt-3 text-[9px] uppercase tracking-[.15em] opacity-60">{project.year} / {project.kind}</div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-6 flex flex-wrap items-center gap-3" onClick={(event) => event.stopPropagation()}>
+        <a href={project.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
+        <a href={project.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
+      </div>
+    </article>
+  );
+}
+
 function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-16">
       <div className="section-wrap">
         <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div></Reveal>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><article className="project-card katana-card h-full p-4" data-testid={`card-project-${project.number}`}><div className="mb-3 flex items-center justify-between mono text-[9px] opacity-60"><span>{project.number}</span><span>{project.kind}</span></div><ProjectVisual accent={project.accent} /><h3 className="display text-xl tracking-[-.04em]">{project.name}</h3><span className="katana-card-line" aria-hidden="true" /><p className="mt-3 min-h-[72px] text-xs leading-5 opacity-70">{project.description}</p><div className="mt-4 flex flex-wrap gap-1.5">{project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}</div><a href="#contact" className="mt-6 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-${project.number}`}>Discuss a build <ArrowUpRight size={13} /></a></article></Reveal>)}
+        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><ProjectCard project={project} /></Reveal>)}
         </div>
       </div>
     </section>
@@ -243,11 +314,11 @@ function Skills() {
           <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title display">Tech stack<br /><span className="serif normal-case">I work with.</span></h2></div>
         </Reveal>
         <div className="skills-grid">
-          {skills.map(({ title, icon: Icon, detail }, index) => (
+          {skills.map(({ title, icon: Icon, detail, anim }, index) => (
             <Reveal key={title} delay={index * 70} className="skills-cell">
               <div className="skills-card group">
                 <div className="skills-card-top">
-                  <span className="skills-icon"><Icon size={20} strokeWidth={1.6} /></span>
+                  <span className={`skills-icon skill-anim-${anim}`}><Icon size={20} strokeWidth={1.6} /></span>
                   <span className="mono skills-index">0{index + 1}</span>
                 </div>
                 <h3 className="display skills-title">{title}</h3>

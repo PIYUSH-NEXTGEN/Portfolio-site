@@ -221,10 +221,51 @@
 .skills-icon {
   display: inline-flex; align-items: center; justify-content: center;
   width: 42px; height: 42px; border: 1px solid rgba(32, 42, 54, .3); border-radius: 999px;
-  background: #f6f0e2; color: #202a36;
+  background: #f6f0e2; color: #202a36; perspective: 320px;
   transition: background-color .25s ease, transform .25s ease;
 }
-.theme-editorial .skills-card:hover .skills-icon { background: #e7dcc8; transform: translateY(-2px) rotate(-4deg); }
+.theme-editorial .skills-card:hover .skills-icon { background: #e7dcc8; color: #c84d3d; }
+/* Skill card icon hover animations — the disc stays put, only the glyph inside moves. */
+@keyframes skill-anim-wiggle {
+  0%, 100% { transform: translateX(-2px) rotate(-7deg); }
+  50% { transform: translateX(2px) rotate(7deg); }
+}
+@keyframes skill-anim-slide {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(3px) rotate(3deg); }
+  50% { transform: translateX(-3px) rotate(-3deg); }
+  75% { transform: translateX(1.5px) rotate(1.5deg); }
+}
+@keyframes skill-anim-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes skill-anim-revolve {
+  from { transform: rotateY(0deg) rotate(0deg); }
+  25% { transform: rotateY(90deg) rotate(7deg); }
+  50% { transform: rotateY(180deg) rotate(-5deg); }
+  75% { transform: rotateY(270deg) rotate(7deg); }
+  to { transform: rotateY(360deg) rotate(0deg); }
+}
+@keyframes skill-anim-glide {
+  0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+  30% { transform: translate(2.5px, -2.5px) rotate(0deg); }
+  60% { transform: translate(-1px, 1px) rotate(-8deg); }
+  80% { transform: translate(1.5px, -1.5px) rotate(-2deg); }
+}
+@keyframes skill-anim-pulse {
+  0%, 100% { transform: translateY(-1px) scale(1); }
+  50% { transform: translateY(-1px) scale(1.16); }
+}
+.theme-editorial .skills-card:hover .skills-icon.skill-anim-wiggle svg { animation: skill-anim-wiggle .7s ease-in-out infinite; }
+.theme-editorial .skills-card:hover .skills-icon.skill-anim-slide svg { animation: skill-anim-slide 2.6s ease-in-out infinite; }
+.theme-editorial .skills-card:hover .skills-icon.skill-anim-spin svg { animation: skill-anim-spin 1.5s linear infinite; }
+.theme-editorial .skills-card:hover .skills-icon.skill-anim-revolve svg { animation: skill-anim-revolve 2.2s linear infinite; }
+.theme-editorial .skills-card:hover .skills-icon.skill-anim-glide svg { animation: skill-anim-glide 2.2s ease-in-out infinite; }
+.theme-editorial .skills-card:hover .skills-icon.skill-anim-pulse svg { animation: skill-anim-pulse .85s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-editorial .skills-card:hover .skills-icon svg { animation: none !important; }
+}
 .skills-index { font-size: 10px; letter-spacing: .18em; opacity: .5; }
 .skills-title { font-size: 1.35rem; line-height: 1.1; margin: 0; }
 .skills-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
@@ -279,6 +320,25 @@
 .katana-card:hover .katana-card-line::after {
   opacity: 1;
   transform: scaleX(1) skewX(-24deg);
+}
+
+/* Project card: click to expand preview + details */
+.project-card { cursor: pointer; }
+.project-card:focus-visible { outline: 2px solid rgba(200, 77, 61, .55); outline-offset: -2px; }
+.theme-editorial .project-card-open { box-shadow: 9px 9px 0 rgba(32, 42, 54, .14); }
+.project-visual { transition: height .5s cubic-bezier(.22, 1, .36, 1); }
+.project-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .5s cubic-bezier(.22, 1, .36, 1), opacity .35s ease;
+}
+.project-expand-open { grid-template-rows: 1fr; opacity: 1; }
+.project-expand > .project-expand-inner { overflow: hidden; min-height: 0; }
+.project-more { padding-top: 14px; }
+.project-highlights { list-style: none; margin: 0; padding: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .project-card, .project-visual, .project-expand { transition: none !important; }
 }
 
 /* Cursor slash trail: short-lived 1px marks, desktop pointers only */
