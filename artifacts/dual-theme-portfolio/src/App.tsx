@@ -1,10 +1,11 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Rocket, Settings, Trophy, UsersRound, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Settings, Trophy, UsersRound, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
+import GuidedTour from '@/components/GuidedTour';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import NotFound from '@/pages/not-found';
@@ -95,13 +96,6 @@ const achievements = [
   { Icon: Trophy, title: 'Community lead', detail: 'Founded a programming community where curious builders learn, build, and ship together.' },
   { Icon: Medal, title: 'Full-stack ML', detail: 'Shipped ML-powered APIs end-to-end with FastAPI, Pydantic validation, and TensorFlow.' },
   { Icon: UsersRound, title: 'Hands-on builder', detail: 'Delivered 4+ production-minded projects across ML and backend engineering.' },
-];
-
-const communityPoints = [
-  'Weekly hands-on build sessions',
-  'Peer code reviews and pair programming',
-  'Team side-projects that go live',
-  'Guidance and a clear learning path',
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
@@ -491,26 +485,6 @@ function Experience() {
         </div>
 
         <div className="mt-10">
-          <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">The community</Reveal>
-          <Reveal className="community-card">
-            <div className="grid gap-6 sm:grid-cols-[.9fr_1.1fr] sm:items-start">
-              <div>
-                <span className="community-mark"><Rocket size={21} strokeWidth={1.6} /></span>
-                <h3 className="display text-xl mt-4">My coding<br /><span className="serif normal-case">community.</span></h3>
-              </div>
-              <div>
-                <p className="text-sm leading-6 opacity-70 max-w-[460px]">A hands-on programming community where members learn by building — from Python fundamentals to shipping real APIs and ML models together.</p>
-                <ul className="mt-5 space-y-2">
-                  {communityPoints.map((point) => (
-                    <li key={point} className="community-point">{point}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-
-        <div className="mt-10">
           <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
           <Reveal><ResumeCard /></Reveal>
         </div>
@@ -559,7 +533,7 @@ function Contact() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Experience /><Contact /><ScrollToTop /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Experience /><Contact /><ScrollToTop /><GuidedTour /></main>;
 }
 
 function Router() {
