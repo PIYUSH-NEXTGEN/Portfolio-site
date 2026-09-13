@@ -22,7 +22,7 @@ function Journey() {
           </div>
         </div>
       </header>
-      <section id="journey" className="section-anchor border-t border-current/20 py-24">
+      <section id="journey" className="section-anchor border-t border-current/20 py-16">
         <div className="section-wrap grid gap-12 lg:grid-cols-[.72fr_1.28fr]">
           <div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Journey</div>
           <h2 className="section-title display">The long<br /><span className="serif normal-case">version.</span></h2>

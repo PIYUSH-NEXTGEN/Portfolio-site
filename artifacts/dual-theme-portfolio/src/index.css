@@ -339,10 +339,10 @@
 .deco-bamboo {
   position: absolute; z-index: 0; pointer-events: none;
   right: 0;
-  top: -20px;
-  bottom: -20px;
+  top: 40px;
+  bottom: 0px;
   width: clamp(170px, 22vw, 260px);
-  height: calc(100% + 40px);
+  height: calc(100% - 40px);
   color: #d9c9ad;
 }
 .deco-bamboo svg { display: block; width: 100%; height: 100%; overflow: visible; }

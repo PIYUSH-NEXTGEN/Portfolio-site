@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Code2, Cpu, Layers3, Menu, Terminal, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, Code2, Database, Menu, Settings, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -62,12 +62,12 @@ const socialLinks = [
 ];
 
 const skills = [
-  { title: 'Languages', icon: Code2, detail: 'TypeScript, JavaScript, Python, Go, SQL, HTML, CSS' },
-  { title: 'Frontend', icon: Layers3, detail: 'React, Next.js, Vite, Tailwind CSS, Framer Motion, accessibility' },
-  { title: 'Backend', icon: Terminal, detail: 'Node.js, Express, REST APIs, GraphQL, Postgres, Prisma, WebSockets' },
-  { title: 'Libraries & Tools', icon: Boxes, detail: 'React Query, Zod, React Hook Form, Recharts, Git, GitHub, VS Code, Figma' },
-  { title: 'Machine Learning', icon: Cpu, detail: 'Python, scikit-learn, TensorFlow, data pipelines, model evaluation, prompt engineering' },
-  { title: 'Deployment & DevOps', icon: ArrowUpRight, detail: 'Docker, CI/CD, Linux, Vercel, Replit, monitoring, env management' },
+  { title: 'Programming Languages', icon: Code2, detail: 'Python, Golang, SQL, JS/TS, C++' },
+  { title: 'Libraries', icon: Boxes, detail: 'NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn, TensorFlow' },
+  { title: 'Backend', icon: Settings, detail: 'FastAPI, Pydantic' },
+  { title: 'Databases', icon: Database, detail: 'MySQL, PostgreSQL, SQL alchemy' },
+  { title: 'Deployment', icon: ArrowUpRight, detail: 'Render, Vercel' },
+  { title: 'Machine Learning', icon: Brain, detail: 'Supervised, Unsupervised, Data analysis' },
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
@@ -194,14 +194,12 @@ function Hero() {
           <strong className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">ML &amp; BACKEND ENGINNER</strong>
           <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">CS 2029</span>
           <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
+          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">BASED IN BHOPAL , INDIA</span>
           <span className="mt-3 block">CS student building at the intersection of Machine Learning and Backend Engineering.<br />Interested in developing scalable APIs, data-driven systems, and intelligent applications from the ground up.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
           <a href="#projects" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-work">View selected work <ArrowDown size={14} /></a>
           <a href="#about" className="button-quiet magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-about">Read the story <ArrowRight size={14} /></a>
-        </Reveal>
-        <Reveal className="mt-14 flex items-center gap-4 text-xs opacity-60" delay={320}>
-          <span className="mono text-[10px] uppercase tracking-[.18em]">BASED IN BHOPAL , INDIA</span>
         </Reveal>
       </div>
       <div className="katana-hero-photo">
@@ -226,7 +224,7 @@ function ProjectVisual({ accent }: { accent: string }) {
 
 function Projects() {
   return (
-    <section id="projects" className="section-anchor border-t border-current/20 py-24">
+    <section id="projects" className="section-anchor border-t border-current/20 py-16">
       <div className="section-wrap">
         <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div></Reveal>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -239,7 +237,7 @@ function Projects() {
 
 function Skills() {
   return (
-    <section id="skills" className="section-anchor border-t border-current/20 py-24">
+    <section id="skills" className="section-anchor border-t border-current/20 py-16">
       <div className="section-wrap">
         <Reveal className="mb-12">
           <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title display">Tech stack<br /><span className="serif normal-case">I work with.</span></h2></div>
@@ -276,7 +274,7 @@ function Contact() {
       <BambooDecoration />
       <div className="section-wrap contact-inner">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
-          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">05 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
+          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
           <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
         </Reveal>
       </div>
@@ -284,12 +282,8 @@ function Contact() {
   );
 }
 
-function Footer() {
-  return <footer className="footer border-t border-current/15 py-7"><div className="section-wrap footer-inner flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">AM</span><span className="text-xs opacity-70">Alex Morgan — full-stack developer & creative technologist</span></div><div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">© 2026 / made with care</div></div></footer>;
-}
-
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Contact /><Footer /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Contact /></main>;
 }
 
 function Router() {
