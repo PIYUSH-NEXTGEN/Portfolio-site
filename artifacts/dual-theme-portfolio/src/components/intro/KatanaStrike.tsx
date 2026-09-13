@@ -19,7 +19,7 @@ export function KatanaStrike() {
   const src = `${import.meta.env.BASE_URL}katana.png`;
   return (
     <div className="intro-katana" data-intro="katana" aria-hidden="true">
-      <img className="intro-katana-img" src={src} alt="" draggable={false} />
+      <img className="intro-katana-img" src={src} alt="" draggable={false} loading="eager" decoding="async" />
     </div>
   );
 }

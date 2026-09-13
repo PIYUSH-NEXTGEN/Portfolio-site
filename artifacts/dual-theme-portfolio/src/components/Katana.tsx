@@ -27,6 +27,8 @@ export function NavKatana() {
           src={src}
           alt=""
           draggable={false}
+          loading="lazy"
+          decoding="async"
           onError={() => setSrc(KATANA_INK_SRC)}
         />
       </div>

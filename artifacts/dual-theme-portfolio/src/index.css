@@ -286,7 +286,6 @@
 .theme-editorial .editorial-hero-copy span { max-width: 390px; }
 .icon-link { transition: transform .25s ease, color .25s ease; }
 .icon-link:hover { transform: translateY(-2px); color: #c84d3d; }
-.magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
 /* ── Experience, achievements, community & resume ──────────────────────

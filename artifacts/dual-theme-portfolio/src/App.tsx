@@ -1,5 +1,4 @@
-import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Rocket, Settings, Trophy, UsersRound, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
@@ -8,14 +7,10 @@ import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import Journey from '@/pages/journey';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import '@/index.css';
-
-const queryClient = new QueryClient();
 
 const projects = [
   {
@@ -110,9 +105,10 @@ const communityPoints = [
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
-    const node = document.querySelector(`[data-reveal="${delay}-${className.slice(0, 8)}"]`);
+    const node = ref.current;
     if (!node || !('IntersectionObserver' in window)) {
       setVisible(true);
       return;
@@ -125,8 +121,8 @@ function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; 
     }, { threshold: 0.12 });
     observer.observe(node);
     return () => observer.disconnect();
-  }, [className, delay]);
-  return <div data-reveal={`${delay}-${className.slice(0, 8)}`} className={`${visible ? 'reveal' : 'opacity-0 translate-y-4'} ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</div>;
+  }, []);
+  return <div ref={ref} className={`${visible ? 'reveal' : 'opacity-0 translate-y-4'} ${className}`} style={{ animationDelay: `${delay}ms` }}>{children}</div>;
 }
 
 function FallingLeaves() {
@@ -142,13 +138,25 @@ export { FallingLeaves };
 function HeroPhoto() {
   const defaultPhoto = `${import.meta.env.BASE_URL}pfp.png`;
   const [photo, setPhoto] = useState<string | null>(defaultPhoto);
+  const objectUrlRef = useRef<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    };
+  }, []);
 
   const handleFile = (file: File | undefined) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setPhoto(reader.result as string);
-    reader.readAsDataURL(file);
+    // Local preview only: reject non-images / >2MB so one bad file cannot
+    // exhaust memory or break the hero layout.
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 2 * 1024 * 1024) return;
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    const url = URL.createObjectURL(file);
+    objectUrlRef.current = url;
+    setPhoto(url);
   };
 
   return (
@@ -163,7 +171,10 @@ function HeroPhoto() {
         >
           <img
             src={photo}
-            alt="Profile photo"
+            alt="Piyush Baraskar — portrait"
+            loading="eager"
+            decoding="async"
+            onError={() => setPhoto(null)}
           />
         </button>
       ) : (
@@ -184,11 +195,15 @@ function HeroPhoto() {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/png,image/jpeg,image/webp,image/gif"
         className="hidden"
         aria-label="Upload hero photo"
         data-testid="input-hero-photo"
-        onChange={(event) => handleFile(event.target.files?.[0])}
+        onChange={(event) => {
+          handleFile(event.target.files?.[0]);
+          // Reset so choosing the same file twice still fires onChange.
+          event.target.value = '';
+        }}
       />
     </div>
   );
@@ -196,18 +211,27 @@ function HeroPhoto() {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  // Escape closes the mobile menu; keeps keyboard users in control.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
   const links = [['about', 'About'], ['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Journey'], ['contact', 'Contact']];
   return (
     <header className="nav sticky top-0 z-20">
       <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2" aria-label="Social links">
           {socialLinks.map(({ label, href, Icon, testId, color }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link" style={{ '--brand': color } as CSSProperties}>
+            <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link" style={{ '--brand': color } as CSSProperties}>
               <Icon size={18} />
             </a>
           ))}
         </div>
-        <nav className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-[64px] flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-5 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-7' : 'hidden md:flex'} items-center gap-5 md:gap-5 lg:gap-7`} aria-label="Primary navigation">
+        <nav id="primary-navigation" className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-[64px] flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-5 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-7' : 'hidden md:flex'} items-center gap-5 md:gap-5 lg:gap-7`} aria-label="Primary navigation">
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
@@ -215,7 +239,7 @@ function Header() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <NavKatana />
           <a href="#contact" className="button-primary hidden items-center gap-2 whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-contact">Start a project <ArrowUpRight size={13} /></a>
-          <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 shrink-0 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu">
+          <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 shrink-0 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="primary-navigation" data-testid="button-mobile-menu">
             {open ? <X size={16} /> : <Menu size={16} />}
           </button>
         </div>
@@ -230,10 +254,10 @@ function Hero() {
       <div className="katana-hero-content">
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">PIYUSH BARASKAR</span></Reveal>
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[15px] leading-7 opacity-75" delay={160}>
-          <strong className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">ML &amp; BACKEND ENGINNER</strong>
+          <strong className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">ML &amp; BACKEND ENGINEER</strong>
           <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">CS 2029</span>
           <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
-          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">BASED IN BHOPAL , INDIA</span>
+          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">BASED IN BHOPAL, INDIA</span>
           <span className="mt-3 block">CS student building at the intersection of Machine Learning and Backend Engineering.<br />Interested in developing scalable APIs, data-driven systems, and intelligent applications from the ground up.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
@@ -304,9 +328,9 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
           </div>
         </div>
       </div>
-      <div className="mt-6 flex flex-wrap items-center gap-3" onClick={(event) => event.stopPropagation()}>
-        <a href={project.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
-        <a href={project.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
+      <div className="mt-6 flex flex-wrap items-center gap-3" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
+        <a href={project.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
+        <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
       </div>
     </article>
   );
@@ -373,7 +397,7 @@ function ResumeCard() {
 
         <div className={`resume-unroll ${open ? 'resume-unroll-open' : ''}`}>
           <div className="resume-unroll-frame">
-            <img src={resumeImg} alt="Piyush Baraskar — resume" data-testid="img-resume" />
+            <img src={resumeImg} alt="Piyush Baraskar — resume" loading="lazy" data-testid="img-resume" />
           </div>
           <div className="resume-fold" aria-hidden="true" />
         </div>
@@ -381,7 +405,7 @@ function ResumeCard() {
         <div className={`resume-expand ${open ? 'resume-expand-open' : ''}`} aria-hidden={!open}>
           <div className="overflow-hidden">
             <div className="resume-roll">
-              <a href={resumePdf} target="_blank" rel="noreferrer" className="resume-download" data-testid="link-resume-download" tabIndex={open ? 0 : -1}>
+              <a href={resumePdf} target="_blank" rel="noopener noreferrer" className="resume-download" data-testid="link-resume-download" tabIndex={open ? 0 : -1}>
                 Download PDF <ArrowUpRight size={13} />
               </a>
             </div>
@@ -474,13 +498,34 @@ function Experience() {
 }
 
 function Contact() {
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sent'>('idle');
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Frontend-only site: no backend to receive mail, so validate locally and
+    // hand off to the visitor's mail client instead of a dead POST.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return;
+    if (message.trim().length < 10) return;
+    window.location.href = `mailto:alex.morgan@example.com?subject=${encodeURIComponent('Portfolio contact')}&body=${encodeURIComponent(`From: ${email.trim()}\n\n${message.trim()}`)}`;
+    setStatus('sent');
+  };
+
   return (
     <section id="contact" className="section-anchor contact-section border-t border-current/20 py-24">
       <BambooDecoration />
       <div className="section-wrap contact-inner">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
-          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p><a href="mailto:alex@example.com" className="button-primary mt-8 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-contact-email">Send an email <ArrowUpRight size={14} /></a></div>
-          <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
+          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p>
+            <form onSubmit={onSubmit} className="mt-8 grid max-w-[440px] gap-3" aria-label="Contact form">
+              <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
+              <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={4} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
+              <button type="submit" className="button-primary mt-2 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-contact-send">Send an email <ArrowUpRight size={14} /></button>
+              {status === 'sent' && <p role="status" className="text-sm opacity-70">Opening your mail client — I’ll reply soon.</p>}
+            </form>
+          </div>
+          <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
         </Reveal>
       </div>
     </section>
@@ -501,7 +546,7 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  return <QueryClientProvider client={queryClient}><TooltipProvider><WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /></WouterRouter><Toaster /><IntroSequence /></TooltipProvider></QueryClientProvider>;
+  return <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /><IntroSequence /></WouterRouter>;
 }
 
 export default App;

@@ -1,6 +1,7 @@
+import { Link } from 'wouter';
 import { ArrowLeft } from 'lucide-react';
 import { FallingLeaves } from '@/App';
-import { CursorSlash, NavKatana } from '@/components/Katana';
+import { CursorSlash } from '@/components/Katana';
 import { DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 
@@ -13,12 +14,12 @@ function Journey() {
       <WanderingCat />
       <header className="nav sticky top-0 z-20">
         <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
-          <a href="/" className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" data-testid="link-back-home">
+          <Link href="/" className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" data-testid="link-back-home">
             <ArrowLeft size={14} />
             Back to home
-          </a>
+          </Link>
           <div className="flex-shrink-0 items-center gap-2 sm:gap-3">
-            <span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">AM</span>
+            <span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">PB</span>
           </div>
         </div>
       </header>
@@ -48,7 +49,7 @@ function Journey() {
       <footer className="footer border-t border-current/15 py-7">
         <div className="section-wrap footer-inner flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">AM</span>
+            <span className="flex h-8 w-8 items-center justify-center border border-current font-mono text-[10px] font-bold">PB</span>
             <span className="text-xs opacity-70">Piyush Baraskar — ML & Backend Engineer</span>
           </div>
           <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">© 2026 / made with care</div>

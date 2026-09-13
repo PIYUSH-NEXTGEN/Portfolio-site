@@ -155,8 +155,8 @@ export function WanderingCat() {
           transition: pose === 'walk' && pos.dur > 0 ? `transform ${pos.dur}s linear` : 'transform .45s ease',
         }}
       >
-        <span className="cat-half cat-top"><img className="cat-img" src={CAT_SRC} alt="" draggable={false} /></span>
-        <span className="cat-half cat-legs"><img className="cat-img" src={CAT_SRC} alt="" draggable={false} /></span>
+        <span className="cat-half cat-top"><img className="cat-img" src={CAT_SRC} alt="" draggable={false} loading="lazy" decoding="async" /></span>
+        <span className="cat-half cat-legs"><img className="cat-img" src={CAT_SRC} alt="" draggable={false} loading="lazy" decoding="async" /></span>
       </div>
     </div>
   );

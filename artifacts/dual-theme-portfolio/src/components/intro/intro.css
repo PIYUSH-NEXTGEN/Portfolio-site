@@ -301,15 +301,6 @@
 .intro-shard-14 { width: 7px; height: 7px; }
 .intro-spark {
   display: none; /* sparks removed — no ember dots, no orange streaks */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  opacity: 0;
-  background: radial-gradient(circle, #ffffff 0%, rgba(223, 229, 236, 0.9) 55%, rgba(223, 229, 236, 0) 75%);
-  box-shadow: 0 0 6px rgba(223, 229, 236, 0.7);
 }
 
 /* ── Katana (uploaded asset) ────────────────────────────────────────────
@@ -341,24 +332,7 @@
   /* Orientation fix (independent of GSAP's `transform`): the source PNG is
      handle-up / edge-down, so flip it 180° → handle DOWN, edge UP. */
   rotate: 180deg;
-}
-.intro-katana-img {
   filter: invert(1) saturate(0) brightness(0.9) contrast(1.08) drop-shadow(0 0 14px rgba(223, 233, 244, 0.35));
-}
-/* Curved slash-arc trail that follows the blade's swing. The timeline drives
-   --arc-x (dash draw) and opacity; the trail blooms then evaporates. */
-.intro-katana-arc-unused {
-  position: absolute;
-  inset: -22%;
-  width: 144%;
-  height: 144%;
-  opacity: 0;
-  overflow: visible;
-  filter: none; /* dead rule — zero orange by design */
-}
-.intro-katana-arc-path-unused {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
 }
 @media (max-width: 767px) {
   .intro-katana {
