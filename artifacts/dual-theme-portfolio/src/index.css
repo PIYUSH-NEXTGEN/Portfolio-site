@@ -289,6 +289,62 @@
 .magnetic-button { transition: transform .25s ease, background-color .25s ease; }
 .section-anchor { scroll-margin-top: 86px; }
 
+/* ── Experience, achievements, community & resume ──────────────────────
+   A single full section between Skills and Contact. Achievement cards
+   share the editorial icon treatment; the community block is a bordered
+   feature card; the resume is rendered as a blank A4-style sheet with
+   roomy gutters and faint guide rules so content can be dropped in. */
+.theme-editorial .achievement-card {
+  display: flex; flex-direction: column; gap: 14px; padding: 22px;
+  border: 1px solid rgba(58,68,81,.22); border-radius: 2px;
+  background: rgba(255,255,255,.35);
+  transition: transform .25s ease, border-color .25s ease;
+}
+.theme-editorial .achievement-card:hover { transform: translateY(-2px); border-color: rgba(200,130,155,.6); }
+.theme-editorial .achievement-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border: 1px solid rgba(58,68,81,.3);
+  border-radius: 999px; color: #c84d3d;
+}
+.theme-editorial .community-card {
+  border: 1px solid rgba(58,68,81,.32); border-radius: 2px;
+  padding: 42px 0; background: rgba(216,203,183,.4);
+}
+.theme-editorial .community-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border: 1px solid rgba(58,68,81,.3);
+  border-radius: 999px; color: #c84d3d;
+}
+.theme-editorial .community-point {
+  display: flex; align-items: center; gap: 10px; font-size: 13px;
+  color: #202a36; opacity: .8;
+}
+.theme-editorial .community-point::before { content: '✦'; color: #c84d3d; font-size: 11px; }
+/* Resume — blank sheet, well spaced so content fits */
+.theme-editorial .resume-sheet {
+  background: #f7f2e8; color: #202a36;
+  border: 1px solid rgba(58,68,81,.25); border-radius: 2px;
+  box-shadow: var(--shadow); padding: 46px 54px;
+  position: relative;
+}
+.theme-editorial .resume-sheet::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: rgba(200,77,61,.28);
+}
+.theme-editorial .resume-sheet-top {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 14px; padding-bottom: 24px; border-bottom: 1px dashed rgba(58,68,81,.32);
+}
+.theme-editorial .resume-sheet-name { font-size: 16px; letter-spacing: .04em; font-weight: 600; }
+.theme-editorial .resume-sheet-role { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin-top: 5px; opacity: .7; }
+.theme-editorial .resume-frame { margin-top: 30px; }
+.theme-editorial .resume-frame-title {
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(32,42,54,.55); margin-bottom: 14px;
+}
+.theme-editorial .resume-rule { border-top: 1px dashed rgba(58,68,81,.18); }
+.theme-editorial .resume-frame-body { padding: 72px 0 0; }
+
 /* ── Hero portrait: profile photo ───────────────────────────────────────
    The default hero portrait is public/pfp.png, rendered as a plain <img>.
    It is sized by the generic .theme-editorial .hero-photo-filled img rules

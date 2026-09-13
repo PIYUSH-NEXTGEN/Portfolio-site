@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Menu, Settings, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Rocket, Settings, Trophy, UsersRound, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -88,6 +88,25 @@ const skills = [
   { title: 'Databases', icon: Database, detail: 'MySQL, PostgreSQL, SQL alchemy', anim: 'revolve' },
   { title: 'Deployment', icon: ArrowUpRight, detail: 'Render, Vercel', anim: 'glide' },
   { title: 'Machine Learning & AI', icon: Brain, detail: 'Supervised, Unsupervised, Neural Networks, Data analysis', anim: 'pulse' },
+];
+
+const experience = [
+  ['2025 — now', 'Independent / ML & Backend Engineer', 'Building data-driven systems, scalable APIs, and intelligent applications from the ground up.'],
+  ['2024 — now', 'Programming community / founder & lead', 'Founded a community where members learn by building — from Python fundamentals to shipping real ML and backend projects.'],
+  ['2024 — 2029', 'B.Tech in Computer Science', 'Technocrats Institute of Technology — the foundation behind the APIs, models, and all-night debug sessions.'],
+];
+
+const achievements = [
+  { Icon: Trophy, title: 'Community lead', detail: 'Founded a programming community where curious builders learn, build, and ship together.' },
+  { Icon: Medal, title: 'Full-stack ML', detail: 'Shipped ML-powered APIs end-to-end with FastAPI, Pydantic validation, and TensorFlow.' },
+  { Icon: UsersRound, title: 'Hands-on builder', detail: 'Delivered 4+ production-minded projects across ML and backend engineering.' },
+];
+
+const communityPoints = [
+  'Weekly hands-on build sessions',
+  'Peer code reviews and pair programming',
+  'Team side-projects that go live',
+  'Guidance and a clear learning path',
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
@@ -339,6 +358,95 @@ function Skills() {
   );
 }
 
+function Experience() {
+  return (
+    <section id="experience" className="section-anchor border-t border-current/20 py-16">
+      <div className="section-wrap">
+        <Reveal className="mb-12">
+          <div>
+            <div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">04 / EXPERIENCE, ACHIEVEMENTS &amp; COMMUNITY</div>
+            <h2 className="section-title display">The record<br /><span className="serif normal-case">I’m building.</span></h2>
+            <p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Experience, a few things I’m proud of, the programming community I lead — and a resume sheet that fills in as the next chapter lands.</p>
+          </div>
+        </Reveal>
+
+        <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">Experience</Reveal>
+        <div className="divide-y divide-current/20 border-y border-current/20">
+          {experience.map(([date, role, description]) => (
+            <div key={date} className="grid gap-3 py-6 sm:grid-cols-[.28fr_.72fr]">
+              <div className="mono text-[10px] uppercase tracking-[.13em] opacity-60">{date}</div>
+              <div>
+                <h3 className="display text-lg">{role}</h3>
+                <p className="mt-2 max-w-[470px] text-sm leading-6 opacity-65">{description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-20">
+          <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">Achievements</Reveal>
+          <div className="grid items-stretch gap-6 sm:grid-cols-3">
+            {achievements.map(({ Icon, title, detail }, index) => (
+              <Reveal key={title} delay={index * 90} className="achievement-card">
+                <div className="flex items-center gap-3">
+                  <span className="achievement-icon"><Icon size={20} strokeWidth={1.6} /></span>
+                  <span className="mono skills-index">0{index + 1}</span>
+                </div>
+                <h3 className="display text-lg mt-5">{title}</h3>
+                <p className="mt-2 text-sm leading-6 opacity-70">{detail}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-20">
+          <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">The community</Reveal>
+          <Reveal className="community-card">
+            <div className="grid gap-8 sm:grid-cols-[.9fr_1.1fr] sm:items-start">
+              <div>
+                <span className="community-mark"><Rocket size={24} strokeWidth={1.6} /></span>
+                <h3 className="display text-xl mt-5">My coding<br /><span className="serif normal-case">community.</span></h3>
+              </div>
+              <div>
+                <p className="text-sm leading-7 opacity-70 max-w-[460px]">A hands-on programming community where members learn by building — from Python fundamentals to shipping real APIs and ML models together.</p>
+                <ul className="mt-7 space-y-3">
+                  {communityPoints.map((point) => (
+                    <li key={point} className="community-point">{point}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        <div className="mt-20">
+          <Reveal className="mono mb-4 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
+          <Reveal className="resume-sheet">
+            <div className="resume-sheet-top">
+              <div>
+                <div className="resume-sheet-name">PIYUSH BARASKAR</div>
+                <div className="resume-sheet-role">ML &amp; Backend Engineer</div>
+              </div>
+              <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">Blank sheet — ready when you are</div>
+            </div>
+            <div className="resume-frame">
+              <div className="resume-frame-title">Experience</div>
+              <div className="resume-rule" aria-hidden="true" />
+              <div className="resume-frame-body"><span>·</span></div>
+              <div className="resume-frame-title mt-8">Projects &amp; community</div>
+              <div className="resume-rule" aria-hidden="true" />
+              <div className="resume-frame-body"><span>·</span></div>
+              <div className="resume-frame-title mt-8">Education</div>
+              <div className="resume-rule" aria-hidden="true" />
+              <div className="resume-frame-body mb-2"><span>·</span></div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Contact() {
   return (
     <section id="contact" className="section-anchor contact-section border-t border-current/20 py-24">
@@ -354,7 +462,7 @@ function Contact() {
 }
 
 function Home() {
-  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Contact /></main>;
+  return <main className="site-shell theme-editorial paper-noise"><CursorSlash /><DecorativeBranches /><FallingLeaves /><WanderingCat /><Header /><Hero /><Projects /><Skills /><Experience /><Contact /></main>;
 }
 
 function Router() {
