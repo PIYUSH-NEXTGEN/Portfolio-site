@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { MousePointerClick, X } from 'lucide-react';
 
 /* ── Guided tour ───────────────────────────────────────────────────────
    A virtual cursor walks first-time visitors through the site: it glides
@@ -81,6 +80,11 @@ const TOUR_STEPS: TourStep[] = [
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
+/* External trigger so the hero's "Take me through" button can start the tour
+   without rendering the floating pill button here anymore. */
+let externalStart: (() => void) | null = null;
+export function startGuidedTour() { externalStart?.(); }
+
 export default function GuidedTour() {
   const [running, setRunning] = useState(false);
   const [caption, setCaption] = useState('');
@@ -97,6 +101,13 @@ export default function GuidedTour() {
   useEffect(() => {
     reducedRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return () => { cancelRef.current = true; };
+  }, []);
+
+  /* Register the external start trigger (used by the hero button). */
+  useEffect(() => {
+    externalStart = () => { if (!runningRef.current) void startTour(); };
+    return () => { externalStart = null; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Escape (or any scrolling intent) ends the tour gracefully. */
@@ -347,16 +358,6 @@ export default function GuidedTour() {
         </svg>
         <div className={`tour-caption ${captionOn ? 'tour-caption-on' : ''}`} role="status">{caption}</div>
       </div>
-      <button
-        type="button"
-        onClick={running ? () => { cancelRef.current = true; } : startTour}
-        className={`guided-tour-button ${running ? 'guided-tour-running' : ''}`}
-        data-testid="button-guided-tour"
-        aria-label={running ? 'Skip the guided tour' : 'Take a guided tour of the site'}
-      >
-        {running ? <X size={14} /> : <MousePointerClick size={15} />}
-        <span>{running ? 'Skip tour' : 'Take me through'}</span>
-      </button>
     </>
   );
 }

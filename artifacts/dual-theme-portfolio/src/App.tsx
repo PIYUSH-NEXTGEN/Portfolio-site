@@ -1,12 +1,12 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Settings, Trophy, UsersRound, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, MousePointerClick, Settings, Trophy, UsersRound, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
-import GuidedTour from '@/components/GuidedTour';
+import GuidedTour, { startGuidedTour } from '@/components/GuidedTour';
 import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import NotFound from '@/pages/not-found';
@@ -239,7 +239,7 @@ function Header() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
-  const links = [['about', 'About'], ['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Experience'], ['contact', 'Contact']];
+  const links = [['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Experience'], ['contact', 'Contact']];
   return (
     <header className="nav sticky top-0 z-20">
       <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
@@ -250,7 +250,7 @@ function Header() {
             </a>
           ))}
         </div>
-        <nav id="primary-navigation" className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-[64px] flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-5 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-7' : 'hidden md:flex'} items-center gap-5 md:gap-5 lg:gap-7`} aria-label="Primary navigation">
+        <nav id="primary-navigation" className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-[64px] flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-8' : 'hidden md:flex'} items-center gap-5 md:gap-6 lg:gap-8`} aria-label="Primary navigation">
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
@@ -273,16 +273,16 @@ function Hero() {
     <section id="top" className="section-anchor section-wrap editorial-hero katana-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
       <div className="katana-hero-content">
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">PIYUSH BARASKAR</span></Reveal>
-        <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[15px] leading-7 opacity-75" delay={160}>
-          <strong className="mono block text-[10px] uppercase tracking-[.18em]">ML &amp; BACKEND ENGINEER</strong>
-          <span className="mono block text-[10px] uppercase tracking-[.18em] mt-2">CS 2029</span>
-          <span className="mono block text-[10px] uppercase tracking-[.18em]">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
-          <span className="mono block text-[10px] uppercase tracking-[.18em] mt-2">BASED IN BHOPAL, INDIA</span>
-          <span className="mt-3 block">Building at the intersection of Machine Learning and Backend Engineering.<br />Developing end to end software across machine learning, backend systems, databases, APIs, and frontend development, with a focus on building practical, data driven applications from the ground up.</span>
+        <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[16px] leading-7 opacity-75" delay={160}>
+          <strong className="mono block text-[12px] uppercase tracking-[.18em]">ML &amp; BACKEND ENGINEER</strong>
+          <span className="mono block text-[12px] uppercase tracking-[.18em] mt-2">CS 2029</span>
+          <span className="mono block text-[12px] uppercase tracking-[.18em]">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
+          <span className="mono block text-[12px] uppercase tracking-[.18em] mt-2">BASED IN BHOPAL, INDIA</span>
+          <span className="mt-5 block">Building at the intersection of Machine Learning and Backend Engineering.<br />Developing end to end software across machine learning, backend systems, databases, APIs, and frontend development.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
-          <a href="#projects" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-work">View selected work <ArrowDown size={14} /></a>
-          <a href="#about" className="button-quiet magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-about">Read the story <ArrowRight size={14} /></a>
+          <button type="button" onClick={() => startGuidedTour()} className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-hero-tour">Take me through <MousePointerClick size={14} className="hero-tour-icon" /></button>
+          <Link href="/journey" className="button-quiet magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-journey">Read the story <ArrowRight size={14} /></Link>
         </Reveal>
       </div>
       <div className="katana-hero-photo">
@@ -298,21 +298,19 @@ function ProjectVisual({ accent, year, compact = false }: { accent: string; year
   const background = accent === 'coral' ? '#d5c3ad' : accent === 'gold' ? '#d7d5bd' : accent === 'blue' ? '#bdccd0' : '#c9ced0';
   if (compact) {
     return (
-      <div className="project-visual relative overflow-hidden border border-current/20" style={{ backgroundColor: background, height: '4.5rem' }}>
-        <div className="absolute left-3 top-2 mono text-[9px] opacity-60">PREVIEW / {year}</div>
-        <div className="absolute bottom-1.5 left-3 right-3 top-7 border border-current/25 bg-black/10 p-2">
-          <div className="mb-1.5 flex gap-1"><span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current opacity-35" /><span className="h-1 w-1 rounded-full bg-current opacity-15" /></div>
-          <div className="grid h-5 grid-cols-[.8fr_1.2fr] gap-1.5">
-            <div className="border border-current/15 p-1"><div className="h-1 w-1/2 bg-current/40" /><div className="mt-1 h-2 w-full bg-current/15" /></div>
-            <div className="border border-current/15 p-1"><div className="h-1 w-1/3 bg-current/40" /><div className="mt-1 flex h-2 items-end gap-1">{[35, 60, 42, 78, 50, 88, 63].map((h, i) => <span key={i} className="flex-1 bg-current/35" style={{ height: `${h}%` }} />)}</div></div>
+      <div className="project-visual relative overflow-hidden border border-current/20" style={{ backgroundColor: background, height: '7rem' }}>
+        <div className="absolute bottom-2 left-3 right-3 top-2 border border-current/25 bg-black/10 p-2.5">
+          <div className="mb-2 flex gap-1"><span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current opacity-35" /><span className="h-1 w-1 rounded-full bg-current opacity-15" /></div>
+          <div className="grid h-8 grid-cols-[.8fr_1.2fr] gap-2">
+            <div className="border border-current/15 p-1.5"><div className="h-1.5 w-1/2 bg-current/40" /><div className="mt-1.5 h-3 w-full bg-current/15" /></div>
+            <div className="border border-current/15 p-1.5"><div className="h-1.5 w-1/3 bg-current/40" /><div className="mt-1.5 flex h-3 items-end gap-1">{[35, 60, 42, 78, 50, 88, 63].map((h, i) => <span key={i} className="flex-1 bg-current/35" style={{ height: `${h}%` }} />)}</div></div>
           </div>
         </div>
       </div>
     );
   }
   return <div className="project-visual relative mb-5 overflow-hidden border border-current/20 p-4" style={{ backgroundColor: background, height: '13rem' }}>
-    <div className="absolute left-4 top-4 mono text-[9px] opacity-60">PREVIEW / {year}</div>
-    <div className="absolute bottom-5 left-5 right-5 top-12 border border-current/25 bg-black/10 p-3">
+    <div className="absolute bottom-5 left-5 right-5 top-4 border border-current/25 bg-black/10 p-3">
       <div className="mb-3 flex gap-1"><span className="h-1.5 w-1.5 rounded-full bg-current" /><span className="h-1.5 w-1.5 rounded-full bg-current opacity-35" /><span className="h-1.5 w-1.5 rounded-full bg-current opacity-15" /></div>
       <div className="grid h-20 grid-cols-[.8fr_1.2fr] gap-2"><div className="border border-current/15 p-2"><div className="h-2 w-1/2 bg-current/40" /><div className="mt-3 h-8 w-full bg-current/15" /></div><div className="border border-current/15 p-2"><div className="h-2 w-1/3 bg-current/40" /><div className="mt-3 flex h-8 items-end gap-1">{[35, 60, 42, 78, 50, 88, 63].map((height, index) => <span key={index} className="flex-1 bg-current/35" style={{ height: `${height}%` }} />)}</div></div></div>
     </div>
@@ -360,18 +358,23 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[number]
         data-testid={`project-modal-panel-${project.number}`}
         onClick={(event) => event.stopPropagation()}
       >
-        <button
-          type="button"
-          className="project-modal-close"
-          onClick={handleClose}
-          aria-label="Close project details"
-          data-testid={`button-project-modal-close-${project.number}`}
-        >
-          <X size={16} />
-        </button>
+        <div className="mb-1 flex justify-end">
+          <button
+            type="button"
+            className="project-modal-close"
+            onClick={handleClose}
+            aria-label="Close project details"
+            data-testid={`button-project-modal-close-${project.number}`}
+          >
+            <X size={16} />
+          </button>
+        </div>
         <ProjectVisual accent={project.accent} year={project.year} />
-        <div className="mono mt-4 text-[9px] uppercase tracking-[.15em] opacity-60">{project.number} / {project.kind} / {project.year}</div>
-        <h3 className="display mt-2 text-3xl tracking-[-.04em]">{project.name}</h3>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+          <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
+          <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
+        </div>
+        <h3 className="display mt-5 text-3xl tracking-[-.04em]">{project.name}</h3>
         <p className="mt-3 text-sm leading-6 opacity-80">{project.description}</p>
         <p className="mt-3 text-sm leading-6 opacity-70">{project.details}</p>
         <ul className="project-highlights mt-4">
@@ -384,10 +387,6 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[number]
         </ul>
         <div className="mt-4 flex flex-wrap gap-1.5">
           {project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}
-        </div>
-        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-dashed border-current/20 pt-4">
-          <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em]" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
-          <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em]" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
         </div>
       </div>
     </div>
@@ -406,7 +405,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
     <>
       <article
         ref={cardRef}
-        className="project-card project-card-compact katana-card"
+        className="project-card project-card-compact katana-card flex h-full flex-col p-4"
         data-testid={`card-project-${project.number}`}
         onClick={handleOpen}
         onKeyDown={(event) => {
@@ -420,18 +419,11 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
         aria-haspopup="dialog"
         aria-label={`Open ${project.name} project details`}
       >
-        <div className="mb-2 flex items-center justify-between mono text-[9px] opacity-60">
-          <span>{project.number}</span>
-          <span className="flex items-center gap-1">{project.kind}<ChevronDown size={12} className="project-card-chevron" /></span>
-        </div>
         <ProjectVisual accent={project.accent} year={project.year} compact />
-        <h3 className="display mt-3 text-lg tracking-[-.04em]">{project.name}</h3>
+        <h3 className="display mt-4 text-xl leading-tight tracking-[-.02em]">{project.name}</h3>
         <span className="katana-card-line" aria-hidden="true" />
-        <p className="mt-2 line-clamp-2 text-xs leading-5 opacity-70">{project.description}</p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}
-        </div>
-        <span className="project-open-cta mono mt-4 flex items-center justify-center gap-2 border border-current/20 py-2 text-[9px] uppercase tracking-[.15em] opacity-60">
+        <p className="mb-4 mt-2 text-xs leading-5 opacity-75">{project.description}</p>
+        <span className="project-open-cta mono mt-auto flex items-center justify-center gap-2 border border-current/20 py-2 text-[9px] uppercase tracking-[.15em] opacity-60">
           Open project <ArrowUpRight size={12} />
         </span>
       </article>
@@ -445,8 +437,8 @@ function Projects() {
     <section id="projects" className="section-anchor border-t border-current/20 py-16">
       <div className="section-wrap">
         <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
-        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><ProjectCard project={project} /></Reveal>)}
+        <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {projects.map((project, index) => <Reveal key={project.name} delay={index * 80} className="h-full"><ProjectCard project={project} /></Reveal>)}
         </div>
       </div>
     </section>
