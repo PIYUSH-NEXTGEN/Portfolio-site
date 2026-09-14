@@ -145,6 +145,8 @@
 .theme-editorial .button-quiet:hover { background: rgba(255,255,255,.25); transform: translateY(-2px); }
 .theme-editorial .accent-stamp { color: #c84d3d; border: 1px solid #c84d3d; transform: rotate(-4deg); }
 .theme-editorial .section-title { font-size: clamp(2.4rem, 5vw, 5rem); line-height: .9; }
+/* Slightly smaller variant used by the numbered sections (02, 03, 04). */
+.theme-editorial .section-title-sm { font-size: clamp(1.85rem, 3.8vw, 3.8rem); line-height: .9; }
 .theme-editorial .hero-photo-wrap { background: #d9c9ad; border: 1px solid var(--line); max-width: 320px; justify-self: start; width: 100%; }
 .theme-editorial .nav .section-wrap { padding-top: 6px; padding-bottom: 6px; }
 .theme-editorial .nav-link { position: relative; padding: 6px 2px; }
@@ -499,7 +501,7 @@
   .deco-branch-tl { width: 220px; }
   .deco-branch-tr { width: 200px; }
   .deco-branch-bl { display: none; }
-  .theme-editorial .contact-section .section-wrap { padding-right: clamp(170px, 26vw, 240px); }
+  .theme-editorial .contact-section .section-wrap { padding-right: clamp(140px, 22vw, 200px); }
   .deco-bamboo { width: 200px; }
 }
 /* Subtle Japanese branch + bamboo environment (separate from katana) */
@@ -509,14 +511,15 @@
 .deco-branch svg { display: block; width: 100%; height: auto; overflow: visible; }
 .deco-branch-tl { top: 56px; left: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
 .deco-branch-tr { top: 56px; right: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
-.deco-branch-bl { top: 46%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
+.deco-branch-bl { top: 52%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
+.deco-branch-br { top: 52%; right: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
 .site-shell > header,
 .site-shell > section,
 .site-shell > footer { position: relative; z-index: 1; }
 .theme-editorial .footer { position: relative; overflow: hidden; }
 .theme-editorial .footer-inner { position: relative; z-index: 1; }
 .theme-editorial .contact-section { position: relative; overflow: hidden; }
-.theme-editorial .contact-section .section-wrap { padding-right: clamp(190px, 30vw, 330px); }
+.theme-editorial .contact-section .section-wrap { padding-right: clamp(150px, 24vw, 260px); }
 .theme-editorial .contact-inner { position: relative; z-index: 1; }
 .deco-bamboo {
   position: absolute; z-index: 0; pointer-events: none;
@@ -983,6 +986,18 @@ body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden 
 @media (prefers-reduced-motion: reduce) {
   .project-modal-backdrop, .project-modal-panel { transition: none !important; }
 }
+
+/* Resume modal — reuses the project-modal chrome, sized so the whole portrait
+   page is visible in one view with no scrolling. The panel never scrolls;
+   the image flexes to fit the viewport height via object-fit. */
+.resume-modal-panel { width: min(680px, 100%); max-height: 94dvh; overflow: hidden; display: flex; flex-direction: column; padding: 14px 20px; }
+.resume-modal-img {
+  display: block; margin: 4px auto 0;
+  max-width: 100%; max-height: calc(94dvh - 158px);
+  width: auto; height: auto; object-fit: contain;
+  border: 1px solid var(--line);
+}
+.resume-modal-actions { display: flex; justify-content: center; margin-top: 10px; }
 
 /* Hero "Take me through" cursor — a full revolution that spins around its
    centre and settles back to its starting spot. Respects the global

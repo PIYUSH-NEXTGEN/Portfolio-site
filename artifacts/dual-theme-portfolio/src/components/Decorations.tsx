@@ -54,6 +54,9 @@ export function DecorativeBranches() {
       <div className="deco-branch-bl">
         <BranchSpray flip />
       </div>
+      <div className="deco-branch-br">
+        <BranchSpray />
+      </div>
     </div>
   );
 }

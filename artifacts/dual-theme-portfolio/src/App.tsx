@@ -1,7 +1,7 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, MousePointerClick, Settings, Trophy, UsersRound, X } from 'lucide-react';
-import { SiLeetcode, SiPeerlist } from 'react-icons/si';
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Code2, Database, Menu, MousePointerClick, Settings, X } from 'lucide-react';
+import { SiCplusplus, SiFastapi, SiGo, SiJavascript, SiLeetcode, SiMysql, SiNumpy, SiPandas, SiPeerlist, SiPostgresql, SiPydantic, SiPython, SiPytorch, SiRender, SiScikitlearn, SiSqlalchemy, SiTensorflow, SiTypescript, SiVercel } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
@@ -79,24 +79,85 @@ const socialLinks = [
 ];
 
 const skills = [
-  { title: 'Programming Languages', icon: Code2, detail: 'Python, Golang, SQL, JS/TS, C++', anim: 'wiggle' },
-  { title: 'Libraries', icon: Boxes, detail: 'NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn, TensorFlow', anim: 'slide' },
-  { title: 'Backend', icon: Settings, detail: 'FastAPI, Pydantic', anim: 'spin' },
-  { title: 'Databases', icon: Database, detail: 'MySQL, PostgreSQL, SQL alchemy', anim: 'revolve' },
-  { title: 'Deployment', icon: ArrowUpRight, detail: 'Render, Vercel', anim: 'glide' },
-  { title: 'Machine Learning & AI', icon: Brain, detail: 'Supervised, Unsupervised, Neural Networks, Data analysis', anim: 'pulse' },
+  {
+    title: 'Programming Languages',
+    items: [
+      { name: 'Python', Icon: SiPython },
+      { name: 'Go', Icon: SiGo },
+      { name: 'JavaScript', Icon: SiJavascript },
+      { name: 'TypeScript', Icon: SiTypescript },
+      { name: 'C++', Icon: SiCplusplus },
+    ],
+  },
+  {
+    title: 'Machine Learning',
+    items: [
+      { name: 'NumPy', Icon: SiNumpy },
+      { name: 'Pandas', Icon: SiPandas },
+      { name: 'scikit-learn', Icon: SiScikitlearn },
+      { name: 'TensorFlow', Icon: SiTensorflow },
+      { name: 'PyTorch', Icon: SiPytorch },
+    ],
+  },
+  {
+    title: 'Backend',
+    items: [
+      { name: 'FastAPI', Icon: SiFastapi },
+      { name: 'Pydantic', Icon: SiPydantic },
+    ],
+  },
+  {
+    title: 'Databases',
+    items: [
+      { name: 'MySQL', Icon: SiMysql },
+      { name: 'PostgreSQL', Icon: SiPostgresql },
+      { name: 'SQLAlchemy', Icon: SiSqlalchemy },
+    ],
+  },
+  {
+    title: 'Deployment',
+    items: [
+      { name: 'Render', Icon: SiRender },
+      { name: 'Vercel', Icon: SiVercel },
+    ],
+  },
 ];
 
 const experience = [
-  ['2025 — now', 'Independent / ML & Backend Engineer', 'Building data-driven systems, scalable APIs, and intelligent applications from the ground up.'],
-  ['2024 — now', 'Programming community / founder & lead', 'Founded a community where members learn by building — from Python fundamentals to shipping real ML and backend projects.'],
-  ['2024 — 2029', 'B.Tech in Computer Science', 'Technocrats Institute of Technology — the foundation behind the APIs, models, and all-night debug sessions.'],
+  {
+    date: '2025 — 2029',
+    role: 'B.Tech in Computer Science',
+    description: <>Technocrats Institute of Technology</>,
+  },
+  {
+    date: '2025 — Present',
+    role: 'Independent ML & Backend Developer',
+    description: <>Building practical applications across machine learning, backend systems, APIs, databases, and frontend development, with a focus on developing software end to end.</>,
+  },
+  {
+    date: '2025 — Present',
+    role: 'Founder & Lead, Nextgen Programmers',
+    description: <>Built and lead a worldwide programming community of <strong className="font-semibold">700+ active members</strong>, creating a space for developers to learn, collaborate, and grow together.</>,
+  },
+  {
+    date: 'May 2026 — Jun 2026',
+    role: 'GSSOC Contributor',
+    description: <>Merged <strong className="font-semibold">9 pull requests</strong> while contributing to open source projects during GirlScript Summer of Code 2026.</>,
+  },
 ];
 
 const achievements = [
-  { Icon: Trophy, title: 'Community lead', detail: 'Founded a programming community where curious builders learn, build, and ship together.' },
-  { Icon: Medal, title: 'Full-stack ML', detail: 'Shipped ML-powered APIs end-to-end with FastAPI, Pydantic validation, and TensorFlow.' },
-  { Icon: UsersRound, title: 'Hands-on builder', detail: 'Delivered 4+ production-minded projects across ML and backend engineering.' },
+  { key: 'community-lead', title: 'Community Lead', detail: <>Founded and lead a programming community where curious builders learn, collaborate, and build together.</> },
+  {
+    key: 'hackathon-finalist',
+    title: <><span className="font-sans">3×</span> Hackathon Finalist</>,
+    detail: <>Reached the finals in three hackathons, building and presenting technical solutions under competitive constraints.</>,
+  },
+  {
+    key: 'gssoc-2026',
+    title: <>Top <span className="font-sans">4%</span> · GSSOC <span className="font-sans">2026</span></>,
+    detail: <>Ranked <strong className="font-semibold">2,525th among 47,951 participants</strong>, placing in the top 4% of contributors.</>,
+  },
 ];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
@@ -434,9 +495,9 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
 
 function Projects() {
   return (
-    <section id="projects" className="section-anchor border-t border-current/20 py-16">
+    <section id="projects" className="section-anchor border-t border-current/20 py-14">
       <div className="section-wrap">
-        <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
+        <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title section-title-sm display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
         <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {projects.map((project, index) => <Reveal key={project.name} delay={index * 80} className="h-full"><ProjectCard project={project} /></Reveal>)}
         </div>
@@ -447,31 +508,92 @@ function Projects() {
 
 function Skills() {
   return (
-    <section id="skills" className="section-anchor border-t border-current/20 py-16">
+    <section id="skills" className="section-anchor border-t border-current/20 py-14">
       <div className="section-wrap">
         <Reveal className="mb-12">
-          <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title display">Tech stack<br /><span>I work with.</span></h2></div>
+          <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title section-title-sm display">Tech stack<br /><span>I work with.</span></h2></div>
         </Reveal>
-        <div className="skills-grid">
-          {skills.map(({ title, icon: Icon, detail, anim }, index) => (
-            <Reveal key={title} delay={index * 70} className="skills-cell">
-              <div className="skills-card group">
-                <div className="skills-card-top">
-                  <span className={`skills-icon skill-anim-${anim}`}><Icon size={20} strokeWidth={1.6} /></span>
-                  <span className="mono skills-index">0{index + 1}</span>
+        <Reveal>
+          <div className="divide-y divide-current/10 border-t border-current/10">
+            {skills.map((group) => (
+              <div key={group.title} className="skill-group grid gap-2 py-5 sm:grid-cols-[170px_1fr] sm:gap-8">
+                <div className="mono flex items-center gap-2 text-[10px] uppercase tracking-[.2em] opacity-85 sm:pt-1">
+                  <span>{group.title}</span>
                 </div>
-                <h3 className="display skills-title">{title}</h3>
-                <div className="skills-tags">
-                  {detail.split(', ').map((tag) => (
-                    <span key={tag} className="mono skills-tag">{tag}</span>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+                  {group.items.map((item) => (
+                    <span key={item.name} className="inline-flex items-center gap-2">
+                      <item.Icon size={16} className="shrink-0" />
+                      <span className="whitespace-nowrap font-medium">{item.name}</span>
+                    </span>
                   ))}
                 </div>
               </div>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </section>
+  );
+}
+
+function ResumeModal({ resumeImg, resumePdf, onClose }: { resumeImg: string; resumePdf: string; onClose: () => void }) {
+  const [visible, setVisible] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  const closingRef = useRef(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setVisible(true));
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') handleClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setClosing(true);
+    window.setTimeout(() => closeRef.current(), 240);
+  };
+
+  return (
+    <div
+      className={`project-modal-backdrop ${visible ? 'project-modal-backdrop-open' : ''} ${closing ? 'project-modal-closing' : ''}`}
+      onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Full resume"
+    >
+      <div className="project-modal-panel resume-modal-panel" data-testid="resume-modal-panel" onClick={(event) => event.stopPropagation()}>
+        <div className="flex shrink-0 items-start justify-between gap-4">
+          <div className="mono text-[10px] uppercase tracking-[.2em] opacity-60">Resume — full page</div>
+          <button
+            type="button"
+            className="project-modal-close"
+            onClick={handleClose}
+            aria-label="Close resume"
+            data-testid="button-resume-modal-close"
+          >
+            <X size={16} />
+          </button>
+        </div>
+        <img src={resumeImg} alt="Piyush Baraskar — full resume" className="resume-modal-img" data-testid="img-resume-full" />
+        <div className="resume-modal-actions">
+          <a href={resumePdf} target="_blank" rel="noopener noreferrer" className="resume-download" data-testid="link-resume-download">
+            Download PDF <ArrowUpRight size={13} />
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -481,62 +603,54 @@ function ResumeCard() {
   const resumePdf = `${base}resume.pdf`;
   const resumeImg = `${base}resume-1.png`;
   return (
-    <div className={`resume-card ${open ? 'resume-card-open' : ''}`}>
+    <div className="resume-card">
       <div className="resume-sheet">
         <div className="resume-sheet-top">
-          <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">{open ? 'Full resume' : 'Resume — preview'}</div>
+          <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">Resume — preview</div>
           <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">PDF · 1 page</div>
         </div>
 
-        <div className={`resume-unroll ${open ? 'resume-unroll-open' : ''}`}>
+        <div className="resume-unroll">
           <div className="resume-unroll-frame">
             <img src={resumeImg} alt="Piyush Baraskar — resume" loading="lazy" data-testid="img-resume" />
           </div>
           <div className="resume-fold" aria-hidden="true" />
         </div>
-
-        <div className={`resume-expand ${open ? 'resume-expand-open' : ''}`} aria-hidden={!open}>
-          <div className="overflow-hidden">
-            <div className="resume-roll">
-              <a href={resumePdf} target="_blank" rel="noopener noreferrer" className="resume-download" data-testid="link-resume-download" tabIndex={open ? 0 : -1}>
-                Download PDF <ArrowUpRight size={13} />
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
 
       <button
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(true)}
         className="resume-toggle"
-        aria-expanded={open}
+        aria-haspopup="dialog"
         data-testid="button-resume-toggle"
       >
-        <span>{open ? 'Close resume' : 'View resume'}</span>
-        <ChevronDown size={13} className={open ? 'rotate-180' : ''} />
+        <span>View resume</span>
+        <ArrowUpRight size={13} />
       </button>
+
+      {open && createPortal(<ResumeModal resumeImg={resumeImg} resumePdf={resumePdf} onClose={() => setOpen(false)} />, document.body)}
     </div>
   );
 }
 
 function Experience() {
   return (
-    <section id="experience" className="section-anchor border-t border-current/20 py-12">
+    <section id="experience" className="section-anchor border-t border-current/20 py-10">
       <div className="section-wrap">
         <Reveal className="mb-8">
           <div>
             <div className="mono mb-3 text-[10px] uppercase tracking-[.2em] opacity-60">04 / EXPERIENCE, ACHIEVEMENTS &amp; COMMUNITY</div>
-            <h2 className="section-title display">The record<br /><span>I’m building.</span></h2>
-            <p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Experience, a few things I’m proud of, the programming community I lead — and a resume sheet that fills in as the next chapter lands.</p>
+            <h2 className="section-title section-title-sm display">The record<br /><span>I’m building.</span></h2>
+            <p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">My experience, the programming community I’ve built, and the opportunities that have shaped my journey so far and resume.</p>
           </div>
         </Reveal>
 
         <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Experience</Reveal>
         <div className="divide-y divide-current/20 border-y border-current/20">
-          {experience.map(([date, role, description]) => (
-            <div key={date} className="grid gap-2 py-4 sm:grid-cols-[.28fr_.72fr]">
-              <div className="mono text-[10px] uppercase tracking-[.13em] opacity-60">{date}</div>
+          {experience.map(({ date, role, description }) => (
+            <div key={role} className="grid gap-2 py-4 sm:grid-cols-[.28fr_.72fr]">
+              <div className="mono text-[10px] font-medium uppercase tracking-[.13em] opacity-85">{date}</div>
               <div>
                 <h3 className="display text-lg">{role}</h3>
                 <p className="mt-1.5 max-w-[470px] text-sm leading-6 opacity-65">{description}</p>
@@ -545,25 +659,25 @@ function Experience() {
           ))}
         </div>
 
-        <div className="mt-10">
-          <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Achievements</Reveal>
-          <div className="grid items-stretch gap-4 sm:grid-cols-3">
-            {achievements.map(({ Icon, title, detail }, index) => (
-              <Reveal key={title} delay={index * 90} className="achievement-card">
-                <div className="flex items-center gap-3">
-                  <span className="achievement-icon"><Icon size={18} strokeWidth={1.6} /></span>
-                  <span className="mono skills-index">0{index + 1}</span>
-                </div>
-                <h3 className="display text-lg mt-3">{title}</h3>
-                <p className="mt-1.5 text-sm leading-5 opacity-70">{detail}</p>
-              </Reveal>
-            ))}
+        <div className="mt-10 grid items-start gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-0 lg:divide-x lg:divide-current/15">
+          <div className="lg:pr-12">
+            <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Achievements</Reveal>
+            <Reveal>
+              <div className="divide-y divide-current/10 border-t border-current/10">
+                {achievements.map(({ key, title, detail }) => (
+                  <div key={key} className="achievement-row py-4">
+                    <h3 className="display text-lg">{title}</h3>
+                    <p className="mt-1.5 max-w-[470px] text-sm leading-6 opacity-65">{detail}</p>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
           </div>
-        </div>
 
-        <div className="mt-10">
-          <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
-          <Reveal><ResumeCard /></Reveal>
+          <div className="lg:pl-12">
+            <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
+            <Reveal><ResumeCard /></Reveal>
+          </div>
         </div>
 
         <Reveal className="mt-12 flex justify-center" delay={120}>
@@ -593,16 +707,21 @@ function Contact() {
     <section id="contact" className="section-anchor contact-section border-t border-current/20 py-24">
       <BambooDecoration />
       <div className="section-wrap contact-inner">
-        <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
-          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span>something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p>
-            <form onSubmit={onSubmit} className="mt-8 grid max-w-[440px] gap-3" aria-label="Contact form">
-              <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
-              <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={4} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
-              <button type="submit" className="button-primary mt-2 inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-contact-send">Send an email <ArrowUpRight size={14} /></button>
-              {status === 'sent' && <p role="status" className="text-sm opacity-70">Opening your mail client — I’ll reply soon.</p>}
-            </form>
+        <Reveal>
+          <div className="max-w-[560px]"><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title section-title-sm display">Let’s make<br /><span>something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p></div>
+          <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1.05fr] lg:gap-8">
+            <div className="border-t border-current/20 pt-6"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Send a note</div>
+              <form onSubmit={onSubmit} className="mt-5 grid gap-3" aria-label="Contact form">
+                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
+                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={4} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
+                <button type="submit" className="button-primary mt-2 inline-flex w-fit items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-contact-send">Send an email <ArrowUpRight size={14} /></button>
+                {status === 'sent' && <p role="status" className="text-sm opacity-70">Opening your mail client — I’ll reply soon.</p>}
+              </form>
+            </div>
+            <div className="border-t border-current/20 pt-6"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-5 grid gap-6"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
+            <nav className="border-t border-current/20 pt-6 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-7 w-7 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={13} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
           </div>
-          <div className="grid content-end gap-5 border-l border-current/20 pl-6 sm:pl-10"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div></div>
+          <div className="mono mt-14 flex flex-wrap items-center justify-between gap-3 border-t border-current/20 pt-5 text-[10px] uppercase tracking-[.15em] opacity-60"><span>© {new Date().getFullYear()} Piyush Baraskar</span><a href="#top" className="transition-opacity hover:opacity-100 hover:underline hover:underline-offset-4">Back to top ↑</a></div>
         </Reveal>
       </div>
     </section>
