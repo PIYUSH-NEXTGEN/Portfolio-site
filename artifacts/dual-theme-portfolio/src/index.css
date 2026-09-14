@@ -926,11 +926,62 @@
 .theme-editorial .project-card.tour-hover { transform: translateY(-7px) rotate(-.4deg); box-shadow: 9px 9px 0 rgba(32,42,54,.13); }
 .theme-editorial .skills-card.tour-hover { transform: translateY(-4px); background: #f6f0e2; box-shadow: 0 16px 30px rgba(34,38,47,.12); }
 .theme-editorial .skills-card.tour-hover .skills-icon { background: #e7dcc8; color: #c84d3d; }
-.theme-editorial .skills-card.tour-hover .skills-icon svg { animation: skill-anim-wiggle .7s ease-in-out infinite; }
+/* Each card performs its own icon animation while the tour hovers it. */
+.theme-editorial .skills-card.tour-hover .skills-icon.skill-anim-wiggle svg { animation: skill-anim-wiggle .7s ease-in-out infinite; }
+.theme-editorial .skills-card.tour-hover .skills-icon.skill-anim-slide svg { animation: skill-anim-slide 2.6s ease-in-out infinite; }
+.theme-editorial .skills-card.tour-hover .skills-icon.skill-anim-spin svg { animation: skill-anim-spin 1.5s linear infinite; }
+.theme-editorial .skills-card.tour-hover .skills-icon.skill-anim-revolve svg { animation: skill-anim-revolve 2.2s linear infinite; }
+.theme-editorial .skills-card.tour-hover .skills-icon.skill-anim-glide svg { animation: skill-anim-glide 2.2s ease-in-out infinite; }
+.theme-editorial .skills-card.tour-hover .skills-icon.skill-anim-pulse svg { animation: skill-anim-pulse .85s ease-in-out infinite; }
 .theme-editorial .button-primary.tour-hover { background: #c84d3d; border-color: #c84d3d; transform: translateY(-2px); }
 .theme-editorial .button-quiet.tour-hover { background: rgba(255,255,255,.25); transform: translateY(-2px); }
 
 /* While the tour drives the page, keep the scroll-to-top disc out of the way. */
 body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden !important; transform: translateY(14px) !important; }
+
+/* Compact project card — resting state opens into a detail modal */
+.project-card-compact { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.project-card-compact:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(32,42,54,.12); }
+.project-card-compact .project-card-chevron { transition: transform .25s ease; }
+.project-card-compact:hover .project-card-chevron { transform: rotate(-90deg); }
+.project-card-compact .project-open-cta { transition: background-color .2s ease, color .2s ease; }
+.project-card-compact:hover .project-open-cta { background: rgba(200,77,61,.12); color: #c84d3d; }
+
+/* Project detail modal — opens from the card with a springy pop */
+.project-modal-backdrop {
+  position: fixed; inset: 0; z-index: 80;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: rgba(24,30,40,.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity .28s ease;
+}
+.project-modal-backdrop-open { opacity: 1; }
+.project-modal-panel {
+  position: relative;
+  width: min(860px, 100%);
+  max-height: min(88dvh, 720px);
+  overflow-y: auto;
+  padding: 28px;
+  @apply bg-card text-card-foreground border border-border;
+  box-shadow: 0 34px 90px rgba(16,22,30,.5);
+  transform: translateY(28px) scale(.94);
+  opacity: 0;
+  transition: transform .42s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+}
+.project-modal-backdrop-open .project-modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+.project-modal-closing .project-modal-panel { transform: translateY(14px) scale(.97); opacity: 0; }
+.project-modal-close {
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border: 1px solid currentColor; opacity: .55;
+  background: transparent; cursor: pointer;
+  transition: opacity .2s ease, transform .2s ease, background-color .2s ease;
+}
+.project-modal-close:hover { opacity: 1; transform: rotate(90deg); background: rgba(200,77,61,.12); }
+.project-modal-close:focus-visible { outline: 2px solid rgba(200,77,61,.55); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .project-modal-backdrop, .project-modal-panel { transition: none !important; }
+}
 
 

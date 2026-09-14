@@ -30,63 +30,40 @@ function setNativeValue(field: HTMLInputElement | HTMLTextAreaElement, value: st
   field.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
-/* Build a Range covering only a slice (from→to, 0..1) of an element's text —
-   so the tour can "mark" a few lines of the hero instead of the whole block. */
-function buildPartialRange(el: Element, from: number, to: number): Range | null {
+/* Collect every word-end boundary in an element's text — used to grow a
+   selection word by word, the way a human drags a highlight. */
+function collectWordBoundaries(el: Element): Array<{ node: Text; offset: number }> {
   const walker = document.createTreeWalker(el, window.NodeFilter.SHOW_TEXT);
-  const nodes: Text[] = [];
-  let total = 0;
+  const boundaries: Array<{ node: Text; offset: number }> = [];
   let node = walker.nextNode() as Text | null;
   while (node) {
-    const len = node.textContent?.length ?? 0;
-    if (len > 0) { nodes.push(node); total += len; }
+    const text = node.textContent ?? '';
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const next = text[i + 1];
+      if (!/\s/.test(ch) && (i + 1 >= text.length || /\s/.test(next))) {
+        boundaries.push({ node, offset: i + 1 });
+      }
+    }
     node = walker.nextNode() as Text | null;
   }
-  if (nodes.length === 0 || total === 0) return null;
-  const startAt = Math.floor(total * from);
-  const endAt = Math.max(startAt + 2, Math.ceil(total * to));
-  const range = document.createRange();
-  let startNode: Text | null = null;
-  let endNode: Text | null = null;
-  let startOffset = 0;
-  let endOffset = 0;
-  let consumed = 0;
-  for (const textNode of nodes) {
-    const len = textNode.textContent?.length ?? 0;
-    if (!startNode && consumed + len > startAt) {
-      startNode = textNode;
-      startOffset = Math.max(0, startAt - consumed);
-    }
-    if (startNode && consumed + len >= endAt) {
-      endNode = textNode;
-      endOffset = Math.max(startOffset + 1, endAt - consumed);
-      break;
-    }
-    consumed += len;
-  }
-  if (!startNode) return null;
-  if (!endNode) { endNode = nodes[nodes.length - 1]; endOffset = endNode.textContent?.length ?? 0; }
-  try {
-    range.setStart(startNode, Math.min(startOffset, startNode.textContent?.length ?? 0));
-    range.setEnd(endNode, Math.min(endOffset, endNode.textContent?.length ?? 0));
-  } catch {
-    return null;
-  }
-  return range;
+  return boundaries;
 }
 
 const TOUR_STEPS: TourStep[] = [
   /* 1 · Navbar — two icons only */
   { selector: '[data-testid="link-nav-github"]', caption: 'Start here — every platform I’m on lives in this bar.', action: 'hover', hold: 1400 },
   { selector: '[data-testid="link-nav-linkedin"]', caption: 'GitHub, LinkedIn — pick yours and say hi.', action: 'hover', hold: 1200 },
-  /* 2 · Hero — highlight a few lines of the intro */
-  { selector: '#top .editorial-hero-copy', caption: 'The short version: ML & backend, built end to end.', action: 'select', hold: 2400, spot: { fx: 0.1, fy: 0.2 } },
-  /* 3 · Projects — expand a card, scroll through it, close it */
+  /* 2 · Hero — highlight the description lines, word by word */
+  { selector: '#top .editorial-hero-copy .mt-3', caption: 'The short version: ML & backend, built end to end.', action: 'select', hold: 2400, spot: { fx: 0.1, fy: 0.35 } },
+  /* 3 · Projects — open a card into its detail modal, then close it */
   { selector: '[data-testid="card-project-01"]', caption: 'Selected work — click a card to open its story.', action: 'click', hold: 1500, anchor: '#projects' },
-  { selector: '[data-testid="card-project-01"]', caption: 'Details, highlights and live links — all inside.', action: 'visit', hold: 1700, spot: { fx: 0.5, fy: 0.85 } },
-  { selector: '[data-testid="card-project-01"]', caption: 'Click again and it folds away.', action: 'click', hold: 1000 },
-  /* 4 · Tech stack — a slow look, ~4s */
-  { selector: '#skills .skills-grid', caption: 'The tech stack — languages, libraries, ML, databases, deployment.', action: 'visit', hold: 3600, spot: { fx: 0.2, fy: 0.3 } },
+  { selector: '[data-testid="project-modal-panel-01"]', caption: 'The preview, links and full story — all inside.', action: 'visit', hold: 1900, spot: { fx: 0.5, fy: 0.4 } },
+  { selector: '[data-testid="button-project-modal-close-01"]', caption: 'Close it with the ✕ — just like that.', action: 'click', hold: 1000 },
+  /* 4 · Tech stack — two or three quick hovers so the icons perform */
+  { selector: '.skills-cell:nth-child(1) .skills-card', caption: 'The tech stack — watch the icons come alive.', action: 'hover', hold: 950, spot: { fx: 0.12, fy: 0.16 } },
+  { selector: '.skills-cell:nth-child(3) .skills-card', caption: 'Backend, databases, deployment…', action: 'hover', hold: 850, spot: { fx: 0.12, fy: 0.16 } },
+  { selector: '.skills-cell:nth-child(6) .skills-card', caption: '…and ML & AI. Every icon dances on hover.', action: 'hover', hold: 950, spot: { fx: 0.12, fy: 0.16 } },
   /* 5 · Section four — experience & achievements */
   { selector: '#experience h3.display', caption: 'Section four — the roles and the record so far.', action: 'visit', hold: 1500 },
   { selector: '.achievement-card', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1500 },
@@ -290,17 +267,33 @@ export default function GuidedTour() {
           await wait(step.hold);
           field.blur();
         } else if (step.action === 'select') {
-          /* Mark a slice of the element's text — like a reader highlighting
-             a few lines — then drag the cursor down across the selection. */
+          /* Mark the description word by word — the selection grows one word
+             at a time while the cursor rides the end of the highlight, the
+             way a human drags a selection across text. */
           const selection = window.getSelection();
-          const range = buildPartialRange(el, 0.16, 0.72);
-          const { x: cx, y: cy } = posRef.current;
-          if (selection && range) {
-            selection.removeAllRanges();
-            selection.addRange(range);
-            const rect = el.getBoundingClientRect();
-            const endY = Math.max(cy + 24, rect.top + rect.height * 0.8);
-            await tween(700, (t) => setCursorPos(cx, cy + (endY - cy) * t));
+          const boundaries = collectWordBoundaries(el);
+          if (selection && boundaries.length > 1) {
+            const startB = boundaries[0];
+            const endB = boundaries[boundaries.length - 1];
+            const wordSteps = boundaries.slice(0, boundaries.indexOf(endB) + 1);
+            for (let i = 0; i < wordSteps.length; i++) {
+              if (cancelRef.current) break;
+              const boundary = wordSteps[i];
+              const range = document.createRange();
+              range.setStart(startB.node, startB.offset);
+              range.setEnd(boundary.node, boundary.offset);
+              selection.removeAllRanges();
+              selection.addRange(range);
+              /* Cursor parks just past the newest word of the highlight. */
+              const rects = range.getClientRects();
+              const last = rects[rects.length - 1];
+              if (last) setCursorPos(last.right - 2, last.top + last.height / 2);
+              /* Slow, human pace — a touch of jitter between words. */
+              await wait(reducedRef.current ? 0 : 82 + (i % 3) * 16);
+            }
+          } else if (selection) {
+            selection.selectAllChildren(el);
+            await wait(step.hold);
           }
           await wait(step.hold);
           selection?.removeAllRanges();
@@ -313,6 +306,14 @@ export default function GuidedTour() {
           el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
           await wait(380);
           node?.classList.remove('tour-cursor-click');
+          /* Re-sync the cursor to the element's post-click position — a state
+             change (toggle open/close, expansion) can shift the layout, and we
+             want the cursor to stay visually on the target, not drift away. */
+          const afterEl = document.querySelector(step.selector);
+          if (afterEl && node) {
+            const r = afterEl.getBoundingClientRect();
+            setCursorPos(r.left + r.width * (step.spot?.fx ?? 0.5), r.top + r.height * (step.spot?.fy ?? 0.5));
+          }
           await wait(step.hold);
         }
         if (step.clear) {
