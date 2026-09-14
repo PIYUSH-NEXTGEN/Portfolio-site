@@ -1,4 +1,5 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Boxes, Brain, ChevronDown, Code2, Database, Medal, Menu, Settings, Trophy, UsersRound, X } from 'lucide-react';
 import { SiLeetcode, SiPeerlist } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
@@ -273,11 +274,11 @@ function Hero() {
       <div className="katana-hero-content">
         <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">PIYUSH BARASKAR</span></Reveal>
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[15px] leading-7 opacity-75" delay={160}>
-          <strong className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">ML &amp; BACKEND ENGINEER</strong>
-          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">CS 2029</span>
-          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
-          <span className="mono block text-[10px] uppercase tracking-[.18em] opacity-75 mt-2">BASED IN BHOPAL, INDIA</span>
-          <span className="mt-3 block">CS student building at the intersection of Machine Learning and Backend Engineering.<br />Interested in developing scalable APIs, data-driven systems, and intelligent applications from the ground up.</span>
+          <strong className="mono block text-[10px] uppercase tracking-[.18em]">ML &amp; BACKEND ENGINEER</strong>
+          <span className="mono block text-[10px] uppercase tracking-[.18em] mt-2">CS 2029</span>
+          <span className="mono block text-[10px] uppercase tracking-[.18em]">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
+          <span className="mono block text-[10px] uppercase tracking-[.18em] mt-2">BASED IN BHOPAL, INDIA</span>
+          <span className="mt-3 block">Building at the intersection of Machine Learning and Backend Engineering.<br />Developing end to end software across machine learning, backend systems, databases, APIs, and frontend development, with a focus on building practical, data driven applications from the ground up.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
           <a href="#projects" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-work">View selected work <ArrowDown size={14} /></a>
@@ -293,65 +294,149 @@ function Hero() {
   );
 }
 
-function ProjectVisual({ accent, year, expanded }: { accent: string; year: string; expanded: boolean }) {
+function ProjectVisual({ accent, year, compact = false }: { accent: string; year: string; compact?: boolean }) {
   const background = accent === 'coral' ? '#d5c3ad' : accent === 'gold' ? '#d7d5bd' : accent === 'blue' ? '#bdccd0' : '#c9ced0';
-  return <div className="project-visual relative mb-5 overflow-hidden border border-current/20 p-4" style={{ backgroundColor: background, height: expanded ? '13rem' : '11rem' }}>
+  if (compact) {
+    return (
+      <div className="project-visual relative overflow-hidden border border-current/20" style={{ backgroundColor: background, height: '4.5rem' }}>
+        <div className="absolute left-3 top-2 mono text-[9px] opacity-60">PREVIEW / {year}</div>
+        <div className="absolute bottom-1.5 left-3 right-3 top-7 border border-current/25 bg-black/10 p-2">
+          <div className="mb-1.5 flex gap-1"><span className="h-1 w-1 rounded-full bg-current" /><span className="h-1 w-1 rounded-full bg-current opacity-35" /><span className="h-1 w-1 rounded-full bg-current opacity-15" /></div>
+          <div className="grid h-5 grid-cols-[.8fr_1.2fr] gap-1.5">
+            <div className="border border-current/15 p-1"><div className="h-1 w-1/2 bg-current/40" /><div className="mt-1 h-2 w-full bg-current/15" /></div>
+            <div className="border border-current/15 p-1"><div className="h-1 w-1/3 bg-current/40" /><div className="mt-1 flex h-2 items-end gap-1">{[35, 60, 42, 78, 50, 88, 63].map((h, i) => <span key={i} className="flex-1 bg-current/35" style={{ height: `${h}%` }} />)}</div></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return <div className="project-visual relative mb-5 overflow-hidden border border-current/20 p-4" style={{ backgroundColor: background, height: '13rem' }}>
     <div className="absolute left-4 top-4 mono text-[9px] opacity-60">PREVIEW / {year}</div>
     <div className="absolute bottom-5 left-5 right-5 top-12 border border-current/25 bg-black/10 p-3">
       <div className="mb-3 flex gap-1"><span className="h-1.5 w-1.5 rounded-full bg-current" /><span className="h-1.5 w-1.5 rounded-full bg-current opacity-35" /><span className="h-1.5 w-1.5 rounded-full bg-current opacity-15" /></div>
-      <div className="grid h-20 grid-cols-[.8fr_1.2fr] gap-2"><div className="border border-current/15 p-2"><div className="h-2 w-1/2 bg-current/40" /><div className="mt-3 h-8 w-full bg-current/15" /></div><div className="border border-current/15 p-2"><div className="h-2 w-1/3 bg-current/40" /><div className="mt-3 flex h-8 items-end gap-1">{[35,60,42,78,50,88,63].map((height, index) => <span key={index} className="flex-1 bg-current/35" style={{ height: `${height}%` }} />)}</div></div></div>
+      <div className="grid h-20 grid-cols-[.8fr_1.2fr] gap-2"><div className="border border-current/15 p-2"><div className="h-2 w-1/2 bg-current/40" /><div className="mt-3 h-8 w-full bg-current/15" /></div><div className="border border-current/15 p-2"><div className="h-2 w-1/3 bg-current/40" /><div className="mt-3 flex h-8 items-end gap-1">{[35, 60, 42, 78, 50, 88, 63].map((height, index) => <span key={index} className="flex-1 bg-current/35" style={{ height: `${height}%` }} />)}</div></div></div>
     </div>
   </div>;
 }
 
-function ProjectCard({ project }: { project: (typeof projects)[number] }) {
-  const [open, setOpen] = useState(false);
-  const toggle = () => setOpen(!open);
+function ProjectModal({ project, onClose }: { project: (typeof projects)[number]; onClose: () => void }) {
+  const [visible, setVisible] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  const closingRef = useRef(false);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setVisible(true));
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') handleClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    setClosing(true);
+    window.setTimeout(() => closeRef.current(), 240);
+  };
+
   return (
-    <article
-      className={`project-card katana-card p-4 ${open ? 'project-card-open' : ''}`}
-      data-testid={`card-project-${project.number}`}
-      onClick={toggle}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          toggle();
-        }
-      }}
-      tabIndex={0}
-      aria-expanded={open}
+    <div
+      className={`project-modal-backdrop ${visible ? 'project-modal-backdrop-open' : ''} ${closing ? 'project-modal-closing' : ''}`}
+      onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
       aria-label={`${project.name} — project details`}
     >
-      <div className="mb-3 flex items-center justify-between mono text-[9px] opacity-60">
-        <span>{project.number}</span>
-        <span className="flex items-center gap-1">{project.kind}<ChevronDown size={12} className={open ? 'rotate-180' : ''} /></span>
-      </div>
-      <ProjectVisual accent={project.accent} year={project.year} expanded={open} />
-      <h3 className="display text-xl tracking-[-.04em]">{project.name}</h3>
-      <span className="katana-card-line" aria-hidden="true" />
-      <p className="mt-3 min-h-[72px] text-xs leading-5 opacity-70">{project.description}</p>
-      <div className="mt-4 flex flex-wrap gap-1.5">{project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}</div>
-      <div className={`project-expand ${open ? 'project-expand-open' : ''}`}>
-        <div className="project-expand-inner">
-          <div className="project-more border-t border-dashed border-current/20" aria-hidden={!open}>
-            <p className="mt-3 text-xs leading-5 opacity-85">{project.details}</p>
-            <ul className="project-highlights mt-3">
-              {project.highlights.map((item) => (
-                <li key={item} className="flex items-start gap-1.5 text-[10px] leading-4 opacity-80">
-                  <span className="shrink-0 text-[#c84d3d]" aria-hidden="true">✦</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mono mt-3 text-[9px] uppercase tracking-[.15em] opacity-60">{project.year} / {project.kind}</div>
-          </div>
+      <div
+        className="project-modal-panel"
+        data-testid={`project-modal-panel-${project.number}`}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="project-modal-close"
+          onClick={handleClose}
+          aria-label="Close project details"
+          data-testid={`button-project-modal-close-${project.number}`}
+        >
+          <X size={16} />
+        </button>
+        <ProjectVisual accent={project.accent} year={project.year} />
+        <div className="mono mt-4 text-[9px] uppercase tracking-[.15em] opacity-60">{project.number} / {project.kind} / {project.year}</div>
+        <h3 className="display mt-2 text-3xl tracking-[-.04em]">{project.name}</h3>
+        <p className="mt-3 text-sm leading-6 opacity-80">{project.description}</p>
+        <p className="mt-3 text-sm leading-6 opacity-70">{project.details}</p>
+        <ul className="project-highlights mt-4">
+          {project.highlights.map((item) => (
+            <li key={item} className="flex items-start gap-1.5 text-[11px] leading-4 opacity-80">
+              <span className="shrink-0 text-[#c84d3d]" aria-hidden="true">✦</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}
+        </div>
+        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-dashed border-current/20 pt-4">
+          <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em]" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
+          <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em]" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
         </div>
       </div>
-      <div className="mt-6 flex flex-wrap items-center gap-3" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
-        <a href={project.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
-        <a href={project.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] opacity-75 hover:opacity-100" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
-      </div>
-    </article>
+    </div>
+  );
+}
+
+function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+  const [open, setOpen] = useState(false);
+  const cardRef = useRef<HTMLElement>(null);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    requestAnimationFrame(() => cardRef.current?.focus());
+  };
+  return (
+    <>
+      <article
+        ref={cardRef}
+        className="project-card project-card-compact katana-card"
+        data-testid={`card-project-${project.number}`}
+        onClick={handleOpen}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            handleOpen();
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-haspopup="dialog"
+        aria-label={`Open ${project.name} project details`}
+      >
+        <div className="mb-2 flex items-center justify-between mono text-[9px] opacity-60">
+          <span>{project.number}</span>
+          <span className="flex items-center gap-1">{project.kind}<ChevronDown size={12} className="project-card-chevron" /></span>
+        </div>
+        <ProjectVisual accent={project.accent} year={project.year} compact />
+        <h3 className="display mt-3 text-lg tracking-[-.04em]">{project.name}</h3>
+        <span className="katana-card-line" aria-hidden="true" />
+        <p className="mt-2 line-clamp-2 text-xs leading-5 opacity-70">{project.description}</p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}
+        </div>
+        <span className="project-open-cta mono mt-4 flex items-center justify-center gap-2 border border-current/20 py-2 text-[9px] uppercase tracking-[.15em] opacity-60">
+          Open project <ArrowUpRight size={12} />
+        </span>
+      </article>
+      {open && createPortal(<ProjectModal project={project} onClose={handleClose} />, document.body)}
+    </>
   );
 }
 
@@ -359,7 +444,7 @@ function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-16">
       <div className="section-wrap">
-        <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span className="serif normal-case">I’ve made.</span></h2></div></Reveal>
+        <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
         <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {projects.map((project, index) => <Reveal key={project.name} delay={index * 80}><ProjectCard project={project} /></Reveal>)}
         </div>
@@ -373,7 +458,7 @@ function Skills() {
     <section id="skills" className="section-anchor border-t border-current/20 py-16">
       <div className="section-wrap">
         <Reveal className="mb-12">
-          <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title display">Tech stack<br /><span className="serif normal-case">I work with.</span></h2></div>
+          <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title display">Tech stack<br /><span>I work with.</span></h2></div>
         </Reveal>
         <div className="skills-grid">
           {skills.map(({ title, icon: Icon, detail, anim }, index) => (
@@ -450,7 +535,7 @@ function Experience() {
         <Reveal className="mb-8">
           <div>
             <div className="mono mb-3 text-[10px] uppercase tracking-[.2em] opacity-60">04 / EXPERIENCE, ACHIEVEMENTS &amp; COMMUNITY</div>
-            <h2 className="section-title display">The record<br /><span className="serif normal-case">I’m building.</span></h2>
+            <h2 className="section-title display">The record<br /><span>I’m building.</span></h2>
             <p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Experience, a few things I’m proud of, the programming community I lead — and a resume sheet that fills in as the next chapter lands.</p>
           </div>
         </Reveal>
@@ -517,7 +602,7 @@ function Contact() {
       <BambooDecoration />
       <div className="section-wrap contact-inner">
         <Reveal className="grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
-          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span className="serif normal-case">something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p>
+          <div><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title display">Let’s make<br /><span>something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p>
             <form onSubmit={onSubmit} className="mt-8 grid max-w-[440px] gap-3" aria-label="Contact form">
               <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
               <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={4} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
