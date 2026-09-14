@@ -55,22 +55,15 @@ const TOUR_STEPS: TourStep[] = [
   { selector: '[data-testid="link-nav-linkedin"]', caption: 'GitHub, LinkedIn — pick yours and say hi.', action: 'hover', hold: 1200 },
   /* 2 · Hero — highlight the description lines, word by word */
   { selector: '#top .editorial-hero-copy .mt-3', caption: 'The short version: ML & backend, built end to end.', action: 'select', hold: 2400, spot: { fx: 0.1, fy: 0.35 } },
-  /* 3 · Projects — open a card into its detail modal, then close it */
-  { selector: '[data-testid="card-project-01"]', caption: 'Selected work — click a card to open its story.', action: 'click', hold: 1500, anchor: '#projects' },
-  { selector: '[data-testid="project-modal-panel-01"]', caption: 'The preview, links and full story — all inside.', action: 'visit', hold: 1900, spot: { fx: 0.5, fy: 0.4 } },
-  { selector: '[data-testid="button-project-modal-close-01"]', caption: 'Close it with the ✕ — just like that.', action: 'click', hold: 1000 },
-  /* 4 · Tech stack — quick pauses over a few groups */
-  { selector: '.skill-group:nth-of-type(1)', caption: 'The tech stack — languages first.', action: 'hover', hold: 900 },
-  { selector: '.skill-group:nth-of-type(3)', caption: 'Backend — FastAPI, Pydantic.', action: 'hover', hold: 800 },
-  { selector: '.skill-group:nth-of-type(2)', caption: '…and the data & ML layer.', action: 'hover', hold: 900 },
+  /* 3 · Projects — smooth glide + a single hover, no card opens */
+  { selector: '[data-testid="card-project-01"]', caption: 'Selected work — hover a card to peek at its story.', action: 'hover', hold: 2500, anchor: '#projects' },
+  /* 4 · Tech stack — cursor rests at the top of the list so you can read */
+  { selector: '.skill-group:nth-of-type(1)', caption: 'The tech stack — languages through the ML layer.', action: 'hover', hold: 2500 },
   /* 5 · Section four — experience & achievements */
   { selector: '#experience h3.display', caption: 'Section four — the roles and the record so far.', action: 'visit', hold: 1500 },
   { selector: '.achievement-row:nth-of-type(3)', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1500 },
-  /* 6 · Resume — glide down, beat, open the full resume, close it */
-  { selector: '[data-testid="img-resume"]', caption: 'The resume sits right here, folded.', action: 'visit', hold: 1000 },
-  { selector: '[data-testid="button-resume-toggle"]', caption: 'One click opens the full resume…', action: 'click', hold: 2600 },
-  { selector: '[data-testid="resume-modal-panel"]', caption: 'The whole page, right here — and you can download it.', action: 'visit', hold: 1900, spot: { fx: 0.5, fy: 0.4 } },
-  { selector: '[data-testid="button-resume-modal-close"]', caption: '…and close it when you’re done.', action: 'click', hold: 900 },
+  /* 6 · Resume — glide down and hover, don't open it */
+  { selector: '[data-testid="img-resume"]', caption: 'And your resume is folded right here, ready to download.', action: 'hover', hold: 2500 },
   /* 7 · Contact — fast typing demo, then hover send */
   { selector: '[data-testid="input-contact-email"]', caption: 'Drop your email in — watch how fast it goes.', action: 'type', text: 'piyush.demo@gmail.com', hold: 800 },
   { selector: '[data-testid="input-contact-message"]', caption: 'A few honest words do the rest.', action: 'type', text: 'I loved the portfolio design!', hold: 900 },

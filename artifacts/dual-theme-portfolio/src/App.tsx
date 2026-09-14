@@ -1,13 +1,14 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Code2, Database, Menu, MousePointerClick, Settings, X } from 'lucide-react';
+import { MatplotlibIcon, SeabornIcon } from './components/BrandIcons';
 import { SiCplusplus, SiFastapi, SiGo, SiJavascript, SiLeetcode, SiMysql, SiNumpy, SiPandas, SiPeerlist, SiPostgresql, SiPydantic, SiPython, SiPytorch, SiRender, SiScikitlearn, SiSqlalchemy, SiTensorflow, SiTypescript, SiVercel } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
 import GuidedTour, { startGuidedTour } from '@/components/GuidedTour';
-import { BambooDecoration, DecorativeBranches } from '@/components/Decorations';
+import { DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import NotFound from '@/pages/not-found';
 import Journey from '@/pages/journey';
@@ -94,6 +95,8 @@ const skills = [
     items: [
       { name: 'NumPy', Icon: SiNumpy },
       { name: 'Pandas', Icon: SiPandas },
+      { name: 'Matplotlib', Icon: MatplotlibIcon },
+      { name: 'Seaborn', Icon: SeabornIcon },
       { name: 'scikit-learn', Icon: SiScikitlearn },
       { name: 'TensorFlow', Icon: SiTensorflow },
       { name: 'PyTorch', Icon: SiPytorch },
@@ -337,8 +340,6 @@ function Hero() {
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[16px] leading-7 opacity-75" delay={160}>
           <strong className="mono block text-[12px] uppercase tracking-[.18em]">ML &amp; BACKEND ENGINEER</strong>
           <span className="mono block text-[12px] uppercase tracking-[.18em] mt-2">CS 2029</span>
-          <span className="mono block text-[12px] uppercase tracking-[.18em]">TECHNOCRATS INSTITUTE OF TECHNOLOGY</span>
-          <span className="mono block text-[12px] uppercase tracking-[.18em] mt-2">BASED IN BHOPAL, INDIA</span>
           <span className="mt-5 block">Building at the intersection of Machine Learning and Backend Engineering.<br />Developing end to end software across machine learning, backend systems, databases, APIs, and frontend development.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
@@ -517,7 +518,7 @@ function Skills() {
           <div className="divide-y divide-current/10 border-t border-current/10">
             {skills.map((group) => (
               <div key={group.title} className="skill-group grid gap-2 py-5 sm:grid-cols-[170px_1fr] sm:gap-8">
-                <div className="mono flex items-center gap-2 text-[10px] uppercase tracking-[.2em] opacity-85 sm:pt-1">
+                <div className="mono flex items-center gap-2 text-[10px] font-medium uppercase leading-5 tracking-[.13em] opacity-85 sm:pt-1">
                   <span>{group.title}</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
@@ -650,7 +651,7 @@ function Experience() {
         <div className="divide-y divide-current/20 border-y border-current/20">
           {experience.map(({ date, role, description }) => (
             <div key={role} className="grid gap-2 py-4 sm:grid-cols-[.28fr_.72fr]">
-              <div className="mono text-[10px] font-medium uppercase tracking-[.13em] opacity-85">{date}</div>
+              <div className="mono text-[10px] font-medium uppercase leading-5 tracking-[.13em] opacity-85">{date}</div>
               <div>
                 <h3 className="display text-lg">{role}</h3>
                 <p className="mt-1.5 max-w-[470px] text-sm leading-6 opacity-65">{description}</p>
@@ -704,11 +705,10 @@ function Contact() {
   };
 
   return (
-    <section id="contact" className="section-anchor contact-section border-t border-current/20 py-24">
-      <BambooDecoration />
+    <section id="contact" className="section-anchor contact-section py-8">
       <div className="section-wrap contact-inner">
         <Reveal>
-          <div className="max-w-[560px]"><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">04 / Get in touch</div><h2 className="section-title section-title-sm display">Let’s make<br /><span>something useful.</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p></div>
+          <div className="max-w-[560px]"><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">05 / Get in touch</div><h2 className="section-title section-title-sm display">Let’s make<br /><span>something useful</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p></div>
           <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1.05fr] lg:gap-8">
             <div className="border-t border-current/20 pt-6"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Send a note</div>
               <form onSubmit={onSubmit} className="mt-5 grid gap-3" aria-label="Contact form">
@@ -719,9 +719,8 @@ function Contact() {
               </form>
             </div>
             <div className="border-t border-current/20 pt-6"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-5 grid gap-6"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
-            <nav className="border-t border-current/20 pt-6 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-7 w-7 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={13} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
+            <nav className="border-t border-current/20 pt-6 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-7 w-7 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={13} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
           </div>
-          <div className="mono mt-14 flex flex-wrap items-center justify-between gap-3 border-t border-current/20 pt-5 text-[10px] uppercase tracking-[.15em] opacity-60"><span>© {new Date().getFullYear()} Piyush Baraskar</span><a href="#top" className="transition-opacity hover:opacity-100 hover:underline hover:underline-offset-4">Back to top ↑</a></div>
         </Reveal>
       </div>
     </section>

@@ -61,10 +61,11 @@ export function DecorativeBranches() {
   );
 }
 
-const INK = '#202a36';
-const LEAF_BLACK = '#1d2733';
-const STALK_FILL = '#f7f1e3';
-const VEIN = '#f7f1e3';
+/* Palette via CSS vars so the bamboo can adapt to light or dark sections. */
+const INK = 'var(--bamboo-ink, #202a36)';
+const LEAF_BLACK = 'var(--bamboo-leaf, #1d2733)';
+const STALK_FILL = 'var(--bamboo-stalk, #f7f1e3)';
+const VEIN = 'var(--bamboo-vein, #f7f1e3)';
 
 /** Long pointed bamboo leaf with center vein, hung from a thin curved stem. */
 function BambooLeafStem({ x, y, len, droop, flip = false, wind = 'wind-a' }: { x: number; y: number; len: number; droop: number; flip?: boolean; wind?: string }) {
@@ -135,12 +136,16 @@ export function BambooDecoration() {
       style={reduce ? undefined : { y: drift }}
     >
       <svg viewBox="0 0 340 600" focusable="false">
+        {/* Soft coral moon behind the stalks for depth */}
+        <circle cx="238" cy="150" r="64" fill="var(--bamboo-accent)" opacity="0.16" />
+        <circle cx="238" cy="150" r="64" fill="none" stroke="var(--bamboo-accent)" strokeWidth="1.5" opacity="0.35" />
         <BambooStalk
           x={120} top={0} bottom={600} w={34} joints={[90, 200, 310, 420, 520]}
           leaves={[
             { y: 120, len: 110, droop: 64, flip: true, wind: 'wind-a' },
             { y: 240, len: 95, droop: 70, wind: 'wind-c' },
             { y: 380, len: 100, droop: 76, flip: true, wind: 'wind-b' },
+            { y: 480, len: 70, droop: 52, wind: 'wind-d' },
           ]}
         />
         <BambooStalk
@@ -156,6 +161,7 @@ export function BambooDecoration() {
           leaves={[
             { y: 150, len: 90, droop: 62, wind: 'wind-c' },
             { y: 350, len: 95, droop: 88, flip: true, wind: 'wind-d' },
+            { y: 500, len: 62, droop: 46, wind: 'wind-a' },
           ]}
         />
         <BambooStalk
@@ -165,6 +171,19 @@ export function BambooDecoration() {
             { y: 410, len: 80, droop: 74, wind: 'wind-c' },
           ]}
         />
+        {/* Grass tufts at the base for grounding */}
+        <g fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" opacity="0.85">
+          <path d="M34,598 C30,576 36,558 48,544" />
+          <path d="M46,598 C46,574 54,556 68,546" />
+          <path d="M58,598 C60,580 68,566 80,560" />
+          <path d="M286,598 C284,578 290,562 300,552" />
+          <path d="M298,598 C300,576 308,560 320,552" />
+        </g>
+        {/* Small birds for a finishing touch */}
+        <g fill="none" stroke={INK} strokeWidth="2" strokeLinecap="round" opacity="0.7">
+          <path d="M96,96 C102,90 108,90 114,96 C120,90 126,90 132,96" />
+          <path d="M64,140 C68,136 72,136 76,140 C80,136 84,136 88,140" />
+        </g>
       </svg>
     </motion.div>
   );

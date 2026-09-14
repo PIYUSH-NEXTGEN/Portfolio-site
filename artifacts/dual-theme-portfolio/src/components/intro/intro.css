@@ -24,7 +24,7 @@
     radial-gradient(120% 90% at 72% 8%, rgba(30, 36, 46, 0.5), transparent 62%),
     linear-gradient(160deg, #0a0c10 0%, #060709 55%, #05060a 100%);
   color: #8b93a1;
-  font-family: var(--font-mono, 'DM Mono'), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: 'DM Sans', sans-serif;
 }
 .intro-term-scan {
   position: absolute;
@@ -48,7 +48,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 10px;
+  font-size: var(--text-body);
   letter-spacing: 0.22em;
   opacity: 0;
 }
@@ -70,7 +70,7 @@
 .intro-dot-y { background: #b98a3c; }
 .intro-dot-g { background: #4f7a52; }
 .intro-term-bottom {
-  font-size: 9px;
+  font-size: var(--text-body);
   letter-spacing: 0.26em;
 }
 .intro-term-body {
@@ -78,14 +78,14 @@
   max-width: 640px;
 }
 .intro-term-title {
-  font-size: clamp(15px, 2.4vw, 22px);
+  font-size: var(--text-sub);
   letter-spacing: 0.3em;
   color: #dfe5ec;
   opacity: 0;
 }
 .intro-term-sub {
   margin-top: 10px;
-  font-size: clamp(10px, 1.1vw, 12px);
+  font-size: var(--text-body);
   letter-spacing: 0.18em;
   color: #6b7280;
   opacity: 0;
@@ -100,7 +100,7 @@
 }
 .intro-term-line {
   margin-top: 12px;
-  font-size: clamp(11px, 1.35vw, 13.5px);
+  font-size: var(--text-body);
   letter-spacing: 0.12em;
   opacity: 0;
   transform: translateY(8px);
@@ -136,7 +136,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 10px;
+  font-size: var(--text-body);
   letter-spacing: 0.22em;
   opacity: 0;
   transform: translateY(8px);
@@ -367,7 +367,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 11px;
+  font-size: var(--text-body);
   letter-spacing: 0.2em;
   color: #6b7280;
   opacity: 0;
