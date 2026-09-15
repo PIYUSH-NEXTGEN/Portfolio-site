@@ -1,6 +1,6 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Code2, Database, Menu, MousePointerClick, Settings, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, ArrowUpRight, Code2, Database, Menu, MousePointerClick, Settings, X } from 'lucide-react';
 import { MatplotlibIcon, SeabornIcon } from './components/BrandIcons';
 import { SiCplusplus, SiFastapi, SiGo, SiJavascript, SiLeetcode, SiMysql, SiNumpy, SiPandas, SiPeerlist, SiPostgresql, SiPydantic, SiPython, SiPytorch, SiRender, SiScikitlearn, SiSqlalchemy, SiTensorflow, SiTypescript, SiVercel } from 'react-icons/si';
 import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
@@ -11,7 +11,6 @@ import GuidedTour, { startGuidedTour } from '@/components/GuidedTour';
 import { DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import NotFound from '@/pages/not-found';
-import Journey from '@/pages/journey';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import '@/index.css';
 
@@ -218,76 +217,16 @@ function ScrollToTop() {
   );
 }
 
+/* Hero portrait — fixed artwork (public/pfp.png). The click-to-upload /
+   change-photo picker was removed, so the slot is a plain, non-interactive
+   image: no file input, no empty "Your photo here" state. */
 function HeroPhoto() {
-  const defaultPhoto = `${import.meta.env.BASE_URL}pfp.png`;
-  const [photo, setPhoto] = useState<string | null>(defaultPhoto);
-  const objectUrlRef = useRef<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    return () => {
-      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
-    };
-  }, []);
-
-  const handleFile = (file: File | undefined) => {
-    if (!file) return;
-    // Local preview only: reject non-images / >2MB so one bad file cannot
-    // exhaust memory or break the hero layout.
-    if (!file.type.startsWith('image/')) return;
-    if (file.size > 2 * 1024 * 1024) return;
-    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
-    const url = URL.createObjectURL(file);
-    objectUrlRef.current = url;
-    setPhoto(url);
-  };
-
+  const photo = `${import.meta.env.BASE_URL}pfp.png`;
   return (
     <div className="hero-photo-slot" data-testid="hero-photo-slot">
-      {photo ? (
-        <button
-          type="button"
-          className="hero-photo-filled"
-          onClick={() => inputRef.current?.click()}
-          aria-label="Change hero photo"
-          title="Click to change photo"
-        >
-          <img
-            src={photo}
-            alt="Piyush Baraskar — portrait"
-            loading="eager"
-            decoding="async"
-            onError={() => setPhoto(null)}
-          />
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="hero-photo-empty"
-          onClick={() => inputRef.current?.click()}
-          data-testid="button-hero-photo-upload"
-        >
-          <span className="hero-photo-icon" aria-hidden="true">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.5-3.5a1.5 1.5 0 0 0-2 0L6 21" /></svg>
-          </span>
-          <span className="mono hero-photo-title">Your photo here</span>
-          <span className="hero-photo-sub">Click to upload — portrait works best</span>
-          <span className="mono hero-photo-hint">JPG / PNG</span>
-        </button>
-      )}
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif"
-        className="hidden"
-        aria-label="Upload hero photo"
-        data-testid="input-hero-photo"
-        onChange={(event) => {
-          handleFile(event.target.files?.[0]);
-          // Reset so choosing the same file twice still fires onChange.
-          event.target.value = '';
-        }}
-      />
+      <div className="hero-photo-filled">
+        <img src={photo} alt="Piyush Baraskar — portrait" loading="eager" decoding="async" />
+      </div>
     </div>
   );
 }
@@ -318,7 +257,6 @@ function Header() {
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
-          <Link href="/journey" onClick={() => setOpen(false)} className="nav-link flex items-center gap-1 text-[10px] font-medium uppercase tracking-[.17em] text-[#c84d3d] opacity-90 transition-opacity hover:opacity-100" data-testid="link-nav-journey-route">Journey <ArrowUpRight size={11} /></Link>
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <NavKatana />
@@ -344,7 +282,6 @@ function Hero() {
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
           <button type="button" onClick={() => startGuidedTour()} className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-hero-tour">Take me through <MousePointerClick size={14} className="hero-tour-icon" /></button>
-          <Link href="/journey" className="button-quiet magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="link-hero-journey">Read the story <ArrowRight size={14} /></Link>
         </Reveal>
       </div>
       <div className="katana-hero-photo">
@@ -498,7 +435,7 @@ function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-14">
       <div className="section-wrap">
-        <Reveal className="mb-12 flex items-end gap-5"><div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">02 / PROJECTS</div><h2 className="section-title section-title-sm display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
+        <Reveal className="mb-12 flex items-end gap-5"><div><h2 className="section-title section-title-sm display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
         <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {projects.map((project, index) => <Reveal key={project.name} delay={index * 80} className="h-full"><ProjectCard project={project} /></Reveal>)}
         </div>
@@ -512,7 +449,7 @@ function Skills() {
     <section id="skills" className="section-anchor border-t border-current/20 py-14">
       <div className="section-wrap">
         <Reveal className="mb-12">
-          <div><div className="mono mb-4 text-[10px] uppercase tracking-[.2em] opacity-60">03 / TECHNICAL SKILLS</div><h2 className="section-title section-title-sm display">Tech stack<br /><span>I work with.</span></h2></div>
+          <div><h2 className="section-title section-title-sm display">Tech stack<br /><span>I work with.</span></h2></div>
         </Reveal>
         <Reveal>
           <div className="divide-y divide-current/10 border-t border-current/10">
@@ -606,11 +543,6 @@ function ResumeCard() {
   return (
     <div className="resume-card">
       <div className="resume-sheet">
-        <div className="resume-sheet-top">
-          <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">Resume — preview</div>
-          <div className="mono text-[9px] uppercase tracking-[.15em] opacity-55">PDF · 1 page</div>
-        </div>
-
         <div className="resume-unroll">
           <div className="resume-unroll-frame">
             <img src={resumeImg} alt="Piyush Baraskar — resume" loading="lazy" data-testid="img-resume" />
@@ -641,7 +573,6 @@ function Experience() {
       <div className="section-wrap">
         <Reveal className="mb-8">
           <div>
-            <div className="mono mb-3 text-[10px] uppercase tracking-[.2em] opacity-60">04 / EXPERIENCE, ACHIEVEMENTS &amp; COMMUNITY</div>
             <h2 className="section-title section-title-sm display">The record<br /><span>I’m building.</span></h2>
             <p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">My experience, the programming community I’ve built, and the opportunities that have shaped my journey so far and resume.</p>
           </div>
@@ -681,9 +612,6 @@ function Experience() {
           </div>
         </div>
 
-        <Reveal className="mt-12 flex justify-center" delay={120}>
-          <Link href="/journey" className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-view-journey">View journey <ArrowRight size={14} /></Link>
-        </Reveal>
       </div>
     </section>
   );
@@ -705,21 +633,21 @@ function Contact() {
   };
 
   return (
-    <section id="contact" className="section-anchor contact-section py-8">
+    <section id="contact" className="section-anchor contact-section py-6">
       <div className="section-wrap contact-inner">
         <Reveal>
-          <div className="max-w-[560px]"><div className="mono mb-6 text-[10px] uppercase tracking-[.2em] opacity-60">05 / Get in touch</div><h2 className="section-title section-title-sm display">Let’s make<br /><span>something useful</span></h2><p className="mt-7 max-w-[440px] text-sm leading-7 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p></div>
-          <div className="mt-12 grid gap-10 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1.05fr] lg:gap-8">
-            <div className="border-t border-current/20 pt-6"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Send a note</div>
-              <form onSubmit={onSubmit} className="mt-5 grid gap-3" aria-label="Contact form">
+          <div className="max-w-[520px]"><h2 className="section-title section-title-sm display">Let’s make<br /><span>something useful</span></h2><p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p></div>
+          <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1.05fr] lg:gap-7">
+            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Send a note</div>
+              <form onSubmit={onSubmit} className="mt-4 grid gap-2.5" aria-label="Contact form">
                 <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
-                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={4} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
-                <button type="submit" className="button-primary mt-2 inline-flex w-fit items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-contact-send">Send an email <ArrowUpRight size={14} /></button>
+                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={3} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
+                <button type="submit" className="button-primary mt-1.5 inline-flex w-fit items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-contact-send">Send an email <ArrowUpRight size={14} /></button>
                 {status === 'sent' && <p role="status" className="text-sm opacity-70">Opening your mail client — I’ll reply soon.</p>}
               </form>
             </div>
-            <div className="border-t border-current/20 pt-6"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-5 grid gap-6"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
-            <nav className="border-t border-current/20 pt-6 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-7 w-7 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={13} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
+            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
+            <nav className="border-t border-current/20 pt-5 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
           </div>
         </Reveal>
       </div>
@@ -732,7 +660,7 @@ function Home() {
 }
 
 function Router() {
-  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route path="/journey" component={Journey} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
+  return <RoutedErrorBoundary><Switch><Route path="/" component={Home} /><Route component={NotFound} /></Switch></RoutedErrorBoundary>;
 }
 
 function RoutedErrorBoundary({ children }: { children: ReactNode }) {

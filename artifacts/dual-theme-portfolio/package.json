@@ -17,6 +17,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "catalog:",
     "framer-motion": "catalog:",
     "lucide-react": "catalog:",
@@ -28,6 +29,7 @@
     "wouter": "^3.3.5"
   },
   "dependencies": {
-    "gsap": "catalog:"
+    "gsap": "catalog:",
+    "three": "^0.186.0"
   }
 }

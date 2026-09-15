@@ -173,11 +173,10 @@
 .theme-editorial .t-heading { font-size: var(--text-heading) !important; line-height: 1.05 !important; }
 .theme-editorial .t-sub { font-size: var(--text-sub) !important; line-height: 1.4 !important; }
 .theme-editorial .t-body { font-size: var(--text-body) !important; line-height: 1.6 !important; }
-/* — Tier 1 · headings — section titles, journey stat numbers,
-   404 title. One size only. (Hero keeps its original display size.) */
+/* — Tier 1 · headings — section titles, 404 title. One size only.
+   (Hero keeps its original display size.) */
 .theme-editorial .section-title,
 .theme-editorial .section-title-sm,
-.theme-editorial .journey-stat-number,
 .theme-editorial h1.display,
 .theme-editorial h2.display {
   font-size: var(--text-heading) !important;
@@ -188,8 +187,6 @@
    error-fallback title. One size only. */
 .theme-editorial .project-modal-panel h3.display,
 .theme-editorial .project-card h3.display,
-.theme-editorial .journey-card h3.display,
-.theme-editorial .journey-card span.serif,
 .theme-editorial h3.display,
 .theme-editorial .skills-title,
 .theme-editorial .philosophy-quote,
@@ -209,13 +206,12 @@
 .theme-editorial .text-3xl {
   font-size: var(--text-body) !important;
 }
-/* — Tier 3 · body — every hand-written CSS font-size collapses too.
-   (Hero photo labels keep originals — restored in the block below.) */
+/* — Tier 3 · body — every hand-written CSS font-size collapses too. */
 .theme-editorial .skills-index,
 .theme-editorial .skills-tag, .theme-editorial .resume-sheet-role,
 .theme-editorial .resume-sheet-meta, .theme-editorial .resume-toggle,
 .theme-editorial .resume-download, .theme-editorial .filter-tab,
-.theme-editorial .journey-filter-count, .theme-editorial .tour-caption,
+.theme-editorial .tour-caption,
 .theme-editorial .project-open-cta, .theme-editorial .project-visual-year,
 .theme-editorial .project-visual-label, .theme-editorial .guided-tour-progress,
 .theme-editorial .tour-spot-label {
@@ -225,12 +221,6 @@
 /* Hero + navbar ORIGINAL sizes — placed after every tier rule so they win. */
 .theme-editorial .editorial-hero.hero-copy,
 .theme-editorial .editorial-hero .hero-copy { font-size: clamp(2.5rem, 6vw, 5.5rem) !important; line-height: .83 !important; }
-.theme-editorial .editorial-hero p.hero-photo-title,
-.theme-editorial .editorial-hero span.hero-photo-title { font-size: 11px !important; }
-.theme-editorial .editorial-hero p.hero-photo-sub,
-.theme-editorial .editorial-hero span.hero-photo-sub { font-size: 13px !important; }
-.theme-editorial .editorial-hero p.hero-photo-hint,
-.theme-editorial .editorial-hero span.hero-photo-hint { font-size: 9px !important; }
 .theme-editorial .nav a.text-\[10px\],
 .theme-editorial header .nav .text-\[10px\] { font-size: 10px !important; }
 .theme-editorial .editorial-hero a.text-\[11px\],
@@ -278,7 +268,7 @@
 }
 .theme-editorial .footer a { color: #ece4d3; }
 .theme-editorial .footer a:hover { color: #f0ae78; }
-/* Contact section (05 / Get in touch) — same ink treatment as the footer,
+/* Contact section — same ink treatment as the footer,
    so the bottom of the page closes in the dark brand band. */
 .theme-editorial .contact-section {
   background: #202a36; color: #ece4d3;
@@ -292,6 +282,11 @@
 .theme-editorial .contact-section textarea::placeholder { color: rgba(236, 228, 211, .45); }
 .theme-editorial .contact-section .button-primary { background: #c84d3d; border-color: #c84d3d; color: #ece4d3; }
 .theme-editorial .contact-section .button-primary:hover { background: #f0ae78; border-color: #f0ae78; color: #202a36; }
+/* ─ Contact · compact scale ────────────────────────────────────────────
+   The contact band closes the page, so it runs the site's single heading
+   token at a smaller clamp: same three-size type system, a shorter strip. */
+.theme-editorial .contact-section { --text-heading: clamp(1.5rem, 3.4vw, 2.5rem); }
+.theme-editorial .contact-section .section-title-sm { line-height: 1.1 !important; }
 .theme-editorial .editorial-hero { position: relative; }
 .theme-editorial .editorial-hero .hero-copy { position: relative; z-index: 1; }
 .theme-editorial .editorial-hero .hero-copy::after {
@@ -299,27 +294,8 @@
   background: rgba(200,77,61,.2); filter: blur(1px); transform: translate(-50%, -50%);
 }
 .theme-editorial .hero-photo-slot { position: absolute; inset: 12px; }
-.theme-editorial .hero-photo-empty {
-  width: 100%; height: 100%; min-height: 240px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-  background:
-    linear-gradient(rgba(32,42,54,.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(32,42,54,.055) 1px, transparent 1px),
-    #ddd0b4;
-  background-size: 28px 28px, 28px 28px, auto;
-  color: #3a4451; cursor: pointer; border: 2px dashed rgba(58,68,81,.45); border-radius: 2px;
-  transition: background-color .25s ease;
-}
-.theme-editorial .hero-photo-empty:hover { background-color: #d5c6a8; }
-.hero-photo-icon {
-  display: flex; align-items: center; justify-content: center;
-  width: 72px; height: 72px; border-radius: 999px;
-  border: 1px solid rgba(58,68,81,.4); background: rgba(246,240,226,.65);
-}
-.hero-photo-title { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
-.hero-photo-sub { font-size: 13px; opacity: .7; }
-.hero-photo-hint { font-size: 9px; letter-spacing: .18em; opacity: .55; border: 1px solid rgba(58,68,81,.35); padding: 4px 8px; }
-.theme-editorial .hero-photo-filled { width: 100%; height: 100%; min-height: 240px; padding: 0; border: 0; cursor: pointer; background: #111; }
+/* Hero portrait frame — a plain image now that the photo picker is gone. */
+.theme-editorial .hero-photo-filled { width: 100%; height: 100%; min-height: 240px; background: #111; }
 .theme-editorial .hero-photo-filled img { width: 100%; height: 100%; max-height: 340px; object-fit: cover; object-position: center top; display: block; background: #111; }
 .skills-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -431,10 +407,6 @@
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: rgba(200,77,61,.28);
 }
-.theme-editorial .resume-sheet-top {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 12px; padding-bottom: 16px; border-bottom: 1px dashed rgba(58,68,81,.32);
-}
 .theme-editorial .resume-sheet-name { font-size: var(--text-sub); letter-spacing: .04em; font-weight: 600; }
 .theme-editorial .resume-sheet-role { font-size: var(--text-body); letter-spacing: .12em; text-transform: uppercase; margin-top: 4px; opacity: .7; }
 .theme-editorial .resume-frame { margin-top: 18px; }
@@ -527,10 +499,9 @@
 }
 
 /* ── Hero portrait: profile photo ───────────────────────────────────────
-   The default hero portrait is public/pfp.png, rendered as a plain <img>.
-   It is sized by the generic .theme-editorial .hero-photo-filled img rules
-   (object-fit cover, top-centred, #111 backdrop) exactly like an
-   uploaded photo. */
+   The hero portrait is fixed artwork — public/pfp.png rendered as a plain,
+   non-interactive <img>, sized by the .theme-editorial .hero-photo-filled
+   img rules (object-fit cover, top-centred, #111 backdrop). */
 .hero-photo-filled { position: relative; }
 
 /* Slash divider into Projects */
@@ -598,7 +569,6 @@
   .theme-editorial .editorial-hero { padding-top: 94px; }
   .theme-editorial .editorial-hero .hero-copy::after { left: 63%; top: 22%; width: 150px; }
   .theme-editorial .hero-photo-slot { inset: 8px; }
-  .theme-editorial .hero-photo-empty,
   .theme-editorial .hero-photo-filled,
   .theme-editorial .hero-photo-filled img { min-height: 210px; }
   .theme-editorial .hero-photo-filled img { max-height: 300px; }
@@ -835,93 +805,6 @@
   .wandering-cat .cat-img, .wandering-cat .cat-legs { animation: none !important; }
 }
 
-/* ── Journey page (/journey) ───────────────────────────────────────────
-   An interactive programming-journey timeline in the editorial paper
-   language: a scroll-drawn ink spine, pop-in chapter nodes, expandable
-   milestone cards, filterable eras, count-up stats and skill bars.
-   Everything honours the global prefers-reduced-motion kill switch. */
-
-/* Stats strip — hairline grid via 1px gaps over a darker backdrop */
-.journey-stats {
-  display: grid; gap: 1px; grid-template-columns: repeat(2, 1fr);
-  background: rgba(58, 68, 81, .2); border: 1px solid rgba(58, 68, 81, .25);
-}
-@media (min-width: 640px) { .journey-stats { grid-template-columns: repeat(4, 1fr); } }
-.journey-stat { background: #f6f0e2; padding: 22px 18px 18px; }
-.journey-stat-number { font-size: var(--text-heading); line-height: 1.05; color: #202a36; }
-
-/* Hero rule that draws itself across the page */
-.reveal .journey-rule-draw { animation: journey-rule-draw 1.1s cubic-bezier(.2,.7,.2,1) both; }
-@keyframes journey-rule-draw { from { scale: 0 1; } to { scale: 1 1; } }
-
-/* Filter tabs — same underline treatment as the home nav-link */
-.journey-tab {
-  position: relative; padding: 7px 2px;
-  font-size: var(--text-body); letter-spacing: .17em; text-transform: uppercase;
-  opacity: .6; transition: opacity .25s ease, color .25s ease;
-}
-.journey-tab::after {
-  content: ''; position: absolute; left: 0; right: 100%; bottom: 0; height: 2px;
-  background: #c84d3d; transition: right .3s ease;
-}
-.journey-tab:hover { opacity: 1; }
-.journey-tab.journey-tab-active { opacity: 1; color: #c84d3d; }
-.journey-tab.journey-tab-active::after { right: 0; }
-
-/* Timeline: a vertical spine that fills with scroll progress. On mobile it
-   hugs the left edge; from lg it splits the page down the middle and the
-   milestone cards alternate sides around it. */
-.journey-timeline { position: relative; }
-.journey-spine { position: absolute; top: 8px; bottom: 8px; left: 15px; width: 2px; background: rgba(58,68,81,.16); }
-.journey-spine-fill {
-  position: absolute; top: 0; left: 0; width: 100%;
-  height: calc(var(--journey-progress, 0) * 100%);
-  background: linear-gradient(180deg, #c84d3d, #202a36);
-}
-.journey-row { position: relative; padding-left: 48px; }
-.journey-node {
-  position: absolute; left: 0; top: 24px; z-index: 1;
-  display: flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px; border: 1px solid rgba(58,68,81,.4);
-  border-radius: 999px; background: #f6f0e2; color: #202a36;
-  box-shadow: 0 0 0 4px rgba(246,240,226,.9);
-}
-.reveal .journey-node { animation: journey-node-pop .55s cubic-bezier(.34,1.56,.64,1) both; animation-delay: var(--node-delay, 0ms); }
-@keyframes journey-node-pop { from { scale: .2; opacity: 0; } to { scale: 1; opacity: 1; } }
-
-@media (min-width: 1024px) {
-  .journey-spine { left: 50%; margin-left: -1px; }
-  .journey-row { padding-left: 0; display: grid; grid-template-columns: 1fr 88px 1fr; align-items: center; }
-  .journey-node { position: static; grid-column: 2; grid-row: 1; justify-self: center; }
-  .journey-row-even .journey-card { grid-column: 1; grid-row: 1; justify-self: end; }
-  .journey-row-odd .journey-card { grid-column: 3; grid-row: 1; justify-self: start; }
-  /* Little ink connector from the node to its card */
-  .journey-card { position: relative; }
-  .journey-row-even .journey-card::after,
-  .journey-row-odd .journey-card::after {
-    content: ''; position: absolute; top: 50%; width: 40px; height: 1px;
-    background: rgba(58,68,81,.25);
-  }
-  .journey-row-even .journey-card::after { right: -44px; }
-  .journey-row-odd .journey-card::after { left: -44px; }
-}
-
-/* Milestone card — sibling of skills-card; expands via the 0fr→1fr grid
-   trick so the accordion animates to content height without JS math. */
-.journey-card {
-  width: 100%; max-width: 560px;
-  border: 1px solid rgba(58,68,81,.25); border-radius: 2px;
-  background: rgba(246,240,226,.6);
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background-color .25s ease;
-}
-.journey-card:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(34,38,47,.1); background: #f6f0e2; border-color: rgba(200,77,61,.45); }
-.journey-card-trigger { display: block; width: 100%; padding: 18px 20px 14px; text-align: left; cursor: pointer; }
-.journey-chevron { transition: transform .35s ease; }
-.journey-card-open .journey-chevron { transform: rotate(180deg); }
-.journey-detail { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.2,.7,.2,1); }
-.journey-card-open .journey-detail { grid-template-rows: 1fr; }
-.journey-detail-inner { overflow: hidden; }
-
 /* Scroll-to-top — editorial ink disc, slides up from the bottom-right corner
    once the page is scrolled, then glides the viewport back to the top
    (window.scrollTo with behavior:'smooth' + the site's smooth scroll-behavior).
@@ -1059,6 +942,9 @@ body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden 
 .project-card-compact:hover .project-card-chevron { transform: rotate(-90deg); }
 .project-card-compact .project-open-cta { transition: background-color .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease; }
 .project-card-compact:hover .project-open-cta { background: #c84d3d; color: #f6f0e2; border-color: #c84d3d; opacity: 1; }
+/* "Open project" CTA — a notch smaller than body copy (the tier-3 rule lifts
+   every utility font-size up to --text-body, so re-declare it here). */
+.theme-editorial .project-card .project-open-cta { font-size: 11px !important; letter-spacing: .16em; }
 
 /* Project detail modal — opens from the card with a springy pop */
 .project-modal-backdrop {

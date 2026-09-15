@@ -68,8 +68,6 @@ const TOUR_STEPS: TourStep[] = [
   { selector: '[data-testid="input-contact-email"]', caption: 'Drop your email in — watch how fast it goes.', action: 'type', text: 'piyush.demo@gmail.com', hold: 800 },
   { selector: '[data-testid="input-contact-message"]', caption: 'A few honest words do the rest.', action: 'type', text: 'I loved the portfolio design!', hold: 900 },
   { selector: '[data-testid="button-contact-send"]', caption: 'Then one click sends it on its way.', action: 'hover', hold: 1400, clear: ['[data-testid="input-contact-email"]', '[data-testid="input-contact-message"]'] },
-  /* 8 · Journey — straight there, then home to the top */
-  { selector: '[data-testid="button-view-journey"]', caption: 'And for the long version — the Journey page.', action: 'hover', hold: 1500 },
 ];
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
