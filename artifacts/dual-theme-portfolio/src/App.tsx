@@ -12,62 +12,32 @@ import { DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
+import lumenShot1 from '@assets/1-lumen.png';
+import lumenShot2 from '@assets/2-lumen.png';
+import lumenShot3 from '@assets/3-lumen.png';
+import lumenShot4 from '@assets/4-lumen.png';
+import lumenShot5 from '@assets/5-lumen.png';
 import '@/index.css';
 
 const projects = [
   {
     number: '01',
-    name: 'Kintsugi',
-    kind: 'Product dashboard',
-    description: 'A calm operations cockpit for teams turning messy inputs into decisions they can trust.',
-    stack: ['React', 'Node.js', 'Postgres'],
-    accent: 'coral',
-    url: 'https://kintsugi.vercel.app',
-    github: 'https://github.com/PIYUSH-NEXTGEN/kintsugi',
-    year: '2026',
-    details: 'Kintsugi turns scattered signals — tickets, deploys, incidents — into one calm cockpit. Every metric is annotated, decisions are traceable, and nothing ships without its story attached.',
-    highlights: ['Unified incident and deploy timeline', 'Annotated metrics with review threads', 'Keyboard-first ops workflow'],
-  },
-  {
-    number: '02',
-    name: 'Akari Commerce',
-    kind: 'Commerce platform',
-    description: 'A faster, more human storefront system for independent makers and small-batch goods.',
-    stack: ['Next.js', 'Stripe', 'Prisma'],
-    accent: 'gold',
-    url: 'https://akari-commerce.vercel.app',
-    github: 'https://github.com/PIYUSH-NEXTGEN/akari-commerce',
-    year: '2026',
-    details: 'Akari replaces cookie-cutter storefronts with a builder that respects the maker’s eye. Checkout feels like a conversation, not a funnel, and inventory stays honest in real time.',
-    highlights: ['Headless storefront builder', 'One-tap Stripe checkout flow', 'Real-time inventory sync'],
-  },
-  {
-    number: '03',
-    name: 'Sora Studio',
-    kind: 'Creative tool',
-    description: 'A collaborative workspace that gives creative teams a shared surface for early ideas.',
-    stack: ['TypeScript', 'WebSockets', 'Figma'],
+    name: 'LUMEN',
+    kind: 'Image analysis tool',
+    description: 'A command-line and API-based image analysis tool for quality metrics, channel statistics, dominant colours, and exact-hash duplicate detection.',
+    stack: ['Python', 'Pillow', 'NumPy', 'FastAPI'],
     accent: 'blue',
-    url: 'https://sora-studio.vercel.app',
-    github: 'https://github.com/PIYUSH-NEXTGEN/sora-studio',
+    url: 'https://lumen-image-analyzer.vercel.app/',
+    github: 'https://github.com/PIYUSH-NEXTGEN/LUMEN',
     year: '2026',
-    details: 'Sora is a shared canvas for early creative chaos. Moodboards, references and rough sketches live on one surface that syncs live across the room — no save button required.',
-    highlights: ['Live multi-user canvas', 'Moodboard and reference boards', 'Versioned sketch history'],
-  },
-  {
-    number: '04',
-    name: 'Mono API',
-    kind: 'Developer tool',
-    description: 'A lightweight API layer that makes complex workflows legible, observable, and quick.',
-    stack: ['Go', 'GraphQL', 'Docker'],
-    accent: 'ink',
-    url: 'https://mono-api.vercel.app',
-    github: 'https://github.com/PIYUSH-NEXTGEN/mono-api',
-    year: '2026',
-    details: 'Mono wraps complex workflows in a single legible API — typed contracts, automatic logging, and a query graph that shows exactly what ran, when, and why.',
-    highlights: ['Typed contract layer', 'Automatic request tracing', 'One-command Docker deploy'],
+    details: 'LUMEN inspects images the way an engineer would — quality metrics like sharpness, brightness and contrast, per-channel statistics, dominant colour extraction, and SHA-256 exact-hash duplicate detection, all from a single CLI command or a REST endpoint.',
+    highlights: ['CLI and REST API interfaces', 'Quality metrics and channel statistics', 'Dominant colour extraction', 'Exact-hash duplicate detection'],
+    images: [lumenShot1, lumenShot2, lumenShot3, lumenShot4, lumenShot5],
   },
 ];
+
+/* Reserved card slots — kept in the grid but empty until the next project ships. */
+const emptyProjectSlots = 1;
 
 const socialLinks = [
   { label: 'GitHub', href: 'https://github.com/PIYUSH-NEXTGEN', Icon: FaGithub, testId: 'link-nav-github', color: '#24292e' },
@@ -293,8 +263,43 @@ function Hero() {
   );
 }
 
-function ProjectVisual({ accent, year, compact = false }: { accent: string; year: string; compact?: boolean }) {
+/* Auto-playing screenshot slideshow — crossfades one slide every 2 seconds */
+function ImageSlideshow({ images }: { images: string[] }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const timer = window.setInterval(() => setIndex((i) => (i + 1) % images.length), 2000);
+    return () => window.clearInterval(timer);
+  }, [images.length]);
+  return (
+    <div className="relative h-full w-full overflow-hidden bg-[#121417]">
+      {images.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt={`Screenshot ${i + 1} of ${images.length}`}
+          loading="lazy"
+          draggable={false}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out ${i === index ? 'opacity-100' : 'opacity-0'}`}
+        />
+      ))}
+      <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden="true">
+        {images.map((src, i) => (
+          <span key={src} className={`h-1 w-1 rounded-full bg-white transition-opacity duration-300 ${i === index ? 'opacity-95' : 'opacity-35'}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProjectVisual({ accent, year, compact = false, images }: { accent: string; year: string; compact?: boolean; images?: string[] }) {
   const background = accent === 'coral' ? '#d5c3ad' : accent === 'gold' ? '#d7d5bd' : accent === 'blue' ? '#bdccd0' : '#c9ced0';
+  if (images && images.length > 0) {
+    return (
+      <div className={`project-visual project-visual-slideshow relative aspect-[2/1] w-full overflow-hidden border border-current/20 ${compact ? '' : 'mb-5'}`}>
+        <ImageSlideshow images={images} />
+      </div>
+    );
+  }
   if (compact) {
     return (
       <div className="project-visual relative overflow-hidden border border-current/20" style={{ backgroundColor: background, height: '7rem' }}>
@@ -368,7 +373,7 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[number]
             <X size={16} />
           </button>
         </div>
-        <ProjectVisual accent={project.accent} year={project.year} />
+        <ProjectVisual accent={project.accent} year={project.year} images={project.images} />
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
           <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
           <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
@@ -404,7 +409,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
     <>
       <article
         ref={cardRef}
-        className="project-card project-card-compact katana-card flex h-full flex-col p-4"
+        className="project-card project-card-compact katana-card flex h-full flex-col p-5"
         data-testid={`card-project-${project.number}`}
         onClick={handleOpen}
         onKeyDown={(event) => {
@@ -418,10 +423,10 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
         aria-haspopup="dialog"
         aria-label={`Open ${project.name} project details`}
       >
-        <ProjectVisual accent={project.accent} year={project.year} compact />
-        <h3 className="display mt-4 text-xl leading-tight tracking-[-.02em]">{project.name}</h3>
+        <ProjectVisual accent={project.accent} year={project.year} compact images={project.images} />
+        <h3 className="display mt-4 text-2xl leading-tight tracking-[-.02em]">{project.name}</h3>
         <span className="katana-card-line" aria-hidden="true" />
-        <p className="mb-4 mt-2 text-xs leading-5 opacity-75">{project.description}</p>
+        <p className="mb-4 mt-2 text-sm leading-6 opacity-75">{project.description}</p>
         <span className="project-open-cta mono mt-auto flex items-center justify-center gap-2 border border-current/20 py-2 text-[9px] uppercase tracking-[.15em] opacity-60">
           Open project <ArrowUpRight size={12} />
         </span>
@@ -431,13 +436,28 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
   );
 }
 
+/* Reserved slot — a quiet, non-interactive card kept empty until the next project ships. */
+function EmptyProjectCard() {
+  return (
+    <article className="project-card project-card-compact katana-card flex h-full flex-col p-5" aria-hidden="true">
+      <ProjectVisual accent="ink" year="" compact />
+      <div className="flex flex-1 items-center justify-center">
+        <span className="mono text-[9px] uppercase tracking-[.16em] opacity-30">Coming soon</span>
+      </div>
+    </article>
+  );
+}
+
 function Projects() {
   return (
     <section id="projects" className="section-anchor border-t border-current/20 py-14">
       <div className="section-wrap">
         <Reveal className="mb-12 flex items-end gap-5"><div><h2 className="section-title section-title-sm display">A few things<br /><span>I’ve made.</span></h2></div></Reveal>
-        <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid items-stretch gap-4 sm:grid-cols-2 lg:gap-5">
           {projects.map((project, index) => <Reveal key={project.name} delay={index * 80} className="h-full"><ProjectCard project={project} /></Reveal>)}
+          {Array.from({ length: emptyProjectSlots }, (_, i) => (
+            <Reveal key={`empty-slot-${i}`} delay={(projects.length + i) * 80} className="h-full"><EmptyProjectCard /></Reveal>
+          ))}
         </div>
       </div>
     </section>
