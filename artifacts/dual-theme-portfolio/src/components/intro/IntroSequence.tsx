@@ -164,7 +164,7 @@ function buildIntroTimeline(dom: IntroDom, onDone: () => void): IntroTimeline {
   );
   addBoth(
     '[data-intro="line"]',
-    { opacity: { from: 0, to: 1 }, y: { from: 8, to: 0 }, duration: 300, delay: stagger(120), ease: 'outCubic' },
+    { opacity: { from: 0, to: 1 }, y: { from: 8, to: 0 }, duration: 300, delay: stagger(100), ease: 'outCubic' },
     T.lines,
   );
   addBoth('[data-intro="status"]', { opacity: { from: 0, to: 1 }, y: { from: 8, to: 0 }, duration: 300 }, T.status);

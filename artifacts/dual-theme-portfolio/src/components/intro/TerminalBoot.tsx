@@ -13,11 +13,13 @@
 type BootRow = { cmd: string; out: string; tone?: 'ok' | 'dim' | 'warn' };
 
 const BOOT_ROWS: BootRow[] = [
-  { cmd: 'whoami', out: 'piyush-baraskar', tone: 'ok' },
-  { cmd: 'uname -sm', out: 'Linux x86_64', tone: 'dim' },
-  { cmd: 'cat stack.txt', out: 'python · go · pytorch · postgres · typescript', tone: 'dim' },
-  { cmd: 'ls ~/portfolio', out: 'kintsugi/  akari/  sora/  mono/', tone: 'ok' },
-  { cmd: './boot --portfolio', out: 'routes 4/4 · assets 148/214', tone: 'ok' },
+  { cmd: 'whoami', out: 'piyush-baraskar · ml & backend engineer · cs 2029', tone: 'ok' },
+  { cmd: 'cat /etc/purpose', out: 'shipping measurable systems, model to endpoint', tone: 'dim' },
+  { cmd: 'python -m lumen.analyze ./assets/cat.png', out: 'sharpness 0.87 · entropy 6.41 · duplicates: none', tone: 'ok' },
+  { cmd: 'psql portfolio -c "\\dt"', out: 'images · reports · duplicates · 3 relations up', tone: 'dim' },
+  { cmd: 'git status -sb', out: '## main…origin/main · working tree clean', tone: 'dim' },
+  { cmd: 'pip install lumen-image-analyzer', out: 'resolved 12 pkgs · pillow numpy fastapi sqlalchemy', tone: 'ok' },
+  { cmd: './boot --portfolio --env=prod', out: 'routes 4/4 · fonts 3/3 · katana sharpened', tone: 'ok' },
   { cmd: 'build interface --prod', out: 'compiling … 62%', tone: 'warn' },
   { cmd: 'hydrate components', out: 'waiting on chunk 149', tone: 'dim' },
 ];
@@ -33,13 +35,13 @@ export function TerminalBoot() {
             <span className="intro-dot intro-dot-r" />
             <span className="intro-dot intro-dot-y" />
             <span className="intro-dot intro-dot-g" />
-            <span className="intro-term-brand-name">piyush_baraskar — portfolio</span>
+            <span className="intro-term-brand-name">piyush_baraskar · portfolio</span>
           </span>
-          <span className="intro-term-top-right">piyush@ink — zsh</span>
+          <span className="intro-term-top-right">piyush@ink · zsh 5.9</span>
         </div>
         <div className="intro-term-body">
           <div className="intro-term-session" data-intro="line">
-            Last login: Tue Sep  9 09:41:22 on ttys001 · pid 412 · tty01 · utf-8
+            ✦ piyush@ink · x86_64 · utf-8 · tz asia/kolkata
           </div>
           <div className="intro-term-title" data-intro="title">
             <span className="term-user">piyush@ink</span>
@@ -69,7 +71,7 @@ export function TerminalBoot() {
             </div>
           ))}
           <div className="intro-term-status" data-intro="status">
-            <span className="term-status-label">fetching chunks</span>
+            <span className="term-status-label">assembling experience</span>
             <span className="intro-term-status-bar">
               <span className="intro-term-status-fill" data-intro="status-fill" />
             </span>
@@ -77,12 +79,12 @@ export function TerminalBoot() {
           </div>
           <div className="intro-waiting" data-intro="waiting">
             <span className="intro-spinner" />
-            <span>chunk 149/214 — please wait</span>
+            <span>chunk 149/214 · fonts still in flight · hold on</span>
           </div>
         </div>
         <div className="intro-term-bottom" data-intro="fade">
-          <span>© PIYUSH BARASKAR</span>
-          <span>localhost · zsh · 80×24 · main*</span>
+          <span>© PIYUSH BARASKAR · bhopal, in</span>
+          <span>zsh 5.9 · 80×24 · utf-8 · main*</span>
         </div>
       </div>
     </div>
