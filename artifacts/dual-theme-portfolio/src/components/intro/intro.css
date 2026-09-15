@@ -8,49 +8,77 @@
   overflow: hidden;
   background: transparent;
   isolation: isolate;
+  pointer-events: none;
 }
 
 .intro-stage {
   position: absolute;
   inset: 0;
   will-change: transform;
+  background: transparent;
 }
 
-/* ── Terminal skin (rendered inside each split panel) ─────────────────── */
+/* Dark seal BEHIND both halves: hides the 1px anti-aliased clip-path hairline
+   before the cut. Faded out by the timeline ON the cut frame, so the moment
+   the halves part the portfolio underneath shows through — never black. */
+.intro-seal {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(110% 70% at 50% 0%, rgba(64, 224, 160, 0.06), transparent 55%),
+    radial-gradient(120% 90% at 72% 8%, rgba(30, 36, 46, 0.5), transparent 62%),
+    linear-gradient(165deg, #0b0e0c 0%, #070908 55%, #050706 100%);
+}
+
+/* ── Terminal skin (rendered inside each split panel) ───────────────────
+   A believable dark shell: near-black green-tinted glass, mono type,
+   macOS traffic lights, colored prompt, dimmed command output. */
 .intro-term {
   position: absolute;
   inset: 0;
   background:
+    radial-gradient(110% 70% at 50% 0%, rgba(64, 224, 160, 0.06), transparent 55%),
     radial-gradient(120% 90% at 72% 8%, rgba(30, 36, 46, 0.5), transparent 62%),
-    linear-gradient(160deg, #0a0c10 0%, #060709 55%, #05060a 100%);
-  color: #8b93a1;
-  font-family: 'DM Sans', sans-serif;
+    linear-gradient(165deg, #0b0e0c 0%, #070908 55%, #050706 100%);
+  color: #9aa39d;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 .intro-term-scan {
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 3px);
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 3px);
+  pointer-events: none;
 }
 .intro-term-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(140% 120% at 50% 44%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  background: radial-gradient(140% 120% at 50% 44%, transparent 55%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
 }
 .intro-term-inner {
   position: absolute;
   inset: 0;
-  padding: clamp(24px, 7vw, 88px);
+  padding: clamp(20px, 5vw, 56px);
   display: flex;
   flex-direction: column;
 }
+/* Window chrome bar */
 .intro-term-top,
 .intro-term-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: var(--text-body);
-  letter-spacing: 0.22em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   opacity: 0;
+}
+.intro-term-top {
+  padding: 10px 14px;
+  margin: calc(clamp(20px, 5vw, 56px) * -1) calc(clamp(20px, 5vw, 56px) * -1) 0;
+  background: rgba(255, 255, 255, 0.035);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  color: #7d867f;
 }
 .intro-term-brand {
   display: inline-flex;
@@ -58,50 +86,78 @@
   gap: 7px;
 }
 .intro-term-brand-name {
-  margin-left: 6px;
+  margin-left: 8px;
+  color: #b9c1ba;
+  letter-spacing: 0.08em;
+}
+.intro-term-top-right {
+  color: #5d665f;
+  letter-spacing: 0.12em;
 }
 .intro-dot {
-  width: 8px;
-  height: 8px;
+  width: 11px;
+  height: 11px;
   border-radius: 9999px;
   display: inline-block;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.45);
 }
-.intro-dot-r { background: #c84d3d; }
-.intro-dot-y { background: #b98a3c; }
-.intro-dot-g { background: #4f7a52; }
+.intro-dot-r { background: #ff5f57; }
+.intro-dot-y { background: #febc2e; }
+.intro-dot-g { background: #28c840; }
 .intro-term-bottom {
-  font-size: var(--text-body);
-  letter-spacing: 0.26em;
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #59615c;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 .intro-term-body {
-  margin-top: clamp(40px, 12vh, 120px);
-  max-width: 640px;
+  margin-top: clamp(24px, 6vh, 56px);
+  max-width: 720px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
 }
+/* Active prompt line */
 .intro-term-title {
-  font-size: var(--text-sub);
-  letter-spacing: 0.3em;
-  color: #dfe5ec;
+  font-size: 13.5px;
+  color: #d7ddd6;
   opacity: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+.term-user { color: #5eeaa0; font-weight: 600; }
+.term-sep { color: #5d665f; margin: 0 1px; }
+.term-path { color: #7db8ff; }
+.term-dollar { color: #9aa39d; margin: 0 8px 0 7px; }
+.term-cmd { color: #ecefec; }
+.intro-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  margin-left: 8px;
+  vertical-align: -2px;
+  background: #5eeaa0;
+  animation: intro-blink 1.05s steps(1) infinite;
+}
+@keyframes intro-blink { 50% { opacity: 0; } }
 .intro-term-sub {
-  margin-top: 10px;
-  font-size: var(--text-body);
-  letter-spacing: 0.18em;
-  color: #6b7280;
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #5d665f;
   opacity: 0;
   transform: translateY(8px);
 }
-.intro-term-rule {
-  margin-top: 16px;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(139, 147, 161, 0.28), transparent);
-  opacity: 0;
-  transform: translateY(8px);
-}
+/* NOTE: the old white dashed `.intro-term-rule` divider is gone by design —
+   real shells don't draw hairlines between the prompt and its output. */
+/* Command rows: prompt dim, command bright, output on its own line */
 .intro-term-line {
-  margin-top: 12px;
-  font-size: var(--text-body);
-  letter-spacing: 0.12em;
+  margin-top: 14px;
+  font-size: 13px;
+  letter-spacing: 0.01em;
   opacity: 0;
   transform: translateY(8px);
   white-space: nowrap;
@@ -109,18 +165,25 @@
   text-overflow: ellipsis;
 }
 .intro-term-line .prompt {
-  opacity: 0.55;
-  margin-right: 10px;
+  opacity: 0.85;
+  margin-right: 8px;
+  font-size: 12px;
 }
-.intro-term-line .line-text {
-  color: #8b93a1;
+.intro-term-line .prompt .term-dollar { margin: 0 0 0 5px; }
+.intro-term-line .line-cmd {
+  color: #e8ece8;
 }
-.intro-term-line .line-ok {
-  color: #7fa88a;
+.intro-term-line .line-out {
+  display: block;
+  margin: 1px 0 0 2px;
+  padding-left: 14px;
+  color: #6f7a72;
+  font-size: 12.5px;
+  border-left: 2px solid rgba(94, 234, 160, 0.22);
 }
-.intro-term-line .line-meta {
-  color: #5f6673;
-}
+.intro-term-line .line-ok { color: #7fd6a4; }
+.intro-term-line .line-dim { color: #6f7a72; }
+.intro-term-line .line-warn { color: #e0b45c; }
 .intro-term-line.is-ready {
   color: #dfe5ec;
   margin-top: 24px;
@@ -132,14 +195,22 @@
   color: #c84d3d;
 }
 .intro-term-status {
-  margin-top: 26px;
+  margin-top: 22px;
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: var(--text-body);
-  letter-spacing: 0.22em;
+  font-size: 12px;
+  letter-spacing: 0.06em;
   opacity: 0;
   transform: translateY(8px);
+}
+.term-status-label {
+  color: #8b948d;
+  white-space: nowrap;
+}
+.term-status-label::after {
+  content: ' …';
+  color: #5d665f;
 }
 .intro-term-status-bar {
   position: relative;
@@ -151,17 +222,18 @@
 .intro-term-status-fill {
   position: absolute;
   inset: 0;
-  background: rgba(223, 229, 236, 0.75);
+  background: linear-gradient(90deg, #2f9e68, #5eeaa0);
+  box-shadow: 0 0 10px rgba(94, 234, 160, 0.35);
   transform: scaleX(0);
   transform-origin: left center;
 }
 .intro-cursor {
   display: inline-block;
-  width: 0.6em;
-  height: 1.05em;
+  width: 8px;
+  height: 15px;
   margin-left: 8px;
-  vertical-align: -0.15em;
-  background: #dfe5ec;
+  vertical-align: -2px;
+  background: #5eeaa0;
   animation: intro-blink 1.05s steps(1) infinite;
 }
 @keyframes intro-blink {
@@ -171,48 +243,56 @@
 }
 
 /* ── Screen split panels ────────────────────────────────────────────────
-   Jagged complementary polygons along the blade path: the cut edge is a
-   zigzag that mirrors across the diagonal, so the two shards of screen
-   read as freshly shattered glass. Together they tile the viewport
-   exactly → one screen before the cut. */
+   VERTICAL center split, MINIMAL cut: panel A is the LEFT half, panel B the
+   RIGHT half, divided by one near-straight line down x = 50% with only two
+   or three shallow facets — a clean katana parting, not a zigzag shatter.
+   Thin branch cracks (the .intro-cracks SVG) carry the detail instead.
+   Together the halves tile the viewport exactly → one screen before the cut. */
 .intro-panel {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
   will-change: transform, opacity;
 }
+/* Panel A paints on top and its cut edge sits ~0.8% RIGHT of panel B's, so
+   the two halves OVERLAP by a thin band before the cut: one single hairline,
+   never a gap and never two parallel lines. The overlap is invisible
+   pre-cut (both halves render the same terminal), and the seal behind them
+   hides any anti-aliased clip-path hairline. */
 .intro-panel-a {
-  clip-path: polygon(0 0, 100% 0, 84% 14%, 79% 21%, 73% 20%, 67% 29%, 61% 30%, 55% 39%, 48% 40%, 43% 48%, 36% 50%, 31% 58%, 23% 60%, 18% 69%, 11% 71%, 6% 81%, 0 84%, 0 100%);
-  z-index: 1;
+  clip-path: polygon(0 0, 50.8% 0, 51.4% 18%, 50.2% 34%, 51.6% 52%, 50.3% 70%, 51.3% 86%, 50.8% 100%, 0 100%);
+  z-index: 2;
 }
 .intro-panel-b {
-  clip-path: polygon(100% 0, 84% 14%, 79% 21%, 73% 20%, 67% 29%, 61% 30%, 55% 39%, 48% 40%, 43% 48%, 36% 50%, 31% 58%, 23% 60%, 18% 69%, 11% 71%, 6% 81%, 0 84%, 0 100%, 100% 100%);
+  clip-path: polygon(100% 0, 50% 0, 50.6% 18%, 49.4% 34%, 50.8% 52%, 49.5% 70%, 50.5% 86%, 50% 100%, 100% 100%);
   z-index: 1;
+}
+
+/* ── The cut seam ───────────────────────────────────────────────────────
+   REMOVED BY DESIGN — no white line may ever paint on the
+   loading terminal. Kept as display:none guards (the timeline's seam
+   tween targets an empty set, so this is purely defensive). */
+.intro-seam-frame,
+.intro-seam {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* ── The cut ─────────────────────────────────────────────────────────── */
 /* (deleted) Cut / crack / flash / shockwave / spark rules were removed so
    no orange slash line can ever paint — blade + shake + falling halves only. */
 
-/* ── Spider cracks radiating from the cut ─────────────────────────────── */
-.intro-cracks-unused { display: none; }
-.intro-cracks-x {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.intro-cracks-group polyline {
-  fill: none;
-  stroke: rgba(200, 77, 61, 0); /* dead rule — zero orange by design */
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  opacity: 0;
-  filter: none; /* dead rule — zero orange by design */
+/* ── Branch cracks — REMOVED BY DESIGN ────────────────────────────────────
+   No white lines may ever paint on the terminal while the katana cuts.
+   The split halves parting ARE the visual. Kept as a display:none guard so
+   stale markup can never paint. */
+.intro-cracks,
+.intro-cracks path {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 /* ── Removed effects (kept as display:none guards so stale markup/JS hooks
@@ -225,26 +305,13 @@
   opacity: 0 !important;
 }
 
-/* ── Diagonal slash flash that blooms along the blade path ────────────── */
+/* ── Diagonal slash flash — REMOVED BY DESIGN ───────────────────────────
+   No white line may ever paint on the loading terminal. */
 .intro-slash-flash-x {
-  position: absolute;
-  left: -25%;
-  top: -25%;
-  width: 150%;
-  height: 150%;
-  z-index: 4;
-  pointer-events: none;
-  opacity: 0;
-  background: linear-gradient(
-    to top left,
-    transparent 43%,
-    rgba(238, 243, 248, 0.75) 49.2%,
-    #ffffff 50%,
-    rgba(238, 243, 248, 0.75) 50.8%,
-    transparent 57%
-  );
-  transform: scale(0.6) rotate(0.001deg);
-  transform-origin: 50% 50%;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* ── Shockwave ring bursting from the cut's midpoint ──────────────────── */
@@ -303,9 +370,9 @@
   display: none; /* sparks removed — no ember dots, no orange streaks */
 }
 
-/* ── Katana (uploaded asset) ────────────────────────────────────────────
+/* ── Katana (inline SVG artwork) ──────────────────────────────────────────
    mix-blend-mode on the WRAPPER so the screen blend reaches the terminal
-   backdrop even while the wrapper itself is transformed by GSAP. */
+   backdrop even while the wrapper itself is transformed by anime.js. */
 .intro-katana {
   --intro-katana-size: min(58vmin, 600px);
   position: absolute;
@@ -328,18 +395,49 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  clip-path: inset(1.8% round 2px); /* crops the asset's border frame */
-  /* Orientation fix (independent of GSAP's `transform`): the source PNG is
-     handle-up / edge-down, so flip it 180° → handle DOWN, edge UP. */
-  rotate: 180deg;
-  filter: invert(1) saturate(0) brightness(0.9) contrast(1.08) drop-shadow(0 0 14px rgba(223, 233, 244, 0.35));
+  /* the blade SVG paints its own luminous silver — no invert/filter hack,
+     so the swing reads as one clean blade, not a smeared drill */
+}
+
+/* Motion-blur ghosts — the same blade, dimmer and softer, trailing the slash.
+   opacity: 0 in CSS so they can never paint outside the swing window; the
+   timeline brings the first two up for the slash and fades them with it.
+   Their resting blur matches GHOST_STEPS in IntroSequence. */
+.intro-katana-ghost {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.intro-katana-ghost-1 {
+  filter: blur(2.4px) brightness(1.05);
+}
+.intro-katana-ghost-2 {
+  filter: blur(4.6px) brightness(1.02);
+}
+.intro-katana-ghost-3 {
+  display: none; /* unused — only 2 ghosts draw the single-slash streak */
+}
+/* the real edge always paints above its own trail */
+.intro-katana-blade {
+  z-index: 1;
 }
 @media (max-width: 767px) {
   .intro-katana {
     --intro-katana-size: min(94vw, 420px);
   }
   .intro-term-body {
-    margin-top: clamp(32px, 9vh, 64px);
+    margin-top: clamp(20px, 5vh, 36px);
+    font-size: 12px;
+  }
+  .intro-term-title {
+    font-size: 12px;
+    white-space: normal;
+  }
+  .intro-term-line {
+    font-size: 11.5px;
+    white-space: normal;
+  }
+  .intro-term-line .line-out {
+    white-space: normal;
   }
   .intro-term-status-bar {
     width: min(220px, 52vw);
@@ -361,25 +459,25 @@
 .intro-shard-21 { width: 10px; height: 10px; }
 .intro-shard-22 { width: 12px; height: 18px; }
 
-.intro-term-status-pct { color: #b98a3c; min-width: 44px; text-align: right; opacity: 0; transform: translateY(8px); }
+.intro-term-status-pct { color: #e0b45c; min-width: 44px; text-align: right; opacity: 0; transform: translateY(8px); font-variant-numeric: tabular-nums; }
 .intro-waiting {
-  margin-top: 22px;
+  margin-top: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: var(--text-body);
-  letter-spacing: 0.2em;
-  color: #6b7280;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #6f7a72;
   opacity: 0;
   transform: translateY(8px);
 }
 .intro-spinner {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   flex: none;
   border-radius: 9999px;
-  border: 2px solid rgba(139, 147, 161, 0.25);
-  border-top-color: #b98a3c;
+  border: 2px solid rgba(154, 163, 157, 0.22);
+  border-top-color: #5eeaa0;
   animation: intro-spin 0.9s linear infinite;
 }
 @keyframes intro-spin { to { transform: rotate(360deg); } }
