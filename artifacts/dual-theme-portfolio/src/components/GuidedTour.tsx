@@ -12,6 +12,9 @@ interface TourStep {
   caption: string;
   action: 'hover' | 'click' | 'visit' | 'type' | 'select';
   hold: number;
+  /* When true the caption bubble stays hidden for this step — used while the
+     tour is selecting hero text so the bubble never covers the highlight. */
+  silent?: boolean;
   /* Optional anchor element the scroll aligns near the top of the viewport
      (below the sticky nav) — used when the target sits deep inside a tall
      section whose heading should stay visible. */
@@ -51,23 +54,26 @@ function collectWordBoundaries(el: Element): Array<{ node: Text; offset: number 
 
 const TOUR_STEPS: TourStep[] = [
   /* 1 · Navbar — two icons only */
-  { selector: '[data-testid="link-nav-github"]', caption: 'Start here — every platform I’m on lives in this bar.', action: 'hover', hold: 1400 },
-  { selector: '[data-testid="link-nav-linkedin"]', caption: 'GitHub, LinkedIn — pick yours and say hi.', action: 'hover', hold: 1200 },
-  /* 2 · Hero — highlight the description lines, word by word */
-  { selector: '#top .editorial-hero-copy .mt-3', caption: 'The short version: ML & backend, built end to end.', action: 'select', hold: 2400, spot: { fx: 0.1, fy: 0.35 } },
-  /* 3 · Projects — smooth glide + a single hover, no card opens */
-  { selector: '[data-testid="card-project-01"]', caption: 'Selected work — hover a card to peek at its story.', action: 'hover', hold: 2500, anchor: '#projects' },
-  /* 4 · Tech stack — cursor rests at the top of the list so you can read */
-  { selector: '.skill-group:nth-of-type(1)', caption: 'The tech stack — languages through the ML layer.', action: 'hover', hold: 2500 },
-  /* 5 · Section four — experience & achievements */
-  { selector: '#experience h3.display', caption: 'Section four — the roles and the record so far.', action: 'visit', hold: 1500 },
-  { selector: '.achievement-row:nth-of-type(3)', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1500 },
-  /* 6 · Resume — glide down and hover, don't open it */
-  { selector: '[data-testid="img-resume"]', caption: 'And your resume is folded right here, ready to download.', action: 'hover', hold: 2500 },
-  /* 7 · Contact — fast typing demo, then hover send */
-  { selector: '[data-testid="input-contact-email"]', caption: 'Drop your email in — watch how fast it goes.', action: 'type', text: 'piyush.demo@gmail.com', hold: 800 },
+  { selector: '[data-testid="link-nav-github"]', caption: 'Start here. Every platform I am on lives in this bar.', action: 'hover', hold: 1400 },
+  { selector: '[data-testid="link-nav-linkedin"]', caption: 'Pick your platform and connect.', action: 'hover', hold: 1200 },
+  /* 2 · Hero — highlight the description the way a human drags a selection,
+     one word at a time, cursor riding the end of the highlight */
+  { selector: '#hero-description', caption: 'The short version, straight from the page.', action: 'select', hold: 2000, spot: { fx: 0.1, fy: 0.35 }, silent: true },
+  /* 3 · Projects — glide in, whole card in frame, cursor parked in the gap
+     between the image preview and the description */
+  { selector: '[data-testid="card-project-01"]', caption: 'Open the project card to see more details.', action: 'hover', hold: 2800, anchor: '#projects', spot: { fx: 0.5, fy: 0.7 } },
+  /* 3 · Tech stack — the cursor parks to the right of the heading, clear of
+     the list, so nothing it covers is something you were meant to read */
+  { selector: '#skills h2.section-title', caption: 'The tech stack I work with, from languages to the ML layer.', action: 'visit', hold: 2000, spot: { fx: 0.9, fy: 0.5 }, anchor: '#skills' },
+  /* 4 · The record — same idea: cursor beside the heading, not on the copy */
+  { selector: '#experience h2.section-title', caption: 'The record I am building, roles and wins so far.', action: 'visit', hold: 2000, spot: { fx: 0.9, fy: 0.5 }, anchor: '#experience' },
+  /* 5 · Achievements, then the resume */
+  { selector: '.achievement-row:nth-of-type(1)', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1600 },
+  { selector: '[data-testid="img-resume"]', caption: 'The resume is folded right here, ready to download.', action: 'hover', hold: 2200 },
+  /* 6 · Contact — fast typing demo, then hover send */
+  { selector: '[data-testid="input-contact-email"]', caption: 'Type your email here, so I know where to reply.', action: 'type', text: 'piyush.demo@gmail.com', hold: 800 },
   { selector: '[data-testid="input-contact-message"]', caption: 'A few honest words do the rest.', action: 'type', text: 'I loved the portfolio design!', hold: 900 },
-  { selector: '[data-testid="button-contact-send"]', caption: 'Then one click sends it on its way.', action: 'hover', hold: 1400, clear: ['[data-testid="input-contact-email"]', '[data-testid="input-contact-message"]'] },
+  { selector: '[data-testid="button-contact-send"]', caption: 'Then one click sends it on its way.', action: 'hover', hold: 1600, clear: ['[data-testid="input-contact-email"]', '[data-testid="input-contact-message"]'] },
 ];
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -189,6 +195,15 @@ export default function GuidedTour() {
     }
     const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     targetScroll = Math.min(targetScroll, maxScroll);
+    /* Whole element in frame: for card sized targets (anything that fits in
+       most of a viewport) never let the bottom edge fall below the fold —
+       the visitor should see the full card, description included. */
+    if (rect.height <= window.innerHeight * 0.85) {
+      const docBottom = docTop + rect.height;
+      if (docBottom - targetScroll > window.innerHeight - 60) {
+        targetScroll = Math.min(maxScroll, Math.max(0, docBottom - (window.innerHeight - 60)));
+      }
+    }
     /* Never let the cursor land below the fold — if it would, follow it down. */
     if (cursorDocY - targetScroll > window.innerHeight - 90) {
       targetScroll = Math.min(maxScroll, Math.max(0, cursorDocY - (window.innerHeight - 90)));
@@ -221,7 +236,7 @@ export default function GuidedTour() {
   const runSteps = async () => {
     const finish = () => {
       document.body.classList.remove('tour-active');
-      cursorRef.current?.classList.remove('tour-cursor-click', 'tour-caption-flip');
+      cursorRef.current?.classList.remove('tour-cursor-click', 'tour-caption-flip', 'tour-caption-lift');
       setCaptionOn(false);
       runningRef.current = false;
       setRunning(false);
@@ -240,12 +255,16 @@ export default function GuidedTour() {
         setCaption(step.caption);
         await glideTo(el, step.spot?.fx ?? 0.5, step.spot?.fy ?? 0.5, step.anchor);
         if (cancelRef.current) return;
-        {
+        if (!step.silent) {
           const rect = el.getBoundingClientRect();
           const cursorX = rect.left + rect.width * (step.spot?.fx ?? 0.5);
+          const cursorY = rect.top + rect.height * (step.spot?.fy ?? 0.5);
           cursorRef.current?.classList.toggle('tour-caption-flip', cursorX > window.innerWidth - 320);
+          /* Near the page bottom the caption would run off screen under the
+             cursor — lift it above the cursor instead for that step. */
+          cursorRef.current?.classList.toggle('tour-caption-lift', cursorY > window.innerHeight - 150);
+          setCaptionOn(true);
         }
-        setCaptionOn(true);
 
         if (step.action === 'hover') {
           /* CSS :hover can't be faked with events — mirror it with a class. */
@@ -270,33 +289,46 @@ export default function GuidedTour() {
           await wait(step.hold);
           field.blur();
         } else if (step.action === 'select') {
-          /* Mark the description word by word — the selection grows one word
-             at a time while the cursor rides the end of the highlight, the
-             way a human drags a selection across text. */
+          /* Mark the description with a continuous drag — the selection edge
+             sweeps through every character (starting from the very first
+             word) while the cursor rides the edge of the highlight, exactly
+             the way a human drags a selection across text. */
           const selection = window.getSelection();
           const boundaries = collectWordBoundaries(el);
           if (selection && boundaries.length > 1) {
-            const startB = boundaries[0];
-            const endB = boundaries[boundaries.length - 1];
-            const wordSteps = boundaries.slice(0, boundaries.indexOf(endB) + 1);
-            for (let i = 0; i < wordSteps.length; i++) {
-              if (cancelRef.current) break;
-              const boundary = wordSteps[i];
+            const startNode = boundaries[0].node;
+            const startOffset = Math.max(0, (startNode.textContent ?? '').search(/\S/));
+            const applySelection = (node: Text, end: number) => {
               const range = document.createRange();
-              range.setStart(startB.node, startB.offset);
-              range.setEnd(boundary.node, boundary.offset);
+              range.setStart(startNode, startOffset);
+              range.setEnd(node, end);
               selection.removeAllRanges();
               selection.addRange(range);
-              /* Cursor parks just past the newest word of the highlight. */
+              /* Cursor rides just past the newest highlighted character. */
               const rects = range.getClientRects();
               const last = rects[rects.length - 1];
               if (last) setCursorPos(last.right - 2, last.top + last.height / 2);
-              /* Slow, human pace — a touch of jitter between words. */
-              await wait(reducedRef.current ? 0 : 82 + (i % 3) * 16);
+            };
+            let prev = { node: startNode, offset: startOffset };
+            for (let i = 0; i < boundaries.length; i++) {
+              if (cancelRef.current) break;
+              const boundary = boundaries[i];
+              if (boundary.node === prev.node && boundary.offset > prev.offset) {
+                /* Sweep through the word's characters frame by frame — no
+                   word sized jumps, no dead pauses in between. */
+                const pace = 74 + (i % 3) * 8;
+                await tween(reducedRef.current ? 0 : pace, (t) => {
+                  applySelection(boundary.node, Math.round(prev.offset + (boundary.offset - prev.offset) * t));
+                });
+              } else {
+                /* Crossing the <br> line break — hop to the new line's word. */
+                applySelection(boundary.node, boundary.offset);
+                await wait(reducedRef.current ? 0 : 74 + (i % 3) * 8);
+              }
+              prev = boundary;
             }
           } else if (selection) {
             selection.selectAllChildren(el);
-            await wait(step.hold);
           }
           await wait(step.hold);
           selection?.removeAllRanges();
@@ -331,7 +363,7 @@ export default function GuidedTour() {
         await wait(280);
       }
       if (!cancelRef.current) {
-        setCaption('That’s the tour — now it’s yours to explore.');
+        setCaption('That is the tour. Now it is yours to explore.');
         cursorRef.current?.classList.remove('tour-caption-flip');
         setCaptionOn(true);
         await scrollToY(0);
