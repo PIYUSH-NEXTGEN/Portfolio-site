@@ -15,7 +15,13 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = process.env.BASE_PATH ?? '/';
+const rawBasePath = process.env.BASE_PATH ?? '/';
+/* BASE_PATH is meant to be a URL path like "/preview". When the dev server is
+   launched through a shell that mangles leading-slash arguments (MSYS/Git Bash
+   converts them to Windows paths like "/Program Files/Git/..."), the value
+   arrives as a filesystem path. Vite would then bake that into every asset
+   URL (favicon, images) and everything 404s — so fall back to "/" instead. */
+const basePath = /^[\w./-]*$/.test(rawBasePath) ? rawBasePath : '/';
 
 export default defineConfig({
   base: basePath,
