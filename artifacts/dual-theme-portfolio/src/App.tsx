@@ -25,13 +25,19 @@ const projects = [
     name: 'LUMEN',
     kind: 'Image analysis tool',
     description: 'A command-line and API-based image analysis tool for quality metrics, channel statistics, dominant colours, and exact-hash duplicate detection.',
-    stack: ['Python', 'Pillow', 'NumPy', 'FastAPI'],
+    stack: ['Python', 'NumPy', 'Pandas', 'Pillow', 'Pydantic', 'Typer', 'FastAPI', 'PostgreSQL', 'SQLAlchemy', 'React + Vite', 'pytest'],
     accent: 'blue',
     url: 'https://lumen-image-analyzer.vercel.app/',
     github: 'https://github.com/PIYUSH-NEXTGEN/LUMEN',
     year: '2026',
-    details: 'LUMEN inspects images the way an engineer would — quality metrics like sharpness, brightness and contrast, per-channel statistics, dominant colour extraction, and SHA-256 exact-hash duplicate detection, all from a single CLI command or a REST endpoint.',
-    highlights: ['CLI and REST API interfaces', 'Quality metrics and channel statistics', 'Dominant colour extraction', 'Exact-hash duplicate detection'],
+    details: [
+      '**LUMEN** is a full-stack image analysis platform that processes images through a unified Python pipeline to extract **quality, statistical, color, exposure, and duplicate-detection insights**. It evolved from a CLI tool into a complete system with a **FastAPI REST API, PostgreSQL persistence, and React dashboard** for interactive analysis and history.',
+    ],
+    capabilities: [
+      'Performs brightness, contrast, sharpness, colorfulness, entropy, exposure, dominant-color, channel statistics, and histogram analysis, with **SHA-256 exact duplicate detection**.',
+      'Supports searchable image history, detailed reports, side-by-side comparisons, **CSV/JSON exports**, and parallel folder processing using multiple CPU processes.',
+      'Includes **API authentication, validation, rate limiting, automated testing**, and a modular architecture separating processing, API, database, and frontend layers.',
+    ],
     images: [lumenShot1, lumenShot2, lumenShot3, lumenShot4, lumenShot5],
   },
 ];
@@ -248,10 +254,10 @@ function Hero() {
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[16px] leading-7 opacity-75" delay={160}>
           <strong className="mono block text-[12px] uppercase tracking-[.18em]">ML &amp; BACKEND ENGINEER</strong>
           <span className="mono block text-[12px] uppercase tracking-[.18em] mt-2">CS 2029</span>
-          <span className="mt-5 block">Building at the intersection of Machine Learning and Backend Engineering.<br />Developing end to end software across machine learning, backend systems, databases, APIs, and frontend development.</span>
+          <span className="mt-5 block" id="hero-description">Building at the intersection of Machine Learning and Backend Engineering.<br />Developing end to end software across machine learning, backend systems, databases, APIs, and frontend development.</span>
         </Reveal>
         <Reveal className="mt-9 flex flex-wrap items-center gap-3" delay={240}>
-          <button type="button" onClick={() => startGuidedTour()} className="button-primary magnetic-button inline-flex items-center gap-3 px-5 py-3 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-hero-tour">Take me through <MousePointerClick size={14} className="hero-tour-icon" /></button>
+          <button type="button" onClick={() => startGuidedTour()} className="tour-cta button-primary magnetic-button inline-flex items-center gap-3 px-6 py-3.5 text-[12px] font-bold uppercase tracking-[.18em]" data-testid="button-hero-tour">Give me tour !! <MousePointerClick size={15} className="hero-tour-icon" /></button>
         </Reveal>
       </div>
       <div className="katana-hero-photo">
@@ -263,9 +269,23 @@ function Hero() {
   );
 }
 
+/* Renders **bold** spans inside project copy so emphasis survives as plain data */
+function renderBold(text: string): ReactNode {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i} className="font-semibold">{part}</strong> : part));
+}
+
 /* Auto-playing screenshot slideshow — crossfades one slide every 2 seconds */
 function ImageSlideshow({ images }: { images: string[] }) {
   const [index, setIndex] = useState(0);
+  useEffect(() => {
+    /* Fetch AND decode every slide up front so a switch is a clean instant
+       cut — the browser never paints a half decoded image or the backdrop. */
+    for (const src of images) {
+      const img = new window.Image();
+      img.src = src;
+      img.decode?.().catch(() => {});
+    }
+  }, [images]);
   useEffect(() => {
     const timer = window.setInterval(() => setIndex((i) => (i + 1) % images.length), 2000);
     return () => window.clearInterval(timer);
@@ -277,9 +297,9 @@ function ImageSlideshow({ images }: { images: string[] }) {
           key={src}
           src={src}
           alt={`Screenshot ${i + 1} of ${images.length}`}
-          loading="lazy"
+          decoding="async"
           draggable={false}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out ${i === index ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 h-full w-full object-cover ${i === index ? 'opacity-100' : 'opacity-0'}`}
         />
       ))}
       <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5" aria-hidden="true">
@@ -374,24 +394,23 @@ function ProjectModal({ project, onClose }: { project: (typeof projects)[number]
           </button>
         </div>
         <ProjectVisual accent={project.accent} year={project.year} images={project.images} />
+        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+          {project.stack.map(tag => <span className="mono border border-current/30 px-2.5 py-1.5 text-[11px] font-semibold opacity-90" key={tag}>{tag}</span>)}
+        </div>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
           <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
           <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
         </div>
         <h3 className="display mt-5 text-3xl tracking-[-.04em]">{project.name}</h3>
-        <p className="mt-3 text-sm leading-6 opacity-80">{project.description}</p>
-        <p className="mt-3 text-sm leading-6 opacity-70">{project.details}</p>
-        <ul className="project-highlights mt-4">
-          {project.highlights.map((item) => (
-            <li key={item} className="flex items-start gap-1.5 text-[11px] leading-4 opacity-80">
-              <span className="shrink-0 text-[#c84d3d]" aria-hidden="true">✦</span>
-              <span>{item}</span>
+        {project.details.map((para) => <p key={para.slice(0, 32)} className="mt-3 text-[15px] leading-7 opacity-85">{renderBold(para)}</p>)}
+        <ul className="project-highlights mt-3">
+          {project.capabilities.map((item) => (
+            <li key={item} className="flex items-start gap-1.5 text-[14px] leading-6 opacity-80">
+              <span className="shrink-0" aria-hidden="true">•</span>
+              <span>{renderBold(item)}</span>
             </li>
           ))}
         </ul>
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {project.stack.map(tag => <span className="mono border border-current/20 px-2 py-1 text-[9px] opacity-70" key={tag}>{tag}</span>)}
-        </div>
       </div>
     </div>
   );
@@ -424,9 +443,9 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
         aria-label={`Open ${project.name} project details`}
       >
         <ProjectVisual accent={project.accent} year={project.year} compact images={project.images} />
-        <h3 className="display mt-4 text-2xl leading-tight tracking-[-.02em]">{project.name}</h3>
+        <h3 className="display mt-4 text-2xl font-semibold leading-tight tracking-[-.02em]">{project.name}</h3>
         <span className="katana-card-line" aria-hidden="true" />
-        <p className="mb-4 mt-2 text-sm leading-6 opacity-75">{project.description}</p>
+        <p className="mb-4 mt-2 text-[15px] font-medium leading-7 opacity-80">{project.description}</p>
         <span className="project-open-cta mono mt-auto flex items-center justify-center gap-2 border border-current/20 py-2 text-[9px] uppercase tracking-[.15em] opacity-60">
           Open project <ArrowUpRight size={12} />
         </span>

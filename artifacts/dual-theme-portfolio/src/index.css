@@ -512,6 +512,9 @@
 
 /* Blade-line hover under each project title */
 .katana-card { position: relative; }
+/* Project-card title steps up a tier — cards are two-column now, so the
+   sub-heading token reads small against the wide layout. */
+.theme-editorial .project-card h3.display { font-size: 1.375rem !important; }
 .katana-card-line {
   display: block; height: 1px; margin: 10px 0 0;
   background: currentColor; opacity: .18;
@@ -908,6 +911,42 @@
 }
 .tour-caption.tour-caption-on { opacity: 1; translate: 0 0; }
 .tour-cursor.tour-caption-flip .tour-caption { left: auto; right: 24px; }
+/* Bottom of the page: swing the caption above the cursor so it never clips */
+.tour-cursor.tour-caption-lift .tour-caption { top: -64px; }
+
+/* "Give me tour !!" CTA — layered attention effects: a breathing coral glow
+   ring, a periodic shimmer sweep across the label, a gentle size pulse and a
+   nudging cursor icon. Strong enough to draw the eye, quiet enough to stay
+   tasteful inside the editorial theme. */
+.tour-cta {
+  position: relative; overflow: hidden;
+  animation: tour-cta-glow 2.2s ease-in-out infinite;
+  border-color: rgba(200, 77, 61, .55) !important;
+}
+.tour-cta::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: -60%; width: 40%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .45), transparent);
+  transform: skewX(-20deg);
+  animation: tour-cta-shine 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+.tour-cta .hero-tour-icon { animation: tour-cta-nudge 2.2s ease-in-out infinite; }
+@keyframes tour-cta-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 77, 61, .45), 0 0 18px 0 rgba(200, 77, 61, .25); }
+  50% { box-shadow: 0 0 0 12px rgba(200, 77, 61, 0), 0 0 4px 0 rgba(200, 77, 61, .05); }
+}
+@keyframes tour-cta-shine {
+  0%, 55% { left: -60%; }
+  85%, 100% { left: 130%; }
+}
+@keyframes tour-cta-nudge {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-cta, .tour-cta::after, .tour-cta .hero-tour-icon { animation: none !important; }
+}
 @media (max-width: 639px) {
   .tour-caption { left: -6px; top: -56px; max-width: 200px; }
   .tour-cursor.tour-caption-flip .tour-caption { left: -6px; right: auto; }
