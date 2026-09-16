@@ -29,6 +29,7 @@
     "wouter": "^3.3.5"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "animejs": "catalog:",
     "gsap": "catalog:",
     "three": "^0.186.0"
