@@ -15,10 +15,10 @@ type BootRow = { cmd: string; out: string; tone?: 'ok' | 'dim' | 'warn' };
 const BOOT_ROWS: BootRow[] = [
   { cmd: 'whoami', out: 'piyush-baraskar · ml & backend engineer · cs 2029', tone: 'ok' },
   { cmd: 'cat /etc/purpose', out: 'shipping measurable systems, model to endpoint', tone: 'dim' },
-  { cmd: 'python -m lumen.analyze ./assets/cat.png', out: 'sharpness 0.87 · entropy 6.41 · duplicates: none', tone: 'ok' },
-  { cmd: 'psql portfolio -c "\\dt"', out: 'images · reports · duplicates · 3 relations up', tone: 'dim' },
+  { cmd: 'pytest -q', out: '48 passed · 0 failed · coverage 91%', tone: 'ok' },
+  { cmd: 'psql portfolio -c "\\dt"', out: 'projects · skills · experience · 3 relations up', tone: 'dim' },
   { cmd: 'git status -sb', out: '## main…origin/main · working tree clean', tone: 'dim' },
-  { cmd: 'pip install lumen-image-analyzer', out: 'resolved 12 pkgs · pillow numpy fastapi sqlalchemy', tone: 'ok' },
+  { cmd: 'pip install -r requirements.txt', out: 'resolved 31 packages · fastapi · sqlalchemy · torch', tone: 'ok' },
   { cmd: './boot --portfolio --env=prod', out: 'routes 4/4 · fonts 3/3 · katana sharpened', tone: 'ok' },
   { cmd: 'build interface --prod', out: 'compiling … 62%', tone: 'warn' },
   { cmd: 'hydrate components', out: 'waiting on chunk 149', tone: 'dim' },
