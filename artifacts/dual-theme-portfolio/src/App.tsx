@@ -656,19 +656,63 @@ function Experience() {
   );
 }
 
+const CONTACT_INBOX = 'piyush_in_tech@gmail.com';
+// Web3Forms access key (public — it only authorises sends to your inbox, and
+// Web3Forms rate-limits + honours the botcheck honeypot server-side).
+// Get one free at https://web3forms.com (just enter your email, no signup).
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined;
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+
 function Contact() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sent'>('idle');
+  const [botcheck, setBotcheck] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [formError, setFormError] = useState('');
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Frontend-only site: no backend to receive mail, so validate locally and
-    // hand off to the visitor's mail client instead of a dead POST.
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return;
-    if (message.trim().length < 10) return;
-    window.location.href = `mailto:alex.morgan@example.com?subject=${encodeURIComponent('Portfolio contact')}&body=${encodeURIComponent(`From: ${email.trim()}\n\n${message.trim()}`)}`;
-    setStatus('sent');
+    if (status === 'sending') return;
+    // First-pass UX checks; Web3Forms validates server-side as well.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setFormError('Please enter a valid email address.');
+      return;
+    }
+    if (message.trim().length < 10) {
+      setFormError('Please write a message of at least 10 characters.');
+      return;
+    }
+    if (!WEB3FORMS_KEY) {
+      setFormError('The contact form is not configured yet. Please email me directly.');
+      return;
+    }
+    setFormError('');
+    setStatus('sending');
+    try {
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'New portfolio contact',
+          from_name: email.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          botcheck,
+        }),
+      });
+      let data: { success?: unknown; message?: unknown } | null = null;
+      try {
+        data = (await res.json()) as { success?: unknown; message?: unknown };
+      } catch {
+        data = null;
+      }
+      if (!res.ok || data?.success !== true) throw new Error('Request did not succeed');
+      setStatus('sent');
+    } catch {
+      setFormError('Something went wrong sending your message. Please try again, or email me directly.');
+      setStatus('error');
+    }
   };
 
   return (
@@ -679,13 +723,25 @@ function Contact() {
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1.05fr] lg:gap-7">
             <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Send a note</div>
               <form onSubmit={onSubmit} className="mt-4 grid gap-2.5" aria-label="Contact form">
-                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
-                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={3} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
-                <button type="submit" className="button-primary mt-1.5 inline-flex w-fit items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.16em]" data-testid="button-contact-send">Send an email <ArrowUpRight size={14} /></button>
-                {status === 'sent' && <p role="status" className="text-sm opacity-70">Opening your mail client — I’ll reply soon.</p>}
+                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" disabled={status === 'sending'} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
+                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} maxLength={2000} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={3} disabled={status === 'sending'} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
+                {/* Honeypot for Web3Forms bot detection: real users never see/fill
+                    this; bots often do. Moved off-screen (not display:none) so
+                    naive bot checks for computed visibility still treat it as
+                    a fillable field. Sent as "botcheck" — Web3Forms
+                    auto-rejects submissions where it is non-empty.
+                    Inline styles keep it hidden even in contexts where the
+                    stylesheet class is unavailable (stale cache, CSS split). */}
+                <div className="contact-honeypot" aria-hidden="true" style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+                  <label>Company<input type="text" name="botcheck" value={botcheck} onChange={(event) => setBotcheck(event.target.value)} autoComplete="off" tabIndex={-1} /></label>
+                </div>
+                <button type="submit" disabled={status === 'sending'} className="button-primary mt-1.5 inline-flex w-fit items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.16em] disabled:cursor-wait disabled:opacity-60" data-testid="button-contact-send">{status === 'sending' ? (<><span className="contact-spinner" aria-hidden="true" />Sending…</>) : (<>Send a message <ArrowUpRight size={14} /></>)}</button>
+                {status === 'sending' && <p role="status" className="text-sm opacity-70">Sending your message…</p>}
+                {status === 'sent' && <p role="status" className="text-sm opacity-70">Message sent — I’ll reply soon.</p>}
+                {formError && status !== 'sending' && status !== 'sent' && <p role="alert" className="text-sm opacity-80">{formError}</p>}
               </form>
             </div>
-            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href="mailto:alex.morgan@example.com" data-testid="link-contact-address">alex.morgan@example.com</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
+            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href={`mailto:${CONTACT_INBOX}`} data-testid="link-contact-address">{CONTACT_INBOX}</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
             <nav className="border-t border-current/20 pt-5 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
           </div>
         </Reveal>

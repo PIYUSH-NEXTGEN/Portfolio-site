@@ -6,6 +6,39 @@ tactile ink-and-paper editorial experience.
 See `.env.example` for local environment variables (DB tooling only needs
 `DATABASE_URL`).
 
+## Contact form
+
+The "Send a note" form in `artifacts/dual-theme-portfolio/src/App.tsx` posts
+JSON directly from the browser to `https://api.web3forms.com/submit` — no
+`mailto:` send path, no page reload, no backend endpoint of ours involved.
+Payload: `access_key` (from `VITE_WEB3FORMS_KEY`), `subject`, `from_name`,
+`email`, `message`, plus an empty `botcheck` honeypot field that Web3Forms
+auto-rejects when filled. The form keeps client-side checks (email format,
+10-char minimum) as first-pass UX; Web3Forms validates and rate-limits
+server-side.
+
+Setup (free, ~10 minutes, no account signup):
+
+1. Go to https://web3forms.com, enter `piyush_in_tech@gmail.com`, and
+   copy the access key they email you. (Use that inbox — the key is bound to
+   it.)
+2. Set `VITE_WEB3FORMS_KEY=<your-key>` for the portfolio (local `.env` for
+   dev, hosting env var for production) and rebuild/redeploy. Until the key
+   is set, the form shows "not configured yet" and asks visitors to email
+   directly.
+3. Optional: if spam becomes a problem, enable reCAPTCHA/hCaptcha from the
+   Web3Forms dashboard — no code changes needed.
+
+| Variable | Where | Required | Purpose |
+| --- | --- | --- | --- |
+| `VITE_WEB3FORMS_KEY` | Portfolio (Vite) | Yes | Web3Forms access key. Public. Free tier: 250 submissions/month. |
+
+Tradeoff (stated plainly): this trusts Web3Forms with form traffic instead
+of owning the full pipeline. If you ever need full control, the upgrade path
+is a server-side endpoint (Resend + Turnstile + rate limiting) — the commented
+`RESEND_API_KEY` / `TURNSTILE_SECRET_KEY` entries in `.env.example` are kept
+for that future.
+
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080,
@@ -24,7 +57,7 @@ See `.env.example` for local environment variables (DB tooling only needs
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5 (health endpoint only: `GET /api/healthz`)
+- API: Express 5 (health endpoint: `GET /api/healthz`)
 - Frontend: React + Vite + Tailwind CSS + Framer Motion + GSAP intro
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
@@ -44,7 +77,8 @@ See `.env.example` for local environment variables (DB tooling only needs
 
 - The site is frontend-only by design; all portfolio content is static and
   intentionally avoids backend dependencies. The Express server exists only for
-  platform health checks and is not called by the site.
+  platform health checks — the contact form posts directly from the browser to
+  Web3Forms and never calls our API.
 - The single visual direction is intentionally kept tactile and editorial, with
   paper texture, ink branches, red accents, and illustrated details.
 - Decorative motion is subtle and respects the user's reduced-motion preference.

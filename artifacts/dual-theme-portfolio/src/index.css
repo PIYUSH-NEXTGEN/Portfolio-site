@@ -1034,6 +1034,36 @@ body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden 
 }
 .resume-modal-actions { display: flex; justify-content: center; margin-top: 10px; }
 
+/* Contact form honeypot — visually hidden but still "visible" to bots that
+   check computed style, so `display: none` / `hidden` must not be used. */
+.contact-honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Turnstile widget spacing + dark-theme tuning. */
+.contact-turnstile {
+  margin-top: 4px;
+  min-height: 65px;
+}
+
+/* Contact submit spinner. */
+.contact-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: contact-spin 0.8s linear infinite;
+}
+@keyframes contact-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Hero "Take me through" cursor — a full revolution that spins around its
    centre and settles back to its starting spot. Respects the global
    reduced-motion override. */

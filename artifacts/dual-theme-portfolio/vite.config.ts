@@ -68,6 +68,17 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    // Local dev convenience: forward /api to the API server so the contact
+    // form works with zero config (Vite on :5173, API on :8080). In
+    // production the platform serves /api alongside the static site, so no
+    // proxy is needed. VITE_API_BASE_URL still overrides the fetch target
+    // outright when set (see src/App.tsx).
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_BASE_URL ?? 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
   },
   preview: {
     port,
