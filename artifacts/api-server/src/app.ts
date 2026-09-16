@@ -36,9 +36,9 @@ app.use(
 // allowed, plus local dev servers, Replit preview domains (non-production
 // only), and the production portfolio domain(s) configured via
 // ALLOWED_ORIGINS. Everything else keeps a default-deny behaviour — no
-// wildcard reflection. (The contact form posts directly to Web3Forms from the
-// browser, so it never touches this API; CORS here only guards future
-// same-origin API use.)
+// wildcard reflection. (The OTP contact form posts same-origin to the
+// Vercel /api functions, so it never touches this API; CORS here only
+// guards future same-origin API use.)
 const PRODUCTION_ORIGINS = (process.env["ALLOWED_ORIGINS"] ?? "")
   .split(",")
   .map((origin) => origin.trim())

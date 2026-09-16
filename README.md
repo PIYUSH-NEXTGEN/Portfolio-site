@@ -8,36 +8,37 @@ See `.env.example` for local environment variables (DB tooling only needs
 
 ## Contact form
 
-The "Send a note" form in `artifacts/dual-theme-portfolio/src/App.tsx` posts
-JSON directly from the browser to `https://api.web3forms.com/submit` — no
-`mailto:` send path, no page reload, no backend endpoint of ours involved.
-Payload: `access_key` (from `VITE_WEB3FORMS_KEY`), `subject`, `from_name`,
-`email`, `message`, plus an empty `botcheck` honeypot field that Web3Forms
-auto-rejects when filled. The form keeps client-side checks (email format,
-10-char minimum) as first-pass UX; Web3Forms validates and rate-limits
-server-side.
+The "Send a note" form in `artifacts/dual-theme-portfolio/src/App.tsx` is a
+two-step OTP-verified flow with no `mailto:` send path, no page reload, and no
+Web3Forms involvement. Step 1 posts `{ email }` to `POST /api/send-otp`, which
+emails the visitor a 6-digit code via Resend and returns a stateless
+HMAC-signed token (held client-side). Step 2 posts `{ token, code, message }`
+to `POST /api/verify-and-send`, which verifies the token/code and forwards the
+message to the inbox via Resend (`reply_to` = visitor email). Both endpoints
+live in `artifacts/dual-theme-portfolio/api/` and auto-deploy as Vercel
+serverless functions. The footer "Direct > Email" block stays a plain `mailto:`
+convenience link that opens the visitor's own mail app.
 
-Setup (free, ~10 minutes, no account signup):
+Setup:
 
-1. Go to https://web3forms.com, enter `piyush_in_tech@gmail.com`, and
-   copy the access key they email you. (Use that inbox — the key is bound to
-   it.)
-2. Set `VITE_WEB3FORMS_KEY=<your-key>` for the portfolio (local `.env` for
-   dev, hosting env var for production) and rebuild/redeploy. Until the key
-   is set, the form shows "not configured yet" and asks visitors to email
-   directly.
-3. Optional: if spam becomes a problem, enable reCAPTCHA/hCaptcha from the
-   Web3Forms dashboard — no code changes needed.
+1. In Vercel (portfolio project) set `RESEND_API_KEY` (from the resend.com API
+   Keys page), `FROM_EMAIL=onboarding@resend.dev` (Resend's free shared sender,
+   no domain verification needed), `OTP_SIGNING_SECRET` (generate via
+   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`),
+   and `CONTACT_DESTINATION_EMAIL` (inbox receiving verified messages).
+2. Redeploy. The frontend needs no keys — it just calls same-origin `/api/*`.
 
 | Variable | Where | Required | Purpose |
 | --- | --- | --- | --- |
-| `VITE_WEB3FORMS_KEY` | Portfolio (Vite) | Yes | Web3Forms access key. Public. Free tier: 250 submissions/month. |
+| `RESEND_API_KEY` | Vercel (server) | Yes | Resend API key for sending OTP + contact emails. |
+| `FROM_EMAIL` | Vercel (server) | Yes | Sender identity (`onboarding@resend.dev` on the free tier). |
+| `OTP_SIGNING_SECRET` | Vercel (server) | Yes | 64-char hex secret for HMAC-signing OTP tokens. |
+| `CONTACT_DESTINATION_EMAIL` | Vercel (server) | Yes | Inbox receiving verified contact messages. |
 
-Tradeoff (stated plainly): this trusts Web3Forms with form traffic instead
-of owning the full pipeline. If you ever need full control, the upgrade path
-is a server-side endpoint (Resend + Turnstile + rate limiting) — the commented
-`RESEND_API_KEY` / `TURNSTILE_SECRET_KEY` entries in `.env.example` are kept
-for that future.
+Tradeoff (stated plainly): rate limiting is an in-memory per-instance Map (3
+OTP requests / IP / 15 min, 5 verifications / IP / hour), so it resets on each
+serverless cold start/deploy. Accepted for a low-traffic portfolio form; the
+signed-token design keeps everything stateless with no database.
 
 ## Run & Operate
 
@@ -75,10 +76,11 @@ for that future.
 
 ## Architecture decisions
 
-- The site is frontend-only by design; all portfolio content is static and
-  intentionally avoids backend dependencies. The Express server exists only for
-  platform health checks — the contact form posts directly from the browser to
-  Web3Forms and never calls our API.
+- The site is static except for the OTP contact flow: all portfolio content is
+  static, plus two stateless Vercel functions under
+  `artifacts/dual-theme-portfolio/api/` (`send-otp`, `verify-and-send`) that
+  send mail via Resend. The Express server exists only for platform health
+  checks and is never called by the contact form.
 - The single visual direction is intentionally kept tactile and editorial, with
   paper texture, ink branches, red accents, and illustrated details.
 - Decorative motion is subtle and respects the user's reduced-motion preference.
