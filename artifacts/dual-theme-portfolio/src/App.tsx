@@ -1,9 +1,9 @@
-import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowDown, ArrowUp, ArrowUpRight, Code2, Database, Menu, MousePointerClick, Settings, X } from 'lucide-react';
 import { MatplotlibIcon, SeabornIcon } from './components/BrandIcons';
 import { SiCplusplus, SiFastapi, SiGo, SiJavascript, SiLeetcode, SiMysql, SiNumpy, SiPandas, SiPeerlist, SiPostgresql, SiPydantic, SiPython, SiPytorch, SiRender, SiScikitlearn, SiSqlalchemy, SiTensorflow, SiTypescript, SiVercel } from 'react-icons/si';
-import { FaDev, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
+import { FaDev, FaDiscord, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
@@ -229,14 +229,14 @@ function Header() {
             </a>
           ))}
         </div>
-        <nav id="primary-navigation" className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-[64px] flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-8' : 'hidden md:flex'} items-center gap-5 md:gap-6 lg:gap-8`} aria-label="Primary navigation">
+        <nav id="primary-navigation" className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-full flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-8' : 'hidden md:flex'} items-center gap-5 md:gap-6 lg:gap-8`} aria-label="Primary navigation">
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <NavKatana />
-          <a href="#contact" className="button-primary hidden items-center gap-2 whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-contact">Start a project <ArrowUpRight size={13} /></a>
+          <a href="https://discord.gg/CSmrA5fbx9" target="_blank" rel="noopener noreferrer" aria-label="Join my community on Discord" className="button-primary hidden items-center gap-2 whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-discord">Join my community <FaDiscord size={14} /></a>
           <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 shrink-0 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="primary-navigation" data-testid="button-mobile-menu">
             {open ? <X size={16} /> : <Menu size={16} />}
           </button>
@@ -658,185 +658,15 @@ function Experience() {
 
 const CONTACT_INBOX = 'piyush.intech@gmail.com';
 
-type ContactStage = 'enteringEmail' | 'sendingCode' | 'enteringCode' | 'verifying' | 'sent';
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-async function readErrorMessage(res: Response, fallback: string): Promise<string> {
-  try {
-    const data = (await res.json()) as { error?: unknown };
-    if (typeof data?.error === 'string' && data.error.trim()) return data.error;
-  } catch {
-    /* fall through to fallback */
-  }
-  return fallback;
-}
-
 function Contact() {
-  const [stage, setStage] = useState<ContactStage>('enteringEmail');
-  const [email, setEmail] = useState('');
-  const [otpToken, setOtpToken] = useState('');
-  const [otpCode, setOtpCode] = useState('');
-  const [message, setMessage] = useState('');
-  const [formError, setFormError] = useState('');
-  const [resendIn, setResendIn] = useState(0);
-  const sentTimer = useRef<number | null>(null);
-  const resendTimer = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (sentTimer.current !== null) window.clearTimeout(sentTimer.current);
-      if (resendTimer.current !== null) window.clearInterval(resendTimer.current);
-    };
-  }, []);
-
-  const startResendCountdown = () => {
-    if (resendTimer.current !== null) window.clearInterval(resendTimer.current);
-    setResendIn(60);
-    resendTimer.current = window.setInterval(() => {
-      setResendIn((s) => {
-        if (s <= 1) {
-          if (resendTimer.current !== null) window.clearInterval(resendTimer.current);
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
-  };
-
-  const requestCode = async (targetEmail: string): Promise<boolean> => {
-    const res = await fetch('/api/send-otp', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email: targetEmail.trim() }),
-    });
-    if (!res.ok) {
-      setFormError(await readErrorMessage(res, 'Something went wrong, please try again'));
-      return false;
-    }
-    let data: { token?: unknown } | null = null;
-    try {
-      data = (await res.json()) as { token?: unknown };
-    } catch {
-      data = null;
-    }
-    if (!data || typeof data.token !== 'string' || !data.token) {
-      setFormError('Something went wrong, please try again');
-      return false;
-    }
-    setOtpToken(data.token);
-    setFormError('');
-    setStage('enteringCode');
-    startResendCountdown();
-    return true;
-  };
-
-  const onSendCode = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (stage === 'sendingCode') return;
-    if (!EMAIL_RE.test(email.trim())) {
-      setFormError('Please enter a valid email address.');
-      return;
-    }
-    setFormError('');
-    setStage('sendingCode');
-    const ok = await requestCode(email);
-    if (!ok) setStage('enteringEmail');
-  };
-
-  const onResend = async () => {
-    if (resendIn > 0 || stage === 'sendingCode' || stage === 'verifying') return;
-    setFormError('');
-    const prev: ContactStage = stage;
-    setStage('sendingCode');
-    const ok = await requestCode(email);
-    if (!ok) setStage(prev === 'enteringCode' ? 'enteringCode' : prev);
-  };
-
-  const onChangeEmail = () => {
-    setOtpToken('');
-    setOtpCode('');
-    setFormError('');
-    setStage('enteringEmail');
-  };
-
-  const onSendMessage = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (stage === 'verifying') return;
-    if (!/^\d{6}$/.test(otpCode.trim())) {
-      setFormError('Please enter the 6-digit code.');
-      return;
-    }
-    if (message.trim().length < 10) {
-      setFormError('Please write a message of at least 10 characters.');
-      return;
-    }
-    setFormError('');
-    setStage('verifying');
-    try {
-      const res = await fetch('/api/verify-and-send', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ token: otpToken, code: otpCode.trim(), message: message.trim() }),
-      });
-      if (!res.ok) {
-        setFormError(await readErrorMessage(res, 'Something went wrong, please try again'));
-        setStage('enteringCode');
-        return;
-      }
-      setStage('sent');
-      setFormError('');
-      if (sentTimer.current !== null) window.clearTimeout(sentTimer.current);
-      sentTimer.current = window.setTimeout(() => {
-        setEmail('');
-        setOtpToken('');
-        setOtpCode('');
-        setMessage('');
-        setFormError('');
-        setStage('enteringEmail');
-      }, 5000);
-    } catch {
-      setFormError('Something went wrong, please try again');
-      setStage('enteringCode');
-    }
-  };
-
-  const busySending = stage === 'sendingCode';
-  const busyVerifying = stage === 'verifying';
-  const canSendMessage = otpCode.trim().length > 0 && message.trim().length > 0 && !busyVerifying;
-
   return (
     <section id="contact" className="section-anchor contact-section py-6">
       <div className="section-wrap contact-inner">
         <Reveal>
-          <div className="max-w-[520px]"><h2 className="section-title section-title-sm display">Let’s make<br /><span>something useful</span></h2><p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Have a project in mind, a team that needs a thoughtful pair of hands, or just a good question? I’m always up for a conversation.</p></div>
-          <div className="mt-8 grid gap-8 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1.05fr] lg:gap-7">
-            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Send a note</div>
-              {(stage === 'enteringEmail' || stage === 'sendingCode') && (
-              <form onSubmit={onSendCode} className="mt-4 grid gap-2.5" aria-label="Contact form">
-                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Your email</span><input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" disabled={busySending} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-email" /></label>
-                <button type="submit" disabled={busySending} className="button-primary mt-1.5 inline-flex w-fit items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.16em] disabled:cursor-wait disabled:opacity-60" data-testid="button-contact-send-code">{busySending ? (<><span className="contact-spinner" aria-hidden="true" />Sending code…</>) : (<>Send verification code <ArrowUpRight size={14} /></>)}</button>
-                {busySending && <p role="status" className="text-sm opacity-70">Sending your code…</p>}
-                {formError && !busySending && <p role="alert" className="text-sm opacity-80">{formError}</p>}
-              </form>
-              )}
-              {(stage === 'enteringCode' || stage === 'verifying' || stage === 'sent') && (
-              <form onSubmit={onSendMessage} className="mt-4 grid gap-2.5" aria-label="Contact verification form">
-                <p className="text-sm opacity-70">Enter the code sent to <span className="font-semibold">{email}</span> <button type="button" onClick={onChangeEmail} className="underline underline-offset-4 hover:opacity-100" data-testid="button-contact-change-email">Change email</button></p>
-                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Verification code</span><input type="text" inputMode="numeric" autoComplete="one-time-code" required value={otpCode} onChange={(event) => setOtpCode(event.target.value.replace(/[^0-9]/g, '').slice(0, 6))} placeholder="123456" maxLength={6} disabled={busyVerifying || stage === 'sent'} className="border border-current/30 bg-transparent px-3 py-2 text-sm tracking-[.3em]" data-testid="input-contact-code" /></label>
-                <label className="grid gap-1 text-left"><span className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Message (min 10 chars)</span><textarea required minLength={10} maxLength={2000} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="What would you like to build?" rows={3} disabled={busyVerifying || stage === 'sent'} className="border border-current/30 bg-transparent px-3 py-2 text-sm" data-testid="input-contact-message" /></label>
-                <button type="submit" disabled={!canSendMessage && stage !== 'sent'} className="button-primary mt-1.5 inline-flex w-fit items-center gap-3 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.16em] disabled:cursor-wait disabled:opacity-60" data-testid="button-contact-send">{busyVerifying ? (<><span className="contact-spinner" aria-hidden="true" />Sending…</>) : (<>Send message <ArrowUpRight size={14} /></>)}</button>
-                {busyVerifying && <p role="status" className="text-sm opacity-70">Verifying and sending…</p>}
-                {stage === 'sent' && <p role="status" className="text-sm opacity-70">Message sent ✓ — I’ll reply soon.</p>}
-                {formError && !busyVerifying && stage !== 'sent' && <p role="alert" className="text-sm opacity-80">{formError}</p>}
-                {stage !== 'sent' && (
-                <p className="text-sm opacity-70">Didn’t get a code? <button type="button" onClick={onResend} disabled={resendIn > 0 || busyVerifying} className="underline underline-offset-4 disabled:cursor-wait disabled:opacity-50" data-testid="button-contact-resend">{resendIn > 0 ? 'Resend code in ' + resendIn + 's' : 'Resend code'}</button></p>
-                )}
-              </form>
-              )}
-            </div>
-            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href={`mailto:${CONTACT_INBOX}`} data-testid="link-contact-address">{CONTACT_INBOX}</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70">Open to select freelance and full-time roles</p></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Base</div><p className="mt-2 text-sm opacity-70">Bhopal, India</p></div></div></div>
-            <nav className="border-t border-current/20 pt-5 md:col-span-2 lg:col-span-1" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
+          <div className="max-w-[520px]"><h2 className="section-title section-title-sm display">Let’s build<br /><span>something useful</span></h2><p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Have an idea worth building, a problem worth solving, or just want to talk tech? I’m always open to new ideas, collaborations, and interesting conversations.</p></div>
+          <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-7">
+            <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href={`mailto:${CONTACT_INBOX}`} data-testid="link-contact-address">{CONTACT_INBOX}</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70" data-testid="text-availability">Open for freelancing, internships and full-time roles</p></div></div></div>
+            <nav className="border-t border-current/20 pt-5" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
           </div>
         </Reveal>
       </div>

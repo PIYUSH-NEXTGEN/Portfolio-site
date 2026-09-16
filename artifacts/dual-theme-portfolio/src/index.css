@@ -82,7 +82,7 @@
 }
 
 /* Shared utilities */
-.site-shell { min-height: 100dvh; overflow: hidden; transition: background-color .5s ease, color .5s ease; }
+.site-shell { min-height: 100dvh; overflow: clip; transition: background-color .5s ease, color .5s ease; }
 .section-wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
 .editorial-only { display: block; }
 .falling-leaves { position: fixed; z-index: 12; inset: -30px 0 auto; height: 100vh; overflow: hidden; pointer-events: none; }
@@ -264,7 +264,7 @@
    footer now closes the page instead of floating on paper. */
 .theme-editorial .footer {
   background: #202a36; color: #ece4d3;
-  border-top: 2px solid #c84d3d;
+  border-top: 1px solid rgba(32,42,54,.2);
 }
 .theme-editorial .footer a { color: #ece4d3; }
 .theme-editorial .footer a:hover { color: #f0ae78; }
@@ -272,7 +272,7 @@
    so the bottom of the page closes in the dark brand band. */
 .theme-editorial .contact-section {
   background: #202a36; color: #ece4d3;
-  border-top: 2px solid #c84d3d;
+  border-top: 1px solid rgba(32,42,54,.2);
 }
 .theme-editorial .contact-section a { color: #ece4d3; }
 .theme-editorial .contact-section a:hover { color: #f0ae78; }
@@ -597,7 +597,14 @@
 .deco-branch-tr { top: 56px; right: -46px; width: clamp(180px, 20vw, 300px); opacity: .8; }
 .deco-branch-bl { top: 52%; left: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
 .deco-branch-br { top: 52%; right: -60px; width: clamp(160px, 17vw, 250px); opacity: .55; }
-.site-shell > header,
+/* Lift the real content above the z-0 decoration layers (branches, bamboo,
+   cat, katana). This file is UNLAYERED, so it always beats Tailwind's
+   @layer utilities — which means the header's `sticky top-0 z-20` classes
+   were being silently downgraded to `position: relative` here, and the
+   navbar scrolled away with the page. The header therefore declares its own
+   sticky positioning (it must keep sitting above both the decorations and
+   the fixed paper-noise overlay at z-10) instead of being forced relative. */
+.site-shell > header { position: sticky; top: 0; z-index: 20; }
 .site-shell > section,
 .site-shell > footer { position: relative; z-index: 1; }
 .theme-editorial .footer { position: relative; overflow: hidden; }
@@ -1049,19 +1056,6 @@ body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden 
 .contact-turnstile {
   margin-top: 4px;
   min-height: 65px;
-}
-
-/* Contact submit spinner. */
-.contact-spinner {
-  width: 14px;
-  height: 14px;
-  border-radius: 9999px;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  animation: contact-spin 0.8s linear infinite;
-}
-@keyframes contact-spin {
-  to { transform: rotate(360deg); }
 }
 
 /* Hero "Take me through" cursor — a full revolution that spins around its

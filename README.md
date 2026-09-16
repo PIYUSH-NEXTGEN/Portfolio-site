@@ -6,39 +6,11 @@ tactile ink-and-paper editorial experience.
 See `.env.example` for local environment variables (DB tooling only needs
 `DATABASE_URL`).
 
-## Contact form
+## Contact
 
-The "Send a note" form in `artifacts/dual-theme-portfolio/src/App.tsx` is a
-two-step OTP-verified flow with no `mailto:` send path, no page reload, and no
-Web3Forms involvement. Step 1 posts `{ email }` to `POST /api/send-otp`, which
-emails the visitor a 6-digit code via Resend and returns a stateless
-HMAC-signed token (held client-side). Step 2 posts `{ token, code, message }`
-to `POST /api/verify-and-send`, which verifies the token/code and forwards the
-message to the inbox via Resend (`reply_to` = visitor email). Both endpoints
-live in `artifacts/dual-theme-portfolio/api/` and auto-deploy as Vercel
-serverless functions. The footer "Direct > Email" block stays a plain `mailto:`
-convenience link that opens the visitor's own mail app.
-
-Setup:
-
-1. In Vercel (portfolio project) set `RESEND_API_KEY` (from the resend.com API
-   Keys page), `FROM_EMAIL=onboarding@resend.dev` (Resend's free shared sender,
-   no domain verification needed), `OTP_SIGNING_SECRET` (generate via
-   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`),
-   and `CONTACT_DESTINATION_EMAIL` (inbox receiving verified messages).
-2. Redeploy. The frontend needs no keys — it just calls same-origin `/api/*`.
-
-| Variable | Where | Required | Purpose |
-| --- | --- | --- | --- |
-| `RESEND_API_KEY` | Vercel (server) | Yes | Resend API key for sending OTP + contact emails. |
-| `FROM_EMAIL` | Vercel (server) | Yes | Sender identity (`onboarding@resend.dev` on the free tier). |
-| `OTP_SIGNING_SECRET` | Vercel (server) | Yes | 64-char hex secret for HMAC-signing OTP tokens. |
-| `CONTACT_DESTINATION_EMAIL` | Vercel (server) | Yes | Inbox receiving verified contact messages. |
-
-Tradeoff (stated plainly): rate limiting is an in-memory per-instance Map (3
-OTP requests / IP / 15 min, 5 verifications / IP / hour), so it resets on each
-serverless cold start/deploy. Accepted for a low-traffic portfolio form; the
-signed-token design keeps everything stateless with no database.
+The footer contact section is purely informational: a `mailto:` link that
+opens the visitor's own mail app, availability, location, and social links.
+There is no form, no sending option, and no server-side mail functionality.
 
 ## Run & Operate
 
@@ -76,11 +48,9 @@ signed-token design keeps everything stateless with no database.
 
 ## Architecture decisions
 
-- The site is static except for the OTP contact flow: all portfolio content is
-  static, plus two stateless Vercel functions under
-  `artifacts/dual-theme-portfolio/api/` (`send-otp`, `verify-and-send`) that
-  send mail via Resend. The Express server exists only for platform health
-  checks and is never called by the contact form.
+- The site is fully static: all portfolio content, including the footer
+  contact section, is rendered client-side with no server-side functions
+  involved. The Express server exists only for platform health checks.
 - The single visual direction is intentionally kept tactile and editorial, with
   paper texture, ink branches, red accents, and illustrated details.
 - Decorative motion is subtle and respects the user's reduced-motion preference.

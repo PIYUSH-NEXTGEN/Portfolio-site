@@ -5,12 +5,12 @@ import { useEffect, useRef, useState } from 'react';
    to the navbar icons, project cards, skills, resume and contact button,
    hovering and clicking along the way while the page auto-scrolls beneath
    it. The visitor's real cursor is never touched — this is pure theatre.
-   Skippable at any time via the button, Escape, or any scroll input. */
+   Skippable at any time with Escape or any scroll input. */
 
 interface TourStep {
   selector: string;
   caption: string;
-  action: 'hover' | 'click' | 'visit' | 'type' | 'select';
+  action: 'hover' | 'click' | 'visit' | 'select';
   hold: number;
   /* When true the caption bubble stays hidden for this step — used while the
      tour is selecting hero text so the bubble never covers the highlight. */
@@ -20,16 +20,6 @@ interface TourStep {
      section whose heading should stay visible. */
   anchor?: string;
   spot?: { fx: number; fy: number };
-  text?: string;
-  clear?: string[];
-}
-
-/* React-controlled inputs ignore direct value writes — they must go through
-   the native value setter, then a bubbling input event updates React state. */
-function setNativeValue(field: HTMLInputElement | HTMLTextAreaElement, value: string) {
-  const proto = field instanceof HTMLTextAreaElement ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
-  Object.getOwnPropertyDescriptor(proto, 'value')?.set?.call(field, value);
-  field.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
 /* Collect every word-end boundary in an element's text — used to grow a
@@ -70,10 +60,8 @@ const TOUR_STEPS: TourStep[] = [
   /* 5 · Achievements, then the resume */
   { selector: '.achievement-row:nth-of-type(1)', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1600 },
   { selector: '[data-testid="img-resume"]', caption: 'The resume is folded right here, ready to download.', action: 'hover', hold: 2200 },
-  /* 6 · Contact — fast typing demo, then hover send */
-  { selector: '[data-testid="input-contact-email"]', caption: 'Type your email here, so I know where to reply.', action: 'type', text: 'piyush.demo@gmail.com', hold: 800 },
-  { selector: '[data-testid="input-contact-message"]', caption: 'A few honest words do the rest.', action: 'type', text: 'I loved the portfolio design!', hold: 900 },
-  { selector: '[data-testid="button-contact-send"]', caption: 'Then one click sends it on its way.', action: 'hover', hold: 1600, clear: ['[data-testid="input-contact-email"]', '[data-testid="input-contact-message"]'] },
+  /* 6 · Contact — direct email link */
+  { selector: '[data-testid="link-contact-address"]', caption: 'Prefer email? One click opens your mail app.', action: 'hover', hold: 2200 },
 ];
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -108,7 +96,7 @@ export default function GuidedTour() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* Escape (or any scrolling intent) ends the tour gracefully. */
+  /* Escape or any scrolling intent ends the tour gracefully. */
   useEffect(() => {
     if (!running) return;
     const onKey = (event: KeyboardEvent) => {
@@ -240,7 +228,7 @@ export default function GuidedTour() {
       setCaptionOn(false);
       runningRef.current = false;
       setRunning(false);
-      /* However the tour ends — natural finish, Skip or Escape — glide the
+      /* However the tour ends — natural finish or Escape — glide the
          visitor back to the top (unless they scrolled there themselves). */
       void returnToTop();
     };
@@ -271,23 +259,6 @@ export default function GuidedTour() {
           el.classList.add('tour-hover');
           await wait(step.hold);
           el.classList.remove('tour-hover');
-        } else if (step.action === 'type') {
-          /* Click into the field, then type character by character — fast. */
-          const field = el as HTMLInputElement | HTMLTextAreaElement;
-          const node = cursorRef.current;
-          node?.classList.add('tour-cursor-click');
-          field.focus();
-          await wait(340);
-          node?.classList.remove('tour-cursor-click');
-          let typed = '';
-          for (const ch of step.text ?? '') {
-            if (cancelRef.current) return;
-            typed += ch;
-            setNativeValue(field, typed);
-            await wait(reducedRef.current ? 0 : 26);
-          }
-          await wait(step.hold);
-          field.blur();
         } else if (step.action === 'select') {
           /* Mark the description with a continuous drag — the selection edge
              sweeps through every character (starting from the very first
@@ -350,14 +321,6 @@ export default function GuidedTour() {
             setCursorPos(r.left + r.width * (step.spot?.fx ?? 0.5), r.top + r.height * (step.spot?.fy ?? 0.5));
           }
           await wait(step.hold);
-        }
-        if (step.clear) {
-          /* Wipe any demo text the tour typed so the form is left clean. */
-          (document.activeElement as HTMLElement | null)?.blur?.();
-          for (const selector of step.clear) {
-            const field = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(selector);
-            if (field) setNativeValue(field, '');
-          }
         }
         setCaptionOn(false);
         await wait(280);
