@@ -13,7 +13,7 @@ import { randomInt, createHmac } from 'node:crypto';
 // bounded by the Resend cost of at most a few extra OTP emails per cold start.
 
 const WINDOW_MS = 15 * 60 * 1000;
-const MAX_REQUESTS = 3;
+const MAX_REQUESTS = 5;
 const MAX_BODY_BYTES = 2 * 1024;
 
 // Module-level: survives warm invocations, resets on cold start (see note above).

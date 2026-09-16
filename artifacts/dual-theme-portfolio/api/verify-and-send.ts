@@ -13,7 +13,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 // NOTE: same cold-start reset tradeoff as send-otp (see comment there).
 
 const WINDOW_MS = 60 * 60 * 1000;
-const MAX_REQUESTS = 5;
+const MAX_REQUESTS = 8;
 const MAX_BODY_BYTES = 4 * 1024;
 
 // Separate map/namespace from the send-otp endpoint.
