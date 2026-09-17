@@ -9,8 +9,7 @@ const app: Express = express();
 // Never send Express's default fingerprint header.
 app.disable("x-powered-by");
 
-// Behind the platform load balancer, so req.ip reflects the real client IP
-// (used by the contact-form rate limiter and Turnstile verification).
+// Behind the platform load balancer, so req.ip reflects the real client IP.
 app.set("trust proxy", 1);
 
 app.use(
@@ -36,9 +35,7 @@ app.use(
 // allowed, plus local dev servers, Replit preview domains (non-production
 // only), and the production portfolio domain(s) configured via
 // ALLOWED_ORIGINS. Everything else keeps a default-deny behaviour — no
-// wildcard reflection. (The OTP contact form posts same-origin to the
-// Vercel /api functions, so it never touches this API; CORS here only
-// guards future same-origin API use.)
+// wildcard reflection.
 const PRODUCTION_ORIGINS = (process.env["ALLOWED_ORIGINS"] ?? "")
   .split(",")
   .map((origin) => origin.trim())
@@ -46,8 +43,7 @@ const PRODUCTION_ORIGINS = (process.env["ALLOWED_ORIGINS"] ?? "")
 const allowedOrigins = new Set(PRODUCTION_ORIGINS);
 const isProduction = process.env["NODE_ENV"] === "production";
 
-// Dev/preview convenience: any localhost port plus Replit preview hosts, so
-// the contact form works in preview without configuring ALLOWED_ORIGINS.
+// Dev/preview convenience: any localhost port plus Replit preview hosts.
 // Production stays strictly limited to ALLOWED_ORIGINS.
 function isDevOrigin(origin: string): boolean {
   let url: URL;
