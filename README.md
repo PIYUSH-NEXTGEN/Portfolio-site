@@ -1,81 +1,124 @@
-# Ink Portfolio
+# Piyush Baraskar — Portfolio
 
-A responsive personal portfolio for an ML & backend engineer, presented as a
-tactile ink-and-paper editorial experience.
+This is my personal portfolio website, showcasing my projects, skills, experience,
+and the work I'm building as an ML & backend engineer. The design brings together
+an ink-and-paper aesthetic, illustrated details, and interactive animations.
 
-See `.env.example` for local environment variables.
+**Like the design? Give the [repo a star ☆](https://github.com/PIYUSH-NEXTGEN/Portfolio-site)!**
+It means a lot and helps others discover the project.
 
-## Contact
+## Make it your own
 
-The footer contact section is purely informational: a `mailto:` link that
-opens the visitor's own mail app, availability, location, and social links.
-There is no form, no sending option, and no server-side mail functionality.
+Want to use this portfolio as a starting point? Fork the repository, set it up on
+your device, and customize it with your own content.
 
-## Run & Operate
+### Prerequisites
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080,
-  override with `PORT`)
-- `pnpm --filter @workspace/portfolio-site run dev` — run the portfolio
-  preview (port 5173 locally; the Replit artifact runtime provides `PORT` and
-  `BASE_PATH`)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and
-  Zod schemas from the OpenAPI spec
+- [Node.js](https://nodejs.org/) 24 LTS
+- Git
+- pnpm 10 — install it with:
 
-## Stack
+  ```sh
+  npm install -g pnpm@10
+  ```
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5 (health endpoint: `GET /api/healthz`)
-- Frontend: React + Vite + Tailwind CSS + Framer Motion + anime.js intro
-- Validation: Zod (`zod/v4`)
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle for API), Vite (static site)
+Use **pnpm** to install this project's dependencies; the workspace enforces it.
 
-## Where things live
+### 1. Fork and clone
 
-- `artifacts/portfolio-site/src/App.tsx` — section components and
-  theme-specific rendering
-- `artifacts/portfolio-site/src/data/portfolio-content.tsx` — all static
-  portfolio content (projects, skills, experience, links)
-- `artifacts/portfolio-site/src/index.css` — theme tokens, responsive
-  layout, motion, and visual treatments
-- `artifacts/portfolio-site/public/` — only files referenced by the app:
-  the artwork it renders as lossless WebP (`cat.webp`, `katana-hang.webp`,
-  `katana-ink.webp`, `pfp.webp`), plus `favicon.png`,
-  `pfp.png` (the social/OG preview image, kept in PNG for scraper
-  compatibility) and `robots.txt`
-- `attached_assets/` — supplied visual references, kept as uploaded; the five
-  bundled `lumen-screenshot-*.webp` files (lossless conversions of the supplied
-  PNGs) are imported through the `@assets` alias
+Click **Fork** on [this repository](https://github.com/PIYUSH-NEXTGEN/Portfolio-site).
+On your fork, select **Code** and copy its HTTPS clone URL. Run `git clone`
+followed by that URL, then enter the cloned directory:
 
-## Architecture decisions
+```sh
+cd Portfolio-site
+```
 
-- The site is fully static: all portfolio content, including the footer
-  contact section, is rendered client-side with no server-side functions
-  involved. The Express server exists only for platform health checks.
-- The single visual direction is intentionally kept tactile and editorial, with
-  paper texture, ink branches, red accents, and illustrated details.
-- Decorative motion is subtle and respects the user's reduced-motion preference.
-- Raster art ships as lossless WebP: each converted file is pixel-identical to
-  its PNG source (alpha and RGB verified) while the decorative sprites, hero
-  portrait, resume preview and project screenshots shed roughly half their
-  bytes. The below-the-fold screenshots and resume preview are lazy-loaded, and
-  the hero portrait keeps `width`/`height` plus `fetchPriority="high"` so it
-  loads first without shifting the layout.
+Run the remaining commands from this repository root.
 
-## Product
+### 2. Install dependencies
 
-Visitors can explore Piyush Baraskar's work, capabilities, experience, and
-contact details through a warm editorial presentation inspired by printed
-portfolios and Japanese woodblock compositions.
+```sh
+pnpm install
+```
 
-## Gotchas
+> **Platform note:** The workspace currently excludes several native build
+> packages for macOS, ARM, and Linux musl environments. If you're using one of
+> those platforms, remove only the matching platform-exclusion overrides from
+> `pnpm-workspace.yaml`, then run `pnpm install` again. Keep the security settings
+> and version overrides intact.
 
-- The portfolio is the root preview artifact; use the managed
-  `artifacts/portfolio-site: web` workflow instead of starting Vite
-  directly.
-- The app uses the artifact-provided `BASE_PATH` and `PORT` environment
-  variables (with local defaults: `/` and `5173`).
-- `mockup-sandbox` is a template/staging artifact and is intentionally not part
-  of `pnpm run build` / `typecheck` verification.
+### 3. Start the development server
+
+```sh
+pnpm --filter @workspace/portfolio-site run dev
+```
+
+Open **http://localhost:5173** in your browser. Changes to the source files will
+appear as you develop.
+
+The portfolio is a static frontend: you don't need an API server, database,
+API keys, or an `.env` file to run it. The default port is `5173` and the default
+base path is `/`. For a custom environment, set `PORT` and `BASE_PATH` in your
+shell before starting Vite.
+
+### 4. Customize your portfolio
+
+Paths below are relative to the repository root:
+
+| File or folder | What to update |
+| --- | --- |
+| `artifacts/portfolio-site/src/data/portfolio-content.tsx` | Projects, skills, experience, achievements, social links, and email address |
+| `artifacts/portfolio-site/src/App.tsx` | Name, introduction, section copy, and page components |
+| `artifacts/portfolio-site/src/index.css` | Colors, typography, layout, and visual effects |
+| `artifacts/portfolio-site/public/` | Profile images, favicon, and decorative artwork |
+| `artifacts/portfolio-site/index.html` | Page title and social preview metadata |
+| `attached_assets/` | Project screenshots and other imported assets |
+
+Replace my personal information, images, and project details with your own before
+publishing.
+
+### 5. Check and build
+
+Typecheck the portfolio:
+
+```sh
+pnpm --filter @workspace/portfolio-site run typecheck
+```
+
+Create a production build:
+
+```sh
+pnpm --filter @workspace/portfolio-site run build
+```
+
+The static output is generated in `artifacts/portfolio-site/dist/public/`.
+
+Preview that build locally:
+
+```sh
+pnpm --filter @workspace/portfolio-site run serve
+```
+
+Open **http://localhost:5173**. Stop the development server first if it is still
+using that port.
+
+## Tech stack
+
+- **React 19 + TypeScript** — UI components and type safety
+- **Vite 7** — development server and production builds
+- **Tailwind CSS 4 + custom CSS** — responsive styling and ink-and-paper visuals
+- **Framer Motion + anime.js** — animations and intro sequence
+- **Wouter** — client-side routing
+- **Lucide React + React Icons** — icons
+- **pnpm workspaces** — package management and workspace organization
+
+## A little credit :)
+
+If you use this design or build your portfolio from this project, please add a
+small credit in your portfolio with a link back here:
+
+> Inspired by [Piyush Baraskar Portfolio](https://github.com/PIYUSH-NEXTGEN/Portfolio-site) :)
+
+Thanks for checking out my work — and don't forget to star the repo if you like
+it!

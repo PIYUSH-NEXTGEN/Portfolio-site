@@ -61,7 +61,9 @@ const TOUR_STEPS: TourStep[] = [
   { selector: '.achievement-row:nth-of-type(1)', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1600 },
   { selector: '[data-testid="text-resume-status"]', caption: 'The resume will be uploaded soon.', action: 'hover', hold: 2200 },
   /* 6 · Contact — direct email link */
-  { selector: '[data-testid="link-contact-address"]', caption: 'Prefer email? One click opens your mail app.', action: 'hover', hold: 2200 },
+  { selector: '[data-testid="link-contact-address"]', caption: 'You can reach me at this email address.', action: 'hover', hold: 2200 },
+  /* 7 · Repository — hover without opening an external page */
+  { selector: '[data-testid="link-star-repo"]', caption: 'Like the design? Star the repo on GitHub.', action: 'hover', hold: 2200 },
 ];
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);

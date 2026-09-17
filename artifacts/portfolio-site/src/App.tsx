@@ -1,6 +1,6 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowUp, ArrowUpRight, Menu, MousePointerClick, X } from 'lucide-react';
+import { ArrowUp, ArrowUpRight, Menu, MousePointerClick, Star, X } from 'lucide-react';
 import { FaDiscord, FaGithub } from 'react-icons/fa6';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
@@ -471,6 +471,20 @@ function Contact() {
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-7">
             <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href={`mailto:${CONTACT_INBOX}`} data-testid="link-contact-address">{CONTACT_INBOX}</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70" data-testid="text-availability">Open for freelancing, internships and full-time roles</p></div></div></div>
             <nav className="border-t border-current/20 pt-5" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ contact }) => contact).map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
+          </div>
+          <div className="mt-10 flex flex-wrap items-center gap-2 border-t border-current/10 pt-6 text-sm">
+            <span className="opacity-70">Like the design?</span>
+            <a
+              href="https://github.com/PIYUSH-NEXTGEN/Portfolio-site"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-medium hover:underline hover:underline-offset-4"
+              data-testid="link-star-repo"
+            >
+              <Star size={14} fill="none" aria-hidden="true" />
+              Star the repo
+              <ArrowUpRight size={13} aria-hidden="true" />
+            </a>
           </div>
         </Reveal>
       </div>

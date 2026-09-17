@@ -865,6 +865,7 @@
 }
 
 /* Mirrored :hover states the tour can apply via class */
+.theme-editorial [data-testid="link-star-repo"].tour-hover { text-decoration: underline; text-underline-offset: 4px; }
 .theme-editorial .social-link.tour-hover { opacity: 1; transform: translateY(-2px); border-color: var(--brand, #000); }
 .theme-editorial .social-link.tour-hover svg { color: #fff; transform: rotateY(360deg); }
 .theme-editorial .social-link.tour-hover::before { top: 0; }
