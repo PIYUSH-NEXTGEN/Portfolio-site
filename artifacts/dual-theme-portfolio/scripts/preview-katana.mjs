@@ -2,7 +2,8 @@
  * Layout preview: composites the processed katana + sakura sprites the way
  * the hero will render them (cream panel, sword rotated 34.6deg -> -14deg
  * net tilt, petals on orbit rings) so the orientation can be eyeballed
- * without a browser. Writes preview.png. Run after process-katana.mjs.
+ * without a browser. Reads the cutouts from scripts/processed/ and writes
+ * scripts/preview.png. Run after process-katana.mjs.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function decodePng(file) {
-  const buf = fs.readFileSync(path.join(ROOT, 'public', file));
+  const buf = fs.readFileSync(path.join(ROOT, 'scripts', 'processed', file));
   let off = 8, w = 0, h = 0, colorType = 0;
   const idat = [];
   while (off < buf.length) {

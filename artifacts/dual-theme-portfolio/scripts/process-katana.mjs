@@ -1,10 +1,15 @@
 /**
- * Katana asset processing — turns public/katana.png (flat black line-art on an
- * opaque white background, with a black border frame and baked-in sakura
- * petals/flowers) into clean, transparent, warm-tinted cutouts:
+ * Katana asset processing — turns attached_assets/katana.png (flat black
+ * line-art on an opaque white background, with a black border frame and
+ * baked-in sakura petals/flowers) into clean, transparent, warm-tinted
+ * cutouts in scripts/processed/ (working files — none of them are shipped):
  *
- *   public/katana-ink.png   — the sword only, tight-cropped, white removed
- *   public/sakura-<n>.png   — each detached petal / flower as its own sprite
+ *   scripts/processed/katana-ink.png   — the sword only, tight-cropped, white removed
+ *   scripts/processed/sakura-<n>.png   — each detached petal / flower as its own sprite
+ *
+ * The sprites the site serves are lossless-WebP builds of these cutouts and
+ * stay in public/: katana-ink.webp (the nav blade's fallback) and
+ * katana-hang.webp (pre-verticalized for the hanging nav katana).
  *
  * Pure Node (no dependencies): decode PNG, erase border frame, label
  * connected components, alpha = 255 - luminance (white vanishes, edges stay
@@ -18,7 +23,11 @@ import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = path.join(ROOT, 'public', 'katana.png');
+/* Source art lives in attached_assets/ (the supplied reference); the cutouts
+   are written to scripts/processed/ so neither lands in the shipped site. */
+const SRC = path.resolve(ROOT, '..', '..', 'attached_assets', 'katana.png');
+const OUT_DIR = path.join(ROOT, 'scripts', 'processed');
+if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
 
 /* ---------- config ---------- */
 const INK_TINT = [78, 58, 50];    // warm umber — matches cream/terracotta palette
@@ -244,13 +253,13 @@ function exportComponent(comp, file) {
       out[o + 3] = a;
     }
   }
-  fs.writeFileSync(path.join(ROOT, 'public', file), encodePng(cw, ch, out));
+  fs.writeFileSync(path.join(OUT_DIR, file), encodePng(cw, ch, out));
   return { w: cw, h: ch };
 }
 
 const swordSize = exportComponent(sword, 'katana-ink.png');
-console.log(`wrote public/katana-ink.png (${swordSize.w}x${swordSize.h})`);
+console.log(`wrote scripts/processed/katana-ink.png (${swordSize.w}x${swordSize.h})`);
 sakura.forEach((c, i) => {
   const size = exportComponent(c, `sakura-${i + 1}.png`);
-  console.log(`wrote public/sakura-${i + 1}.png (${size.w}x${size.h})`);
+  console.log(`wrote scripts/processed/sakura-${i + 1}.png (${size.w}x${size.h})`);
 });

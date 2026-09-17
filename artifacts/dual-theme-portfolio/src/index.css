@@ -499,7 +499,8 @@
 }
 
 /* ── Hero portrait: profile photo ───────────────────────────────────────
-   The hero portrait is fixed artwork — public/pfp.png rendered as a plain,
+   The hero portrait is fixed artwork — public/pfp.webp (lossless WebP build of
+   pfp.png) rendered as a plain,
    non-interactive <img>, sized by the .theme-editorial .hero-photo-filled
    img rules (object-fit cover, top-centred, #111 backdrop). */
 .hero-photo-filled { position: relative; }
@@ -708,7 +709,7 @@
   background: currentColor; opacity: .4;
 }
 /* Hanging katana — the SAME sword as the hero background katana, from a
-   dedicated pre-rotated, tight-cropped sprite (public/katana-hang.png: tip
+   dedicated pre-rotated, tight-cropped sprite (public/katana-hang.webp: tip
    down, handle up, 138x621) so it renders as a real katana instead of a
    diagonal sliver inside a square canvas. Rendered WITHOUT blend modes on
    purpose: the sprite already carries the dark ink colour, and plain opacity

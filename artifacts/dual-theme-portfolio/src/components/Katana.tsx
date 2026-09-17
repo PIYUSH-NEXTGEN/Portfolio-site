@@ -3,17 +3,19 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 /**
  * Katana asset for the navbar — derived from the uploaded asset
- * (public/katana.png) via scripts/process-katana.mjs, which cuts the border
- * frame and removes the white background.
+ * (attached_assets/katana.png) via scripts/process-katana.mjs, which cuts the
+ * border frame and removes the white background. The sprites the site serves
+ * are lossless WebP builds of those cutouts (pixel-identical, ~2x smaller than
+ * the processed PNGs):
  *
- *   public/katana-ink.png  — the sword alone (transparent, warm-umber ink),
- *                            used as the nav katana's fallback sprite
- *   public/katana-hang.png — pre-verticalized cut of the same sword (tip
- *                            down, handle up, tight-cropped) so the hanging
- *                            nav katana needs no CSS rotation
+ *   public/katana-ink.webp  — the sword alone (transparent, warm-umber ink),
+ *                             416x476, used as the nav katana's fallback sprite
+ *   public/katana-hang.webp — pre-verticalized cut of the same sword (tip
+ *                             down, handle up, tight-cropped, 138x621) so the
+ *                             hanging nav katana needs no CSS rotation
  */
-const KATANA_INK_SRC = `${import.meta.env.BASE_URL}katana-ink.png`;
-const KATANA_HANG_SRC = `${import.meta.env.BASE_URL}katana-hang.png`;
+const KATANA_INK_SRC = `${import.meta.env.BASE_URL}katana-ink.webp`;
+const KATANA_HANG_SRC = `${import.meta.env.BASE_URL}katana-hang.webp`;
 
 export function NavKatana() {
   const [src, setSrc] = useState(KATANA_HANG_SRC);
@@ -33,26 +35,6 @@ export function NavKatana() {
         />
       </div>
     </div>
-  );
-}
-
-export function SlashDivider({ testId = 'slash-divider' }: { testId?: string }) {
-  const reduce = useReducedMotion() === true;
-  return (
-    <motion.div
-      className="slash-divider"
-      aria-hidden="true"
-      data-testid={testId}
-      initial={reduce ? { opacity: 1 } : { opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-70px' }}
-      transition={reduce ? { duration: 0 } : { duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <svg viewBox="0 0 1200 24" preserveAspectRatio="none">
-        <line x1="4" y1="12" x2="1120" y2="12" className="slash-line" />
-        <path d="M1120,12 L1148,2" className="slash-nick" />
-      </svg>
-    </motion.div>
   );
 }
 

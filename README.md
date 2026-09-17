@@ -31,20 +31,27 @@ There is no form, no sending option, and no server-side mail functionality.
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5 (health endpoint: `GET /api/healthz`)
-- Frontend: React + Vite + Tailwind CSS + Framer Motion + GSAP intro
+- Frontend: React + Vite + Tailwind CSS + Framer Motion + anime.js intro
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle for API), Vite (static site)
 
 ## Where things live
 
-- `artifacts/dual-theme-portfolio/src/App.tsx` — portfolio content and
-  section rendering
+- `artifacts/dual-theme-portfolio/src/App.tsx` — section components and
+  theme-specific rendering
+- `artifacts/dual-theme-portfolio/src/data/portfolio-content.tsx` — all static
+  portfolio content (projects, skills, experience, links)
 - `artifacts/dual-theme-portfolio/src/index.css` — theme tokens, responsive
   layout, motion, and visual treatments
-- `artifacts/dual-theme-portfolio/public/` — only files referenced by the app
-  (`cat.png`, `favicon.svg`, `katana*.png`, `pfp.png`, `resume.*`, `robots.txt`)
-- `attached_assets/` — supplied visual references (source material, not served)
+- `artifacts/dual-theme-portfolio/public/` — only files referenced by the app:
+  the artwork it renders as lossless WebP (`cat.webp`, `katana-hang.webp`,
+  `katana-ink.webp`, `pfp.webp`, `resume-preview.webp`), plus `favicon.png`,
+  `pfp.png` (the social/OG preview image, kept in PNG for scraper
+  compatibility), `resume.pdf` and `robots.txt`
+- `attached_assets/` — supplied visual references, kept as uploaded; the five
+  bundled `lumen-screenshot-*.webp` files (lossless conversions of the supplied
+  PNGs) are imported through the `@assets` alias
 
 ## Architecture decisions
 
@@ -54,6 +61,12 @@ There is no form, no sending option, and no server-side mail functionality.
 - The single visual direction is intentionally kept tactile and editorial, with
   paper texture, ink branches, red accents, and illustrated details.
 - Decorative motion is subtle and respects the user's reduced-motion preference.
+- Raster art ships as lossless WebP: each converted file is pixel-identical to
+  its PNG source (alpha and RGB verified) while the decorative sprites, hero
+  portrait, resume preview and project screenshots shed roughly half their
+  bytes. The below-the-fold screenshots and resume preview are lazy-loaded, and
+  the hero portrait keeps `width`/`height` plus `fetchPriority="high"` so it
+  loads first without shifting the layout.
 
 ## Product
 

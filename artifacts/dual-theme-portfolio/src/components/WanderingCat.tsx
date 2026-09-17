@@ -3,7 +3,8 @@ import { useReducedMotion } from 'framer-motion';
 
 /**
  * A tiny ink cat (the uploaded attached_assets/cat.png, processed into
- * public/cat.png) that lives IN THE BACKGROUND of the page — same layer
+ * public/cat.webp — a lossless WebP build of the PNG, pixel-identical and
+ * half the bytes, 294x368) that lives IN THE BACKGROUND of the page — same layer
  * family as the branch decorations (z-index 0, multiply blend, low
  * opacity).
  *
@@ -25,7 +26,11 @@ type Pose = 'walk' | 'sit' | 'groom' | 'play' | 'sniff';
 type Dir = 1 | -1;
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
-const CAT_SRC = `${import.meta.env.BASE_URL}cat.png`;
+const CAT_SRC = `${import.meta.env.BASE_URL}cat.webp`;
+/* Intrinsic sprite size — declared so the clipped halves (.cat-top / .cat-legs)
+   hold their shape before the artwork arrives; .cat-img sizes from the ratio. */
+const CAT_W = 294;
+const CAT_H = 368;
 
 interface Bounds { minX: number; maxX: number; minY: number; maxY: number }
 interface PhotoRect { left: number; right: number; top: number; bottom: number }
@@ -155,8 +160,8 @@ export function WanderingCat() {
           transition: pose === 'walk' && pos.dur > 0 ? `transform ${pos.dur}s linear` : 'transform .45s ease',
         }}
       >
-        <span className="cat-half cat-top"><img className="cat-img" src={CAT_SRC} alt="" draggable={false} loading="lazy" decoding="async" /></span>
-        <span className="cat-half cat-legs"><img className="cat-img" src={CAT_SRC} alt="" draggable={false} loading="lazy" decoding="async" /></span>
+        <span className="cat-half cat-top"><img className="cat-img" src={CAT_SRC} alt="" width={CAT_W} height={CAT_H} draggable={false} loading="lazy" decoding="async" /></span>
+        <span className="cat-half cat-legs"><img className="cat-img" src={CAT_SRC} alt="" width={CAT_W} height={CAT_H} draggable={false} loading="lazy" decoding="async" /></span>
       </div>
     </div>
   );

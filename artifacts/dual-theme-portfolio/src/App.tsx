@@ -1,142 +1,27 @@
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowDown, ArrowUp, ArrowUpRight, Code2, Database, Menu, MousePointerClick, Settings, X } from 'lucide-react';
-import { MatplotlibIcon, SeabornIcon } from './components/BrandIcons';
-import { SiCplusplus, SiFastapi, SiGo, SiJavascript, SiLeetcode, SiMysql, SiNumpy, SiPandas, SiPeerlist, SiPostgresql, SiPydantic, SiPython, SiPytorch, SiRender, SiScikitlearn, SiSqlalchemy, SiTensorflow, SiTypescript, SiVercel } from 'react-icons/si';
-import { FaDev, FaDiscord, FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
-import { ErrorBoundary } from '@/components/error-boundary';
+import { ArrowUp, ArrowUpRight, Menu, MousePointerClick, X } from 'lucide-react';
+import { FaDiscord, FaGithub } from 'react-icons/fa6';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
+import { ModalBackdrop, useModalClose } from '@/components/Modal';
 import GuidedTour, { startGuidedTour } from '@/components/GuidedTour';
 import { DecorativeBranches } from '@/components/Decorations';
 import { WanderingCat } from '@/components/WanderingCat';
-import NotFound from '@/pages/not-found';
-import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-import lumenShot1 from '@assets/1-lumen.png';
-import lumenShot2 from '@assets/2-lumen.png';
-import lumenShot3 from '@assets/3-lumen.png';
-import lumenShot4 from '@assets/4-lumen.png';
-import lumenShot5 from '@assets/5-lumen.png';
+import NotFound from '@/pages/NotFound';
+import {
+  achievements,
+  CONTACT_INBOX,
+  emptyProjectSlots,
+  experience,
+  projects,
+  skills,
+  socialLinks,
+  type Project,
+} from '@/data/portfolio-content';
+import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import '@/index.css';
-
-const projects = [
-  {
-    number: '01',
-    name: 'LUMEN',
-    kind: 'Image analysis tool',
-    description: 'A command-line and API-based image analysis tool for quality metrics, channel statistics, dominant colours, and exact-hash duplicate detection.',
-    stack: ['Python', 'NumPy', 'Pandas', 'Pillow', 'Pydantic', 'Typer', 'FastAPI', 'PostgreSQL', 'SQLAlchemy', 'React + Vite', 'pytest'],
-    accent: 'blue',
-    url: 'https://lumen-image-analyzer.vercel.app/',
-    github: 'https://github.com/PIYUSH-NEXTGEN/LUMEN',
-    year: '2026',
-    details: [
-      '**LUMEN** is a full-stack image analysis platform that processes images through a unified Python pipeline to extract **quality, statistical, color, exposure, and duplicate-detection insights**. It evolved from a CLI tool into a complete system with a **FastAPI REST API, PostgreSQL persistence, and React dashboard** for interactive analysis and history.',
-    ],
-    capabilities: [
-      'Performs brightness, contrast, sharpness, colorfulness, entropy, exposure, dominant-color, channel statistics, and histogram analysis, with **SHA-256 exact duplicate detection**.',
-      'Supports searchable image history, detailed reports, side-by-side comparisons, **CSV/JSON exports**, and parallel folder processing using multiple CPU processes.',
-      'Includes **API authentication, validation, rate limiting, automated testing**, and a modular architecture separating processing, API, database, and frontend layers.',
-    ],
-    images: [lumenShot1, lumenShot2, lumenShot3, lumenShot4, lumenShot5],
-  },
-];
-
-/* Reserved card slots — kept in the grid but empty until the next project ships. */
-const emptyProjectSlots = 1;
-
-const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/PIYUSH-NEXTGEN', Icon: FaGithub, testId: 'link-nav-github', color: '#24292e' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/piyush-baraskar-994ab6337', Icon: FaLinkedin, testId: 'link-nav-linkedin', color: '#0077b5' },
-  { label: 'X (Twitter)', href: 'https://x.com/Piyush_NextGen', Icon: FaXTwitter, testId: 'link-nav-x', color: '#000000' },
-  { label: 'Peerlist', href: 'https://peerlist.io/piyush_nextgen', Icon: SiPeerlist, testId: 'link-nav-peerlist', color: '#00aa45' },
-  { label: 'LeetCode', href: 'https://leetcode.com/u/Piyush_NextGen/', Icon: SiLeetcode, testId: 'link-nav-leetcode', color: '#ffa116' },
-  { label: 'dev.to', href: 'https://dev.to/piyushnextgen', Icon: FaDev, testId: 'link-nav-devto', color: '#000000' },
-];
-
-const skills = [
-  {
-    title: 'Programming Languages',
-    items: [
-      { name: 'Python', Icon: SiPython },
-      { name: 'Go', Icon: SiGo },
-      { name: 'JavaScript', Icon: SiJavascript },
-      { name: 'TypeScript', Icon: SiTypescript },
-      { name: 'C++', Icon: SiCplusplus },
-    ],
-  },
-  {
-    title: 'Machine Learning',
-    items: [
-      { name: 'NumPy', Icon: SiNumpy },
-      { name: 'Pandas', Icon: SiPandas },
-      { name: 'Matplotlib', Icon: MatplotlibIcon },
-      { name: 'Seaborn', Icon: SeabornIcon },
-      { name: 'scikit-learn', Icon: SiScikitlearn },
-      { name: 'TensorFlow', Icon: SiTensorflow },
-      { name: 'PyTorch', Icon: SiPytorch },
-    ],
-  },
-  {
-    title: 'Backend',
-    items: [
-      { name: 'FastAPI', Icon: SiFastapi },
-      { name: 'Pydantic', Icon: SiPydantic },
-    ],
-  },
-  {
-    title: 'Databases',
-    items: [
-      { name: 'MySQL', Icon: SiMysql },
-      { name: 'PostgreSQL', Icon: SiPostgresql },
-      { name: 'SQLAlchemy', Icon: SiSqlalchemy },
-    ],
-  },
-  {
-    title: 'Deployment',
-    items: [
-      { name: 'Render', Icon: SiRender },
-      { name: 'Vercel', Icon: SiVercel },
-    ],
-  },
-];
-
-const experience = [
-  {
-    date: '2025 — 2029',
-    role: 'B.Tech in Computer Science',
-    description: <>Technocrats Institute of Technology</>,
-  },
-  {
-    date: '2025 — Present',
-    role: 'Independent ML & Backend Developer',
-    description: <>Building practical applications across machine learning, backend systems, APIs, databases, and frontend development, with a focus on developing software end to end.</>,
-  },
-  {
-    date: '2025 — Present',
-    role: 'Founder & Lead, Nextgen Programmers',
-    description: <>Built and lead a worldwide programming community of <strong className="font-semibold">700+ active members</strong>, creating a space for developers to learn, collaborate, and grow together.</>,
-  },
-  {
-    date: 'May 2026 — Jun 2026',
-    role: 'GSSOC Contributor',
-    description: <>Merged <strong className="font-semibold">9 pull requests</strong> while contributing to open source projects during GirlScript Summer of Code 2026.</>,
-  },
-];
-
-const achievements = [
-  { key: 'community-lead', title: 'Community Lead', detail: <>Founded and lead a programming community where curious builders learn, collaborate, and build together.</> },
-  {
-    key: 'hackathon-finalist',
-    title: <><span className="font-sans">3×</span> Hackathon Finalist</>,
-    detail: <>Reached the finals in three hackathons, building and presenting technical solutions under competitive constraints.</>,
-  },
-  {
-    key: 'gssoc-2026',
-    title: <>Top <span className="font-sans">4%</span> · GSSOC <span className="font-sans">2026</span></>,
-    detail: <>Ranked <strong className="font-semibold">2,525th among 47,951 participants</strong>, placing in the top 4% of contributors.</>,
-  },
-];
 
 function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -167,8 +52,6 @@ function FallingLeaves() {
   );
 }
 
-export { FallingLeaves, socialLinks, ScrollToTop };
-
 /* Scroll-to-top: a small ink disc that slides up from the corner once you've
    scrolled into the page, and glides the viewport back to the top smoothly. */
 function ScrollToTop() {
@@ -193,15 +76,30 @@ function ScrollToTop() {
   );
 }
 
-/* Hero portrait — fixed artwork (public/pfp.png). The click-to-upload /
-   change-photo picker was removed, so the slot is a plain, non-interactive
-   image: no file input, no empty "Your photo here" state. */
+/* Hero portrait — fixed artwork (public/pfp.webp, a quality-90 WebP build of
+   public/pfp.png at 480x482: 160KB -> 24KB with no visible change at the
+   ~300px display size). The PNG is kept in public/ for the og:/twitter:
+   preview only, since social scrapers still want a universally supported
+   format. The click-to-upload / change-photo picker was removed, so the slot
+   is a plain, non-interactive image: no file input, no empty "Your photo
+   here" state. */
 function HeroPhoto() {
-  const photo = `${import.meta.env.BASE_URL}pfp.png`;
+  const photo = `${import.meta.env.BASE_URL}pfp.webp`;
   return (
     <div className="hero-photo-slot" data-testid="hero-photo-slot">
       <div className="hero-photo-filled">
-        <img src={photo} alt="Piyush Baraskar — portrait" loading="eager" decoding="async" />
+        {/* Above the fold: load eagerly, tell the browser it is the priority
+            image, and declare the sprite's true 480x482 size so the frame is
+            reserved before a byte arrives. */}
+        <img
+          src={photo}
+          alt="Piyush Baraskar — portrait"
+          width={480}
+          height={482}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
       </div>
     </div>
   );
@@ -250,7 +148,7 @@ function Hero() {
   return (
     <section id="top" className="section-anchor section-wrap editorial-hero katana-hero grid min-h-[calc(100dvh-70px)] items-center gap-12 py-16 lg:grid-cols-[1.15fr_.85fr] lg:gap-16 lg:py-20">
       <div className="katana-hero-content">
-        <Reveal className="hero-copy display max-w-[900px]" delay={80}><span className="block">PIYUSH BARASKAR</span></Reveal>
+        <Reveal className="hero-copy display max-w-[900px]" delay={80}><h1 className="m-0"><span className="block">PIYUSH BARASKAR</span></h1></Reveal>
         <Reveal className="editorial-hero-copy mt-8 max-w-[480px] text-[16px] leading-7 opacity-75" delay={160}>
           <strong className="mono block text-[12px] uppercase tracking-[.18em]">ML &amp; BACKEND ENGINEER</strong>
           <span className="mono block text-[12px] uppercase tracking-[.18em] mt-2">CS 2029</span>
@@ -274,29 +172,52 @@ function renderBold(text: string): ReactNode {
   return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i} className="font-semibold">{part}</strong> : part));
 }
 
-/* Auto-playing screenshot slideshow — crossfades one slide every 2 seconds */
+/* Auto-playing screenshot slideshow — crossfades one slide every 2 seconds.
+   It sits below the fold, so the slides are loading="lazy" and the
+   preload/decode pass waits until the card is on screen: a slideshow the
+   visitor never scrolls to costs no bytes, and the five screenshots never
+   compete with the hero image on first load. The interval only runs while the
+   card is on screen, so it never causes background re-renders or idle work. */
+const SLIDE_INTERVAL_MS = 2000;
+
 function ImageSlideshow({ images }: { images: string[] }) {
   const [index, setIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [onScreen, setOnScreen] = useState(false);
   useEffect(() => {
-    /* Fetch AND decode every slide up front so a switch is a clean instant
-       cut — the browser never paints a half decoded image or the backdrop. */
+    /* Fetch AND decode every slide the moment the card is on screen so a
+       switch is a clean instant cut — the browser never paints a half decoded
+       image or the backdrop. */
+    if (!onScreen) return;
     for (const src of images) {
       const img = new window.Image();
       img.src = src;
       img.decode?.().catch(() => {});
     }
-  }, [images]);
+  }, [onScreen, images]);
   useEffect(() => {
-    const timer = window.setInterval(() => setIndex((i) => (i + 1) % images.length), 2000);
+    const node = containerRef.current;
+    if (!node || !('IntersectionObserver' in window)) {
+      setOnScreen(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!onScreen) return;
+    const timer = window.setInterval(() => setIndex((i) => (i + 1) % images.length), SLIDE_INTERVAL_MS);
     return () => window.clearInterval(timer);
-  }, [images.length]);
+  }, [onScreen, images.length]);
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#121417]">
+    <div ref={containerRef} className="relative h-full w-full overflow-hidden bg-[#121417]">
       {images.map((src, i) => (
         <img
           key={src}
           src={src}
           alt={`Screenshot ${i + 1} of ${images.length}`}
+          loading="lazy"
           decoding="async"
           draggable={false}
           className={`absolute inset-0 h-full w-full object-cover ${i === index ? 'opacity-100' : 'opacity-0'}`}
@@ -311,7 +232,7 @@ function ImageSlideshow({ images }: { images: string[] }) {
   );
 }
 
-function ProjectVisual({ accent, year, compact = false, images }: { accent: string; year: string; compact?: boolean; images?: string[] }) {
+function ProjectVisual({ accent, compact = false, images }: { accent: string; compact?: boolean; images?: string[] }) {
   const background = accent === 'coral' ? '#d5c3ad' : accent === 'gold' ? '#d7d5bd' : accent === 'blue' ? '#bdccd0' : '#c9ced0';
   if (images && images.length > 0) {
     return (
@@ -341,82 +262,51 @@ function ProjectVisual({ accent, year, compact = false, images }: { accent: stri
   </div>;
 }
 
-function ProjectModal({ project, onClose }: { project: (typeof projects)[number]; onClose: () => void }) {
-  const [visible, setVisible] = useState(false);
-  const [closing, setClosing] = useState(false);
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
-  const closingRef = useRef(false);
-
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => setVisible(true));
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') handleClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      cancelAnimationFrame(raf);
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', onKey);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleClose = () => {
-    if (closingRef.current) return;
-    closingRef.current = true;
-    setClosing(true);
-    window.setTimeout(() => closeRef.current(), 240);
-  };
+function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  const { visible, closing, handleClose } = useModalClose(onClose);
 
   return (
-    <div
-      className={`project-modal-backdrop ${visible ? 'project-modal-backdrop-open' : ''} ${closing ? 'project-modal-closing' : ''}`}
-      onClick={handleClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${project.name} — project details`}
+    <ModalBackdrop
+      visible={visible}
+      closing={closing}
+      onClose={handleClose}
+      label={`${project.name} — project details`}
+      panelTestId={`project-modal-panel-${project.number}`}
     >
-      <div
-        className="project-modal-panel"
-        data-testid={`project-modal-panel-${project.number}`}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="mb-1 flex justify-end">
-          <button
-            type="button"
-            className="project-modal-close"
-            onClick={handleClose}
-            aria-label="Close project details"
-            data-testid={`button-project-modal-close-${project.number}`}
-          >
-            <X size={16} />
-          </button>
-        </div>
-        <ProjectVisual accent={project.accent} year={project.year} images={project.images} />
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-          {project.stack.map(tag => <span className="mono border border-current/30 px-2.5 py-1.5 text-[11px] font-semibold opacity-90" key={tag}>{tag}</span>)}
-        </div>
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-          <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
-          <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
-        </div>
-        <h3 className="display mt-5 text-3xl tracking-[-.04em]">{project.name}</h3>
-        {project.details.map((para) => <p key={para.slice(0, 32)} className="mt-3 text-[15px] leading-7 opacity-85">{renderBold(para)}</p>)}
-        <ul className="project-highlights mt-3">
-          {project.capabilities.map((item) => (
-            <li key={item} className="flex items-start gap-1.5 text-[14px] leading-6 opacity-80">
-              <span className="shrink-0" aria-hidden="true">•</span>
-              <span>{renderBold(item)}</span>
-            </li>
-          ))}
-        </ul>
+      <div className="mb-1 flex justify-end">
+        <button
+          type="button"
+          className="project-modal-close"
+          onClick={handleClose}
+          aria-label="Close project details"
+          data-testid={`button-project-modal-close-${project.number}`}
+        >
+          <X size={16} />
+        </button>
       </div>
-    </div>
+      <ProjectVisual accent={project.accent} images={project.images} />
+      <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+        {project.stack.map(tag => <span className="mono border border-current/30 px-2.5 py-1.5 text-[11px] font-semibold opacity-90" key={tag}>{tag}</span>)}
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+        <a href={project.url} target="_blank" rel="noopener noreferrer" className="button-primary inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-live-${project.number}`}>Live site <ArrowUpRight size={13} /></a>
+        <a href={project.github} target="_blank" rel="noopener noreferrer" className="button-quiet inline-flex items-center gap-2 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.15em] hover:underline hover:underline-offset-4" data-testid={`link-project-github-${project.number}`}>GitHub <FaGithub size={13} /></a>
+      </div>
+      <h3 className="display mt-5 text-3xl tracking-[-.04em]">{project.name}</h3>
+      {project.details.map((para) => <p key={para.slice(0, 32)} className="mt-3 text-[15px] leading-7 opacity-85">{renderBold(para)}</p>)}
+      <ul className="project-highlights mt-3">
+        {project.capabilities.map((item) => (
+          <li key={item} className="flex items-start gap-1.5 text-[14px] leading-6 opacity-80">
+            <span className="shrink-0" aria-hidden="true">•</span>
+            <span>{renderBold(item)}</span>
+          </li>
+        ))}
+      </ul>
+    </ModalBackdrop>
   );
 }
 
-function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+function ProjectCard({ project }: { project: Project }) {
   const [open, setOpen] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
   const handleOpen = () => setOpen(true);
@@ -442,7 +332,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
         aria-haspopup="dialog"
         aria-label={`Open ${project.name} project details`}
       >
-        <ProjectVisual accent={project.accent} year={project.year} compact images={project.images} />
+        <ProjectVisual accent={project.accent} compact images={project.images} />
         <h3 className="display mt-4 text-2xl font-semibold leading-tight tracking-[-.02em]">{project.name}</h3>
         <span className="katana-card-line" aria-hidden="true" />
         <p className="mb-4 mt-2 text-[15px] font-medium leading-7 opacity-80">{project.description}</p>
@@ -459,7 +349,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
 function EmptyProjectCard() {
   return (
     <article className="project-card project-card-compact katana-card flex h-full flex-col p-5" aria-hidden="true">
-      <ProjectVisual accent="ink" year="" compact />
+      <ProjectVisual accent="ink" compact />
       <div className="flex flex-1 items-center justify-center">
         <span className="mono text-[9px] uppercase tracking-[.16em] opacity-30">Coming soon</span>
       </div>
@@ -515,62 +405,38 @@ function Skills() {
 }
 
 function ResumeModal({ resumeImg, resumePdf, onClose }: { resumeImg: string; resumePdf: string; onClose: () => void }) {
-  const [visible, setVisible] = useState(false);
-  const [closing, setClosing] = useState(false);
-  const closeRef = useRef(onClose);
-  closeRef.current = onClose;
-  const closingRef = useRef(false);
-
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => setVisible(true));
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') handleClose(); };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      cancelAnimationFrame(raf);
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', onKey);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleClose = () => {
-    if (closingRef.current) return;
-    closingRef.current = true;
-    setClosing(true);
-    window.setTimeout(() => closeRef.current(), 240);
-  };
+  const { visible, closing, handleClose } = useModalClose(onClose);
 
   return (
-    <div
-      className={`project-modal-backdrop ${visible ? 'project-modal-backdrop-open' : ''} ${closing ? 'project-modal-closing' : ''}`}
-      onClick={handleClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Full resume"
+    <ModalBackdrop
+      visible={visible}
+      closing={closing}
+      onClose={handleClose}
+      label="Full resume"
+      panelTestId="resume-modal-panel"
+      panelClassName="project-modal-panel resume-modal-panel"
     >
-      <div className="project-modal-panel resume-modal-panel" data-testid="resume-modal-panel" onClick={(event) => event.stopPropagation()}>
-        <div className="flex shrink-0 items-start justify-between gap-4">
-          <div className="mono text-[10px] uppercase tracking-[.2em] opacity-60">Resume — full page</div>
-          <button
-            type="button"
-            className="project-modal-close"
-            onClick={handleClose}
-            aria-label="Close resume"
-            data-testid="button-resume-modal-close"
-          >
-            <X size={16} />
-          </button>
-        </div>
-        <img src={resumeImg} alt="Piyush Baraskar — full resume" className="resume-modal-img" data-testid="img-resume-full" />
-        <div className="resume-modal-actions">
-          <a href={resumePdf} target="_blank" rel="noopener noreferrer" className="resume-download" data-testid="link-resume-download">
-            Download PDF <ArrowUpRight size={13} />
-          </a>
-        </div>
+      <div className="flex shrink-0 items-start justify-between gap-4">
+        <div className="mono text-[10px] uppercase tracking-[.2em] opacity-60">Resume — full page</div>
+        <button
+          type="button"
+          className="project-modal-close"
+          onClick={handleClose}
+          aria-label="Close resume"
+          data-testid="button-resume-modal-close"
+        >
+          <X size={16} />
+        </button>
       </div>
-    </div>
+      {/* Declared 1191x1685 intrinsic size: the modal frame is reserved before
+          the preview arrives, so opening the resume never reflows the panel. */}
+      <img src={resumeImg} alt="Piyush Baraskar — full resume" width={1191} height={1685} decoding="async" className="resume-modal-img" data-testid="img-resume-full" />
+      <div className="resume-modal-actions">
+        <a href={resumePdf} target="_blank" rel="noopener noreferrer" className="resume-download" data-testid="link-resume-download">
+          Download PDF <ArrowUpRight size={13} />
+        </a>
+      </div>
+    </ModalBackdrop>
   );
 }
 
@@ -578,13 +444,14 @@ function ResumeCard() {
   const [open, setOpen] = useState(false);
   const base = import.meta.env.BASE_URL;
   const resumePdf = `${base}resume.pdf`;
-  const resumeImg = `${base}resume-1.png`;
+  /* Lossless WebP build of resume-preview.png (pixel-identical, 230KB -> 80KB). */
+  const resumeImg = `${base}resume-preview.webp`;
   return (
     <div className="resume-card">
       <div className="resume-sheet">
         <div className="resume-unroll">
           <div className="resume-unroll-frame">
-            <img src={resumeImg} alt="Piyush Baraskar — resume" loading="lazy" data-testid="img-resume" />
+            <img src={resumeImg} alt="Piyush Baraskar — resume" width={1191} height={1685} loading="lazy" decoding="async" data-testid="img-resume" />
           </div>
           <div className="resume-fold" aria-hidden="true" />
         </div>
@@ -656,8 +523,6 @@ function Experience() {
   );
 }
 
-const CONTACT_INBOX = 'piyush.intech@gmail.com';
-
 function Contact() {
   return (
     <section id="contact" className="section-anchor contact-section py-6">
@@ -666,7 +531,7 @@ function Contact() {
           <div className="max-w-[520px]"><h2 className="section-title section-title-sm display">Let’s build<br /><span>something useful</span></h2><p className="mt-5 max-w-[440px] text-sm leading-6 opacity-70">Have an idea worth building, a problem worth solving, or just want to talk tech? I’m always open to new ideas, collaborations, and interesting conversations.</p></div>
           <div className="mt-8 grid gap-8 md:grid-cols-2 lg:gap-7">
             <div className="border-t border-current/20 pt-5"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Direct</div><div className="mt-4 grid gap-4"><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Email</div><a className="mt-2 inline-block text-sm hover:underline" href={`mailto:${CONTACT_INBOX}`} data-testid="link-contact-address">{CONTACT_INBOX}</a></div><div><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Availability</div><p className="mt-2 text-sm opacity-70" data-testid="text-availability">Open for freelancing, internships and full-time roles</p></div></div></div>
-            <nav className="border-t border-current/20 pt-5" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ label }) => label === 'LinkedIn' || label === 'X (Twitter)').map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
+            <nav className="border-t border-current/20 pt-5" aria-label="Contact channels"><div className="mono text-[10px] uppercase tracking-[.15em] opacity-60">Elsewhere</div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">{socialLinks.filter(({ contact }) => contact).map(({ label, href, Icon, testId }) => (<a key={label} href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex w-fit items-center gap-2.5 text-sm" data-testid={testId.replace('link-nav-', 'link-contact-')}><span className="flex h-6 w-6 shrink-0 items-center justify-center border border-current/30 transition-colors group-hover:bg-current/5"><Icon size={12} /></span><span className="opacity-70 transition-opacity group-hover:opacity-100 group-hover:underline group-hover:underline-offset-4">{label}</span></a>))}</div></nav>
           </div>
         </Reveal>
       </div>
