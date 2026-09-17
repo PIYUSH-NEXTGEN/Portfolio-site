@@ -19,4 +19,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run typecheck
       - run: pnpm --filter @workspace/api-server run build
-      - run: pnpm --filter @workspace/dual-theme-portfolio run build
+      - run: pnpm --filter @workspace/portfolio-site run build

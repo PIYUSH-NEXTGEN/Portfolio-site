@@ -16,7 +16,7 @@ There is no form, no sending option, and no server-side mail functionality.
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080,
   override with `PORT`)
-- `pnpm --filter @workspace/dual-theme-portfolio run dev` — run the portfolio
+- `pnpm --filter @workspace/portfolio-site run dev` — run the portfolio
   preview (port 5173 locally; the Replit artifact runtime provides `PORT` and
   `BASE_PATH`)
 - `pnpm run typecheck` — full typecheck across all packages
@@ -38,13 +38,13 @@ There is no form, no sending option, and no server-side mail functionality.
 
 ## Where things live
 
-- `artifacts/dual-theme-portfolio/src/App.tsx` — section components and
+- `artifacts/portfolio-site/src/App.tsx` — section components and
   theme-specific rendering
-- `artifacts/dual-theme-portfolio/src/data/portfolio-content.tsx` — all static
+- `artifacts/portfolio-site/src/data/portfolio-content.tsx` — all static
   portfolio content (projects, skills, experience, links)
-- `artifacts/dual-theme-portfolio/src/index.css` — theme tokens, responsive
+- `artifacts/portfolio-site/src/index.css` — theme tokens, responsive
   layout, motion, and visual treatments
-- `artifacts/dual-theme-portfolio/public/` — only files referenced by the app:
+- `artifacts/portfolio-site/public/` — only files referenced by the app:
   the artwork it renders as lossless WebP (`cat.webp`, `katana-hang.webp`,
   `katana-ink.webp`, `pfp.webp`, `resume-preview.webp`), plus `favicon.png`,
   `pfp.png` (the social/OG preview image, kept in PNG for scraper
@@ -77,7 +77,7 @@ portfolios and Japanese woodblock compositions.
 ## Gotchas
 
 - The portfolio is the root preview artifact; use the managed
-  `artifacts/dual-theme-portfolio: web` workflow instead of starting Vite
+  `artifacts/portfolio-site: web` workflow instead of starting Vite
   directly.
 - The app uses the artifact-provided `BASE_PATH` and `PORT` environment
   variables (with local defaults: `/` and `5173`).

@@ -49,7 +49,7 @@ Thumbs.db
 .local/
 
 # image-processing scratch output (artifacts/*/scripts)
-artifacts/dual-theme-portfolio/scripts/processed/
+artifacts/portfolio-site/scripts/processed/
 
 # Local dev-server smoke logs
 *.log

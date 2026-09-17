@@ -3,7 +3,7 @@ previewPath = "/"
 title = "Ink Portfolio"
 description = "A responsive personal portfolio for a full-stack developer and creative technologist, presented as a tactile ink-and-paper editorial experience."
 version = "1.0.0"
-id = "artifacts/dual-theme-portfolio"
+id = "artifacts/portfolio-site"
 router = "path"
 
 [[services]]
@@ -12,12 +12,12 @@ paths = [ "/" ]
 localPort = 22258
 
 [services.development]
-run = "pnpm --filter @workspace/dual-theme-portfolio run dev"
+run = "pnpm --filter @workspace/portfolio-site run dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/dual-theme-portfolio", "run", "build" ]
+build = [ "pnpm", "--filter", "@workspace/portfolio-site", "run", "build" ]
 serve = "static"
-publicDir = "artifacts/dual-theme-portfolio/dist/public"
+publicDir = "artifacts/portfolio-site/dist/public"
 
 [[services.production.rewrites]]
 from = "/*"
