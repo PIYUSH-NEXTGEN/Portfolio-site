@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Subtle Japanese-inspired environmental decoration.
  * Thin hand-drawn branches frame page edges. Inline SVG in currentColor,
  * pointer-events none, always behind content.
