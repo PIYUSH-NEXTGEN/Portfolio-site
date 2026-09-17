@@ -1,8 +1,7 @@
-# Piyush Baraskar — Portfolio
+# Piyush Baraskar  Portfolio
 
 This is my personal portfolio website, showcasing my projects, skills, experience,
-and the work I'm building as an ML & backend engineer. The design brings together
-an ink-and-paper aesthetic, illustrated details, and interactive animations.
+and the work I'm building as an ML & backend engineer.
 
 **Like the design? Give the [repo a star ☆](https://github.com/PIYUSH-NEXTGEN/Portfolio-site)!**
 It means a lot and helps others discover the project.
@@ -120,5 +119,5 @@ small credit in your portfolio with a link back here:
 
 > Inspired by [Piyush Baraskar Portfolio](https://github.com/PIYUSH-NEXTGEN/Portfolio-site) :)
 
-Thanks for checking out my work — and don't forget to star the repo if you like
+Thanks for checking out my work, and don't forget to star the repo if you like
 it!
