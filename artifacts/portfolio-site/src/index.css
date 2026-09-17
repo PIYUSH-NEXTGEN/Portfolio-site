@@ -208,9 +208,7 @@
 }
 /* — Tier 3 · body — every hand-written CSS font-size collapses too. */
 .theme-editorial .skills-index,
-.theme-editorial .skills-tag, .theme-editorial .resume-sheet-role,
-.theme-editorial .resume-sheet-meta, .theme-editorial .resume-toggle,
-.theme-editorial .resume-download, .theme-editorial .filter-tab,
+.theme-editorial .skills-tag, .theme-editorial .filter-tab,
 .theme-editorial .tour-caption,
 .theme-editorial .project-open-cta, .theme-editorial .project-visual-year,
 .theme-editorial .project-visual-label, .theme-editorial .guided-tour-progress,
@@ -401,101 +399,7 @@
   background: #f4eede; color: #202a36;
   border: 1px solid rgba(58,68,81,.42); border-radius: 2px;
   box-shadow: var(--shadow); padding: 30px 36px;
-  position: relative;
-}
-.theme-editorial .resume-sheet::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: rgba(200,77,61,.28);
-}
-.theme-editorial .resume-sheet-name { font-size: var(--text-sub); letter-spacing: .04em; font-weight: 600; }
-.theme-editorial .resume-sheet-role { font-size: var(--text-body); letter-spacing: .12em; text-transform: uppercase; margin-top: 4px; opacity: .7; }
-.theme-editorial .resume-frame { margin-top: 18px; }
-.theme-editorial .resume-frame-title {
-  font-size: var(--text-body); letter-spacing: .16em; text-transform: uppercase;
-  color: rgba(32,42,54,.55); margin-bottom: 8px;
-}
-.theme-editorial .resume-rule { border-top: 1px dashed rgba(58,68,81,.18); }
-.theme-editorial .resume-frame-body { padding: 24px 0 0; }
-.theme-editorial .resume-unroll-frame {
-  margin-top: 6px; position: relative;
-  border-top: 1px dashed rgba(58,68,81,.18);
-  background: transparent;
-  max-height: 240px; overflow: hidden;
-  transition: max-height 1.1s cubic-bezier(.25,.8,.25,1);
-}
-.theme-editorial .resume-unroll-open .resume-unroll-frame { max-height: 900px; overflow: hidden; }
-.theme-editorial .resume-unroll-frame img {
-  display: block; margin: 0 auto;
-  width: 100%; max-width: 560px; height: auto;
-  min-height: 0; flex: none; align-self: flex-start;
-  border: 1px solid rgba(58,68,81,.28);
-  background: #ffffff;
-}
-.theme-editorial .resume-unroll-open .resume-unroll-frame img {
-  width: 100%; max-width: 560px; height: auto;
-  object-fit: unset; object-position: unset;
-}
-.theme-editorial .resume-fold { position: relative; height: 16px; opacity: 1; transition: opacity .5s ease; }
-.theme-editorial .resume-unroll-open .resume-fold { opacity: 0; }
-.theme-editorial .resume-fold::before {
-  content: ''; position: absolute; left: 0; right: 0; height: 3px;
-  background: rgba(200,77,61,.22);
-}
-.theme-editorial .resume-fold::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 14px;
-  background: linear-gradient(180deg, rgba(58,68,81,.05), rgba(58,68,81,.16));
-}
-/* Embedded resume image */
-.theme-editorial .resume-viewer {
-  margin-top: 6px;
-  border-top: 1px dashed rgba(58,68,81,.18);
-  display: flex; justify-content: center;
-  padding: 18px 0 0;
-}
-.theme-editorial .resume-viewer img {
-  display: block; width: 100%; max-width: 640px; height: auto;
-  border: 1px solid rgba(58,68,81,.28); box-shadow: var(--shadow);
-  background: #ffffff;
-}
-.theme-editorial .resume-download {
-  display: inline-flex; align-items: center; gap: 8px; margin-top: 16px;
-  font-size: var(--text-body); font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: #c84d3d; transition: color .2s ease;
-}
-.theme-editorial .resume-download:hover { color: #a33a2b; }
-/* Expandable resume card — slow rolling unroll */
-.theme-editorial .resume-card { position: relative; perspective: 1200px; }
-.theme-editorial .resume-sheet { overflow: clip; }
-.theme-editorial .resume-expand {
-  display: grid; grid-template-rows: 0fr;
-  transition: grid-template-rows 1.1s cubic-bezier(.25,.8,.25,1);
-}
-.theme-editorial .resume-expand-open { grid-template-rows: 1fr; }
-.theme-editorial .resume-expand > .overflow-hidden { min-height: 0; overflow: hidden; }
-.theme-editorial .resume-expand .resume-roll {
-  opacity: 0;
-  transform: translateY(-8px);
-  transition: opacity .6s ease .35s, transform 1.1s cubic-bezier(.25,.8,.25,1) .05s;
-}
-.theme-editorial .resume-expand-open .resume-roll {
-  transform: translateY(0);
-  opacity: 1;
-}
-.theme-editorial .resume-toggle {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 100%; margin-top: 14px;
-  border: 1px solid rgba(58,68,81,.32); border-radius: 2px;
-  padding: 11px; cursor: pointer;
-  background: rgba(236,228,211,.35);
-  font-size: var(--text-body); font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: #c84d3d; transition: background-color .2s ease;
-}
-.theme-editorial .resume-toggle:hover { background: rgba(200,77,61,.14); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-editorial .resume-expand { transition: none; }
-  .theme-editorial .resume-expand .resume-roll { transition: none; }
-  .theme-editorial .resume-unroll-frame { transition: none; }
-  .theme-editorial .resume-fold { transition: none; }
+  display: grid; place-items: center;
 }
 
 /* ── Hero portrait: profile photo ───────────────────────────────────────
@@ -1029,18 +933,6 @@ body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden 
 @media (prefers-reduced-motion: reduce) {
   .project-modal-backdrop, .project-modal-panel { transition: none !important; }
 }
-
-/* Resume modal — reuses the project-modal chrome, sized so the whole portrait
-   page is visible in one view with no scrolling. The panel never scrolls;
-   the image flexes to fit the viewport height via object-fit. */
-.resume-modal-panel { width: min(680px, 100%); max-height: 94dvh; overflow: hidden; display: flex; flex-direction: column; padding: 14px 20px; }
-.resume-modal-img {
-  display: block; margin: 4px auto 0;
-  max-width: 100%; max-height: calc(94dvh - 158px);
-  width: auto; height: auto; object-fit: contain;
-  border: 1px solid var(--line);
-}
-.resume-modal-actions { display: flex; justify-content: center; margin-top: 10px; }
 
 /* Contact form honeypot — visually hidden but still "visible" to bots that
    check computed style, so `display: none` / `hidden` must not be used. */

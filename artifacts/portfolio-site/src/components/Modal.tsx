@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
-/* Shared modal plumbing for the portal dialogs (ProjectModal, ResumeModal):
+/* Shared modal plumbing for portal dialogs such as ProjectModal:
    fade-in on mount, a 240ms delayed close so the exit animation can play,
    Escape handling, and body scroll locking. */
 const MODAL_CLOSE_MS = 240;

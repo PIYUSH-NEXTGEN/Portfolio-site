@@ -59,7 +59,7 @@ const TOUR_STEPS: TourStep[] = [
   { selector: '#experience h2.section-title', caption: 'The record I am building, roles and wins so far.', action: 'visit', hold: 2000, spot: { fx: 0.9, fy: 0.5 }, anchor: '#experience' },
   /* 5 · Achievements, then the resume */
   { selector: '.achievement-row:nth-of-type(1)', caption: 'A few wins worth pinning up.', action: 'hover', hold: 1600 },
-  { selector: '[data-testid="img-resume"]', caption: 'The resume is folded right here, ready to download.', action: 'hover', hold: 2200 },
+  { selector: '[data-testid="text-resume-status"]', caption: 'The resume will be uploaded soon.', action: 'hover', hold: 2200 },
   /* 6 · Contact — direct email link */
   { selector: '[data-testid="link-contact-address"]', caption: 'Prefer email? One click opens your mail app.', action: 'hover', hold: 2200 },
 ];

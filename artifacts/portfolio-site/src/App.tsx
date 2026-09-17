@@ -333,7 +333,7 @@ function ProjectCard({ project }: { project: Project }) {
         aria-label={`Open ${project.name} project details`}
       >
         <ProjectVisual accent={project.accent} compact images={project.images} />
-        <h3 className="display mt-4 text-2xl font-semibold leading-tight tracking-[-.02em]">{project.name}</h3>
+        <h3 className="display mt-4 text-2xl leading-tight">{project.name}</h3>
         <span className="katana-card-line" aria-hidden="true" />
         <p className="mb-4 mt-2 text-[15px] font-medium leading-7 opacity-80">{project.description}</p>
         <span className="project-open-cta mono mt-auto flex items-center justify-center gap-2 border border-current/20 py-2 text-[9px] uppercase tracking-[.15em] opacity-60">
@@ -404,71 +404,10 @@ function Skills() {
   );
 }
 
-function ResumeModal({ resumeImg, resumePdf, onClose }: { resumeImg: string; resumePdf: string; onClose: () => void }) {
-  const { visible, closing, handleClose } = useModalClose(onClose);
-
-  return (
-    <ModalBackdrop
-      visible={visible}
-      closing={closing}
-      onClose={handleClose}
-      label="Full resume"
-      panelTestId="resume-modal-panel"
-      panelClassName="project-modal-panel resume-modal-panel"
-    >
-      <div className="flex shrink-0 items-start justify-between gap-4">
-        <div className="mono text-[10px] uppercase tracking-[.2em] opacity-60">Resume — full page</div>
-        <button
-          type="button"
-          className="project-modal-close"
-          onClick={handleClose}
-          aria-label="Close resume"
-          data-testid="button-resume-modal-close"
-        >
-          <X size={16} />
-        </button>
-      </div>
-      {/* Declared 1191x1685 intrinsic size: the modal frame is reserved before
-          the preview arrives, so opening the resume never reflows the panel. */}
-      <img src={resumeImg} alt="Piyush Baraskar — full resume" width={1191} height={1685} decoding="async" className="resume-modal-img" data-testid="img-resume-full" />
-      <div className="resume-modal-actions">
-        <a href={resumePdf} target="_blank" rel="noopener noreferrer" className="resume-download" data-testid="link-resume-download">
-          Download PDF <ArrowUpRight size={13} />
-        </a>
-      </div>
-    </ModalBackdrop>
-  );
-}
-
 function ResumeCard() {
-  const [open, setOpen] = useState(false);
-  const base = import.meta.env.BASE_URL;
-  const resumePdf = `${base}resume.pdf`;
-  /* Lossless WebP build of resume-preview.png (pixel-identical, 230KB -> 80KB). */
-  const resumeImg = `${base}resume-preview.webp`;
   return (
-    <div className="resume-card">
-      <div className="resume-sheet">
-        <div className="resume-unroll">
-          <div className="resume-unroll-frame">
-            <img src={resumeImg} alt="Piyush Baraskar — resume" width={1191} height={1685} loading="lazy" decoding="async" data-testid="img-resume" />
-          </div>
-          <div className="resume-fold" aria-hidden="true" />
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="resume-toggle"
-        aria-haspopup="dialog"
-        data-testid="button-resume-toggle"
-      >
-        <span>View resume</span>
-        <ArrowUpRight size={13} />
-      </button>
-
-      {open && createPortal(<ResumeModal resumeImg={resumeImg} resumePdf={resumePdf} onClose={() => setOpen(false)} />, document.body)}
+    <div className="resume-sheet">
+      <p className="py-10 text-center text-sm opacity-70" data-testid="text-resume-status">Uploading soon.....</p>
     </div>
   );
 }
@@ -497,7 +436,7 @@ function Experience() {
           ))}
         </div>
 
-        <div className="mt-10 grid items-start gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-0 lg:divide-x lg:divide-current/15">
+        <div className="mt-10 grid items-stretch gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-0 lg:divide-x lg:divide-current/15">
           <div className="lg:pr-12">
             <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Achievements</Reveal>
             <Reveal>
@@ -512,9 +451,9 @@ function Experience() {
             </Reveal>
           </div>
 
-          <div className="lg:pl-12">
+          <div className="flex flex-col lg:pl-12">
             <Reveal className="mono mb-3 text-[10px] uppercase tracking-[.15em] opacity-60">Resume</Reveal>
-            <Reveal><ResumeCard /></Reveal>
+            <Reveal className="grid flex-1"><ResumeCard /></Reveal>
           </div>
         </div>
 

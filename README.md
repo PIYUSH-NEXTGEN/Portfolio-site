@@ -42,9 +42,9 @@ There is no form, no sending option, and no server-side mail functionality.
   layout, motion, and visual treatments
 - `artifacts/portfolio-site/public/` — only files referenced by the app:
   the artwork it renders as lossless WebP (`cat.webp`, `katana-hang.webp`,
-  `katana-ink.webp`, `pfp.webp`, `resume-preview.webp`), plus `favicon.png`,
+  `katana-ink.webp`, `pfp.webp`), plus `favicon.png`,
   `pfp.png` (the social/OG preview image, kept in PNG for scraper
-  compatibility), `resume.pdf` and `robots.txt`
+  compatibility) and `robots.txt`
 - `attached_assets/` — supplied visual references, kept as uploaded; the five
   bundled `lumen-screenshot-*.webp` files (lossless conversions of the supplied
   PNGs) are imported through the `@assets` alias
