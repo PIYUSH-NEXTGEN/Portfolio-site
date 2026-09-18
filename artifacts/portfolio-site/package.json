@@ -7,7 +7,9 @@
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
     "build": "vite build --config vite.config.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:responsive": "node scripts/check-responsive.mjs",
+    "check:tour": "node scripts/check-tour.mjs"
   },
   "devDependencies": {
     "@replit/vite-plugin-cartographer": "catalog:",

@@ -217,7 +217,6 @@
 }
 .theme-editorial .hero-photo-wrap { background: #d9c9ad; border: 1px solid var(--line); max-width: 320px; justify-self: start; width: 100%; }
 /* Hero + navbar ORIGINAL sizes — placed after every tier rule so they win. */
-.theme-editorial .editorial-hero.hero-copy,
 .theme-editorial .editorial-hero .hero-copy { font-size: clamp(2.5rem, 6vw, 5.5rem) !important; line-height: .83 !important; }
 .theme-editorial .nav a.text-\[10px\],
 .theme-editorial header .nav .text-\[10px\] { font-size: 10px !important; }
@@ -291,10 +290,10 @@
   content: ''; position: absolute; z-index: -1; left: 53%; top: 35%; width: clamp(120px, 16vw, 240px); aspect-ratio: 1; border-radius: 50%;
   background: rgba(200,77,61,.2); filter: blur(1px); transform: translate(-50%, -50%);
 }
-.theme-editorial .hero-photo-slot { position: absolute; inset: 12px; }
-/* Hero portrait frame — a plain image now that the photo picker is gone. */
-.theme-editorial .hero-photo-filled { width: 100%; height: 100%; min-height: 240px; background: #111; }
-.theme-editorial .hero-photo-filled img { width: 100%; height: 100%; max-height: 340px; object-fit: cover; object-position: center top; display: block; background: #111; }
+/* The portrait stays in normal flow at its intrinsic aspect ratio. */
+.theme-editorial .hero-photo-slot { position: relative; padding: 10px; }
+.theme-editorial .hero-photo-filled { width: 100%; aspect-ratio: 480 / 482; background: #111; }
+.theme-editorial .hero-photo-filled img { width: 100%; height: auto; object-fit: contain; display: block; background: #111; }
 .skills-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -402,13 +401,6 @@
   display: grid; place-items: center;
 }
 
-/* ── Hero portrait: profile photo ───────────────────────────────────────
-   The hero portrait is fixed artwork — public/pfp.webp (lossless WebP build of
-   pfp.png) rendered as a plain,
-   non-interactive <img>, sized by the .theme-editorial .hero-photo-filled
-   img rules (object-fit cover, top-centred, #111 backdrop). */
-.hero-photo-filled { position: relative; }
-
 /* Slash divider into Projects */
 .slash-divider { margin: 0 0 34px; }
 .slash-divider svg { display: block; width: 100%; height: 22px; }
@@ -473,26 +465,14 @@
 
 @media (max-width: 767px) {
   .section-wrap { width: min(100% - 32px, 1180px); }
-  .theme-editorial .hero-copy { font-size: clamp(2.5rem, 12vw, 5rem); }
-  .theme-editorial .editorial-hero { padding-top: 94px; }
-  .theme-editorial .editorial-hero .hero-copy::after { left: 63%; top: 22%; width: 150px; }
-  .theme-editorial .hero-photo-slot { inset: 8px; }
-  .theme-editorial .hero-photo-filled,
-  .theme-editorial .hero-photo-filled img { min-height: 210px; }
-  .theme-editorial .hero-photo-filled img { max-height: 300px; }
-  .deco-branch-tl { top: 56px; left: -80px; width: 170px; opacity: .5; }
-  .deco-branch-tr, .deco-branch-bl { display: none; }
-  .deco-bamboo { display: none; }
+  /* Keep the coral accent down in the text column — it must never drift up
+     under the portrait frame that stacks above the heading on small screens. */
+  .theme-editorial .editorial-hero .hero-copy::after { left: 40%; top: calc(100% + 40px); width: 132px; }
 }
-@media (max-width: 520px) {
-  .theme-editorial .editorial-hero { padding-top: 88px; }
-}
-@media (min-width: 768px) and (max-width: 1100px) {
-  .deco-branch-tl { width: 220px; }
-  .deco-branch-tr { width: 200px; }
-  .deco-branch-bl { display: none; }
-  .deco-bamboo { width: 200px; }
-}
+/* NOTE: responsive branch/bamboo overrides deliberately live further down,
+   directly AFTER the base decoration rules. Declared here they lost the
+   cascade (equal specificity, later rules win) and mobile kept the desktop
+   bleed, leaving a clipped sliver at the left edge. */
 /* Subtle Japanese branch + bamboo environment (separate from katana) */
 .site-shell { position: relative; }
 .deco-branches { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
@@ -591,6 +571,34 @@
    its mirrored root) and exposed the cut end of the right-hand branch. */
 .deco-branch { transform-origin: 50% 96%; will-change: rotate, translate; }
 .deco-branch.flip { scale: -1 1; }
+/* Responsive decoration placement -- MUST stay after the base branch/bamboo
+   rules above: identical specificity means source order decides the winner.
+
+   Phone geometry (measured at 390px): the sticky navbar is 113px tall and the
+   hero portrait occupies x 65-325 / y 137-398, so the only free strip in the
+   hero is the ~65px gutter beside the portrait. The top-left spray is scaled
+   and offset so its trunk and two leaf clusters sit INSIDE that gutter rather
+   than bleeding off-screen as a clipped sliver. The top-right spray and the
+   bamboo stay hidden on phones (the hanging katana owns the top-right, and a
+   full-height bamboo band swamps a narrow page). */
+@media (max-width: 767px) {
+  .deco-branches > div { color: rgba(32, 42, 54, .32); }
+  /* `--nav-h` is measured by the Header (ResizeObserver) because the phone
+     layout wraps the community button at ~320px and the navbar grows from
+     113px to ~165px; a fixed offset would tuck the spray behind it. */
+  .deco-branch-tl { top: calc(var(--nav-h, 113px) + 4px); left: -30px; width: 200px; opacity: .9; }
+  .deco-branch-tr, .deco-branch-bl { display: none; }
+  /* Mid-page spray: pulled further into frame so it reads as a branch instead
+     of an edge artifact. It stays behind the section content at z-index 0. */
+  .deco-branch-br { top: 52%; right: -40px; width: 175px; opacity: .7; }
+  .deco-bamboo { display: none; }
+}
+@media (min-width: 768px) and (max-width: 1100px) {
+  .deco-branch-tl { width: 220px; }
+  .deco-branch-tr { width: 200px; }
+  .deco-branch-bl { display: none; }
+  .deco-bamboo { width: 200px; }
+}
 
 /* Katana hanging from the ENDING LINE (bottom edge) of the navbar — a small
    sword (24px wide) just left of the Start-a-project button, rope + blade
@@ -637,7 +645,12 @@
   from { transform: rotate(11deg); }
   to { transform: rotate(-11deg); }
 }
-@media (max-width: 639px) { .nav-katana { display: none; } }
+@media (max-width: 639px) {
+  .nav-katana { right: 22px; width: 32px; height: 116px; }
+  .nav-katana-rope { height: 30px; }
+  .nav-katana-blade { top: 20px; width: 20px; }
+  .nav-katana-blade-fallback { width: 32px; top: 44px; }
+}
 
 /* Wandering cat: the processed uploaded cat.png (transparent ink line-art)
    living IN THE BACKGROUND like the branches/katana — z-index 0 (under the
@@ -768,31 +781,12 @@
 @media (max-width: 639px) { .scroll-top-button { right: 14px; bottom: 14px; width: 42px; height: 42px; } }
 
 /* ── Guided tour ("Take me through") ───────────────────────────────────
-   A floating pill bottom-left invites visitors to a narrated walkthrough.
+   The tour is launched from the hero's "Give me tour !!" CTA (see
+   startGuidedTour) — there is no floating invitation pill any more.
    While it runs, a virtual coral cursor glides across the page (the real
    cursor is untouched) and the site auto-scrolls beneath it. tour-hover
    mirrors each element's real :hover styles, since CSS :hover cannot be
    triggered from JS. */
-
-/* Invitation pill */
-.guided-tour-button {
-  position: fixed; left: 22px; bottom: 22px; z-index: 30;
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 11px 18px; border-radius: 999px;
-  border: 1px solid #202a36; background: #202a36; color: #ece4d3;
-  font-size: var(--text-body); font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
-  box-shadow: 0 10px 24px rgba(34,38,47,.22);
-  opacity: 0; translate: 0 14px;
-  animation: tour-button-in .7s cubic-bezier(.2,.7,.2,1) 1.4s forwards;
-  transition: background-color .25s ease, border-color .25s ease, transform .25s ease, box-shadow .25s ease;
-}
-@keyframes tour-button-in { to { opacity: 1; translate: 0 0; } }
-.guided-tour-button svg { color: #f0ae78; }
-.guided-tour-button:hover { background: #c84d3d; border-color: #c84d3d; transform: translateY(-2px); box-shadow: 0 14px 30px rgba(200,77,61,.35); }
-.guided-tour-running { background: #c84d3d; border-color: #c84d3d; opacity: 1; translate: 0 0; animation: none; }
-.guided-tour-running svg { color: #f6f0e2; }
-.guided-tour-running:hover { background: #a33a2b; border-color: #a33a2b; }
-@media (max-width: 639px) { .guided-tour-button { left: 14px; bottom: 14px; padding: 10px 14px; } }
 
 /* Virtual cursor — fixed, never intercepts real input, moves via transform */
 .tour-cursor {
@@ -818,13 +812,11 @@
   background: rgba(246,240,226,.97); color: #202a36;
   font-size: var(--text-body); line-height: 1.45;
   box-shadow: 0 12px 26px rgba(34,38,47,.18);
-  opacity: 0; translate: -4px 4px;
-  transition: opacity .3s ease, translate .3s ease;
+  box-sizing: border-box; overflow-wrap: anywhere;
+  opacity: 0;
+  transition: opacity .3s ease;
 }
-.tour-caption.tour-caption-on { opacity: 1; translate: 0 0; }
-.tour-cursor.tour-caption-flip .tour-caption { left: auto; right: 24px; }
-/* Bottom of the page: swing the caption above the cursor so it never clips */
-.tour-cursor.tour-caption-lift .tour-caption { top: -64px; }
+.tour-caption.tour-caption-on { opacity: 1; }
 
 /* "Give me tour !!" CTA — layered attention effects: a breathing coral glow
    ring, a periodic shimmer sweep across the label, a gentle size pulse and a
@@ -860,8 +852,7 @@
   .tour-cta, .tour-cta::after, .tour-cta .hero-tour-icon { animation: none !important; }
 }
 @media (max-width: 639px) {
-  .tour-caption { left: -6px; top: -56px; max-width: 200px; }
-  .tour-cursor.tour-caption-flip .tour-caption { left: -6px; right: auto; }
+  .tour-caption { max-width: 200px; }
 }
 
 /* Mirrored :hover states the tour can apply via class */
@@ -968,3 +959,66 @@ body.tour-active .scroll-top-button { opacity: 0 !important; visibility: hidden 
 }
 
 
+
+/* Responsive header: keep every action available without squeezing the links. */
+.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
+.nav-socials { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.nav-community { min-height: 44px; flex-shrink: 0; white-space: nowrap; }
+.primary-navigation { display: flex; align-items: center; gap: 24px; }
+.nav-menu-button { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid currentColor; cursor: pointer; }
+.nav a:focus-visible, .nav-menu-button:focus-visible { outline: 2px solid #c84d3d; outline-offset: 3px; }
+.section-anchor { scroll-margin-top: 84px; }
+.katana-hero > *, .skill-group > * { min-width: 0; }
+.project-card, .project-modal-panel, .contact-inner { overflow-wrap: anywhere; }
+
+@media (max-width: 1099px) {
+  .nav-menu-button { display: inline-flex; flex-shrink: 0; }
+  .nav-community { margin-left: auto; }
+  .primary-navigation { display: none; }
+  .primary-navigation.mobile-nav-open {
+    display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+    position: absolute; top: 100%; left: 16px; right: 16px; z-index: 30;
+    padding: 12px; border: 1px solid var(--line); background: var(--paper);
+    box-shadow: 0 12px 24px rgba(32,42,54,.18);
+    max-height: calc(100dvh - 140px); overflow-y: auto; overscroll-behavior: contain;
+  }
+  .theme-editorial .primary-navigation .nav-link { display: flex; align-items: center; min-height: 44px; padding: 10px 12px; opacity: 1; }
+}
+
+@media (max-width: 1023px) {
+  .theme-editorial .editorial-hero { min-height: auto; gap: 32px; padding-block: 40px 48px; }
+  .katana-hero-photo { order: -1; justify-self: center; width: min(100% - 64px, 300px); }
+  .theme-editorial .hero-photo-wrap { max-width: none; }
+  .katana-hero-content { width: 100%; }
+  .theme-editorial .editorial-hero .hero-copy { font-size: clamp(2rem, 7.5vw, 4rem) !important; line-height: 1 !important; }
+  .theme-editorial .editorial-hero-copy { margin-top: 20px; max-width: 640px; }
+  /* Single column: the portrait sits above the heading, so the decorative coral
+     disc hangs below the heading — anchored to the heading's bottom edge so it
+     can never creep up under the photo whatever the heading wraps to. */
+  .theme-editorial .editorial-hero .hero-copy::after { left: 40%; top: calc(100% + 40px); width: 132px; }
+}
+
+@media (max-width: 639px) {
+  .theme-editorial .nav .nav-inner {
+    display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 8px;
+    padding-top: max(8px, env(safe-area-inset-top)); padding-bottom: 8px;
+  }
+  .nav-socials { grid-column: 1 / -1; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .theme-editorial .social-link { width: 44px; height: 44px; flex-shrink: 0; }
+  .nav-community { grid-column: 1; margin-left: 0; white-space: normal; text-align: center; }
+  .nav-menu-button { grid-column: 2; }
+  .section-anchor { scroll-margin-top: calc(124px + env(safe-area-inset-top)); }
+  .theme-editorial .editorial-hero { gap: 24px; padding-top: 24px; }
+  .katana-hero-photo { width: min(100% - 72px, 260px); }
+  .theme-editorial .hero-photo-slot { padding: 8px; }
+  .theme-editorial .editorial-hero .hero-copy { font-size: clamp(1.75rem, 7.5vw, 3rem) !important; }
+  .theme-editorial .editorial-hero .hero-copy::after { left: 34%; top: calc(100% + 34px); width: 120px; }
+  .project-modal-backdrop { padding: 12px; }
+  .project-modal-panel { padding: 12px 16px 20px; max-height: calc(100dvh - 24px); overscroll-behavior: contain; }
+  .project-modal-close { width: 44px; height: 44px; }
+  .project-modal-panel a { min-height: 44px; }
+  .theme-editorial .contact-section { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .contact-inner a { overflow-wrap: anywhere; }
+  .contact-inner nav a { min-height: 44px; }
+  .scroll-top-button { width: 44px; height: 44px; right: max(14px, env(safe-area-inset-right)); bottom: calc(14px + env(safe-area-inset-bottom)); }
+}

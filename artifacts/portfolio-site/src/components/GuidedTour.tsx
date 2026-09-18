@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 /* ── Guided tour ───────────────────────────────────────────────────────
    A virtual cursor walks first-time visitors through the site: it glides
@@ -117,15 +117,51 @@ export default function GuidedTour() {
   }, [running]);
 
   const setCursorPos = (x: number, y: number) => {
+    const viewport = window.visualViewport;
+    const left = (viewport?.offsetLeft ?? 0) + 8;
+    const top = (viewport?.offsetTop ?? 0) + 8;
+    const right = left + (viewport?.width ?? document.documentElement.clientWidth) - 16;
+    const bottom = top + (viewport?.height ?? window.innerHeight) - 16;
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, Math.max(min, max)));
+    x = clamp(x, left, right - 22);
+    y = clamp(y, top, bottom - 22);
     posRef.current = { x, y };
     const node = cursorRef.current;
-    if (node) node.style.transform = `translate(${x}px, ${y}px)`;
+    if (!node) return;
+    node.style.transform = `translate(${x}px, ${y}px)`;
+    const bubble = node.querySelector<HTMLElement>('.tour-caption');
+    if (!bubble) return;
+    bubble.style.maxWidth = `${Math.min(250, right - left)}px`;
+    bubble.style.maxHeight = `${bottom - top}px`;
+    const width = bubble.offsetWidth, height = bubble.offsetHeight;
+    const bx = clamp(x + 24 + width <= right ? x + 24 : x - width - 12, left, right - width);
+    const by = clamp(y + 28 + height <= bottom ? y + 28 : y - height - 12, top, bottom - height);
+    bubble.style.left = `${bx - x}px`;
+    bubble.style.top = `${by - y}px`;
   };
+
+  useLayoutEffect(() => {
+    setCursorPos(posRef.current.x, posRef.current.y);
+  }, [caption, captionOn]);
+
+  useEffect(() => {
+    if (!running) return;
+    const reposition = () => setCursorPos(posRef.current.x, posRef.current.y);
+    window.addEventListener('resize', reposition);
+    window.visualViewport?.addEventListener('resize', reposition);
+    window.visualViewport?.addEventListener('scroll', reposition);
+    return () => {
+      window.removeEventListener('resize', reposition);
+      window.visualViewport?.removeEventListener('resize', reposition);
+      window.visualViewport?.removeEventListener('scroll', reposition);
+    };
+  }, [running]);
 
   /* rAF tween that honours cancellation and reduced motion. */
   const tween = (ms: number, onFrame: (t: number) => void) => new Promise<void>((resolve) => {
     const duration = reducedRef.current ? 0 : ms;
-    if (duration <= 0 || cancelRef.current) { onFrame(1); resolve(); return; }
+    if (cancelRef.current) { resolve(); return; }
+    if (duration <= 0) { onFrame(1); resolve(); return; }
     const start = performance.now();
     const frame = (now: number) => {
       if (cancelRef.current) { resolve(); return; }
@@ -136,7 +172,14 @@ export default function GuidedTour() {
     requestAnimationFrame(frame);
   });
 
-  const wait = (ms: number) => tween(ms, () => {});
+  const wait = (ms: number) => new Promise<void>((resolve) => {
+    const until = performance.now() + ms;
+    const tick = () => {
+      if (cancelRef.current || performance.now() >= until) resolve();
+      else requestAnimationFrame(tick);
+    };
+    tick();
+  });
 
   /* Auto-scroll: distance-proportional duration — ~0.55ms per pixel,
      clamped so short hops don't feel rushed and long ones don't crawl. */
@@ -144,7 +187,7 @@ export default function GuidedTour() {
     const startY = window.scrollY;
     const dist = Math.abs(targetY - startY);
     if (dist < 4) return;
-    await tween(Math.min(2600, Math.max(750, dist * 0.55)), (t) => window.scrollTo(0, startY + (targetY - startY) * t));
+    await tween(Math.min(2600, Math.max(750, dist * 0.55)), (t) => window.scrollTo({ top: startY + (targetY - startY) * t, behavior: 'instant' }));
   };
 
   /* The tour always ends at the top of the page. Unlike the tweens above,
@@ -164,6 +207,19 @@ export default function GuidedTour() {
     requestAnimationFrame(frame);
   });
 
+  /* Keep the cursor glued to a live target for the whole hold. Layout can still
+     shift underneath it — a lazy image decoding, a font settling, a card
+     resizing — and a single measurement taken at glide time would leave the
+     cursor stranded beside (or off) the element the visitor is looking at. */
+  const holdOnTarget = async (el: Element, fx: number, fy: number, ms: number) => {
+    const until = performance.now() + ms;
+    while (!cancelRef.current && performance.now() < until) {
+      const live = el.isConnected ? el.getBoundingClientRect() : null;
+      if (live && live.height) setCursorPos(live.left + live.width * fx, live.top + live.height * fy);
+      await wait(Math.min(60, Math.max(0, until - performance.now())));
+    }
+  };
+
   /* Glide: the cursor moves AND the page scrolls in the same tween — the
      cursor's vertical position is recomputed from the element's document
      position on every frame, so it rides along while the screen slides.
@@ -176,11 +232,15 @@ export default function GuidedTour() {
     const cursorDocY = docTop + rect.height * fy;
     const targetX = rect.left + rect.width * fx;
 
-    let targetScroll = Math.max(0, cursorDocY - window.innerHeight * 0.45);
+    const navBottom = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0;
+    const safeTop = Math.max(16, navBottom + 16);
+    const safeBottom = window.innerHeight - 40;
+    const navbarTarget = !!el.closest('header');
+    let targetScroll = navbarTarget ? 0 : Math.max(0, cursorDocY - (safeTop + safeBottom) / 2);
     if (anchorSelector) {
       const anchor = document.querySelector(anchorSelector);
       if (anchor) {
-        targetScroll = Math.max(0, anchor.getBoundingClientRect().top + startScroll - 96);
+        targetScroll = Math.max(0, anchor.getBoundingClientRect().top + startScroll - safeTop);
       }
     }
     const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
@@ -199,16 +259,26 @@ export default function GuidedTour() {
       targetScroll = Math.min(maxScroll, Math.max(0, cursorDocY - (window.innerHeight - 90)));
     }
 
+    if (!navbarTarget && rect.height <= safeBottom - safeTop) {
+      targetScroll = Math.max(targetScroll, docTop + rect.height - safeBottom);
+      targetScroll = Math.min(targetScroll, docTop - safeTop);
+    }
+    if (!navbarTarget) {
+      targetScroll = Math.max(targetScroll, cursorDocY - safeBottom);
+      targetScroll = Math.min(targetScroll, cursorDocY - safeTop);
+    } else targetScroll = 0;
+    targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+
     const { x: sx, y: sy } = posRef.current;
     const scrollDist = Math.abs(targetScroll - startScroll);
     const cursorDist = Math.hypot(targetX - sx, cursorDocY - targetScroll - sy);
     const duration = Math.min(2600, Math.max(750, Math.max(scrollDist, cursorDist) * 0.55));
     await tween(duration, (t) => {
       const scroll = startScroll + (targetScroll - startScroll) * t;
-      window.scrollTo(0, scroll);
-      /* Element's live viewport position at this scroll offset. */
-      const ey = cursorDocY - scroll;
-      setCursorPos(sx + (targetX - sx) * t, sy + (ey - sy) * t);
+      window.scrollTo({ top: scroll, behavior: 'instant' });
+      // Sticky/fixed targets must use live viewport coordinates, not document Y.
+      const live = el.getBoundingClientRect();
+      setCursorPos(sx + (live.left + live.width * fx - sx) * t, sy + (live.top + live.height * fy - sy) * t);
     });
   };
 
@@ -226,7 +296,7 @@ export default function GuidedTour() {
   const runSteps = async () => {
     const finish = () => {
       document.body.classList.remove('tour-active');
-      cursorRef.current?.classList.remove('tour-cursor-click', 'tour-caption-flip', 'tour-caption-lift');
+      cursorRef.current?.classList.remove('tour-cursor-click');
       setCaptionOn(false);
       runningRef.current = false;
       setRunning(false);
@@ -245,21 +315,12 @@ export default function GuidedTour() {
         setCaption(step.caption);
         await glideTo(el, step.spot?.fx ?? 0.5, step.spot?.fy ?? 0.5, step.anchor);
         if (cancelRef.current) return;
-        if (!step.silent) {
-          const rect = el.getBoundingClientRect();
-          const cursorX = rect.left + rect.width * (step.spot?.fx ?? 0.5);
-          const cursorY = rect.top + rect.height * (step.spot?.fy ?? 0.5);
-          cursorRef.current?.classList.toggle('tour-caption-flip', cursorX > window.innerWidth - 320);
-          /* Near the page bottom the caption would run off screen under the
-             cursor — lift it above the cursor instead for that step. */
-          cursorRef.current?.classList.toggle('tour-caption-lift', cursorY > window.innerHeight - 150);
-          setCaptionOn(true);
-        }
+        if (!step.silent) setCaptionOn(true);
 
         if (step.action === 'hover') {
           /* CSS :hover can't be faked with events — mirror it with a class. */
           el.classList.add('tour-hover');
-          await wait(step.hold);
+          await holdOnTarget(el, step.spot?.fx ?? 0.5, step.spot?.fy ?? 0.5, step.hold);
           el.classList.remove('tour-hover');
         } else if (step.action === 'select') {
           /* Mark the description with a continuous drag — the selection edge
@@ -278,9 +339,18 @@ export default function GuidedTour() {
               selection.removeAllRanges();
               selection.addRange(range);
               /* Cursor rides just past the newest highlighted character. */
-              const rects = range.getClientRects();
-              const last = rects[rects.length - 1];
-              if (last) setCursorPos(last.right - 2, last.top + last.height / 2);
+              const caret = document.createRange();
+              caret.setStart(node, Math.max(0, end - 1));
+              caret.setEnd(node, end);
+              let last = caret.getBoundingClientRect();
+              const top = (document.querySelector('header')?.getBoundingClientRect().bottom ?? 0) + 16;
+              const bottom = window.innerHeight - 40;
+              const delta = last.bottom > bottom ? last.bottom - bottom : last.top < top ? last.top - top : 0;
+              if (delta) {
+                window.scrollTo({ top: window.scrollY + delta, behavior: 'instant' });
+                last = caret.getBoundingClientRect();
+              }
+              setCursorPos(last.right - 2, last.top + last.height / 2);
             };
             let prev = { node: startNode, offset: startOffset };
             for (let i = 0; i < boundaries.length; i++) {
@@ -306,8 +376,9 @@ export default function GuidedTour() {
           await wait(step.hold);
           selection?.removeAllRanges();
         } else if (step.action === 'visit') {
-          /* Just a pause so the visitor can read this part of the page. */
-          await wait(step.hold);
+          /* Just a pause so the visitor can read this part of the page — the
+             cursor stays parked on the heading's live position throughout. */
+          await holdOnTarget(el, step.spot?.fx ?? 0.5, step.spot?.fy ?? 0.5, step.hold);
         } else {
           const node = cursorRef.current;
           node?.classList.add('tour-cursor-click');
@@ -322,14 +393,13 @@ export default function GuidedTour() {
             const r = afterEl.getBoundingClientRect();
             setCursorPos(r.left + r.width * (step.spot?.fx ?? 0.5), r.top + r.height * (step.spot?.fy ?? 0.5));
           }
-          await wait(step.hold);
+          await holdOnTarget(afterEl ?? el, step.spot?.fx ?? 0.5, step.spot?.fy ?? 0.5, step.hold);
         }
         setCaptionOn(false);
         await wait(280);
       }
       if (!cancelRef.current) {
         setCaption('That is the tour. Now it is yours to explore.');
-        cursorRef.current?.classList.remove('tour-caption-flip');
         setCaptionOn(true);
         await scrollToY(0);
         await wait(1400);

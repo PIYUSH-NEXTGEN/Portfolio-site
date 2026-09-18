@@ -107,38 +107,67 @@ function HeroPhoto() {
 
 function Header() {
   const [open, setOpen] = useState(false);
-  // Escape closes the mobile menu; keeps keyboard users in control.
+  const headerRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
+  // Dismiss on Escape/outside press, and reset when desktop navigation takes over.
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1100px)');
+    const onResize = () => { if (desktop.matches) setOpen(false); };
+    desktop.addEventListener('change', onResize);
+    return () => desktop.removeEventListener('change', onResize);
+  }, []);
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        setOpen(false);
+        menuRef.current?.focus();
+      }
+    };
+    const onPointer = (event: PointerEvent) => {
+      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) setOpen(false);
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onPointer);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('pointerdown', onPointer);
+    };
   }, [open]);
+  // Publish the measured header height so page-level decorations (branches,
+  // katana) can clear the navbar even when the phone layout wraps it taller.
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const sync = () => document.documentElement.style.setProperty('--nav-h', `${Math.round(header.getBoundingClientRect().height)}px`);
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
   const links = [['projects', 'Work'], ['skills', 'Skills'], ['experience', 'Experience'], ['contact', 'Contact']];
   return (
-    <header className="nav sticky top-0 z-20">
-      <div className="section-wrap flex min-h-[68px] flex-nowrap items-center justify-between gap-3 py-2 sm:gap-4">
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2" aria-label="Social links">
+    <header ref={headerRef} className="nav sticky top-0 z-20" onBlur={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+    }}>
+      <div className="section-wrap nav-inner">
+        <div className="nav-socials" aria-label="Social links">
           {socialLinks.map(({ label, href, Icon, testId, color }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label} data-testid={testId} className="social-link" style={{ '--brand': color } as CSSProperties}>
               <Icon size={18} />
             </a>
           ))}
         </div>
-        <nav id="primary-navigation" className={`${open ? 'mobile-nav-open absolute left-4 right-4 top-full flex flex-col items-start gap-4 border border-current bg-[var(--paper,#ece4d3)] p-5 shadow-lg md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none lg:gap-8' : 'hidden md:flex'} items-center gap-5 md:gap-6 lg:gap-8`} aria-label="Primary navigation">
+        <nav id="primary-navigation" className={`primary-navigation${open ? ' mobile-nav-open' : ''}`} aria-label="Primary navigation">
           {links.map(([id, label]) => (
             <a onClick={() => setOpen(false)} href={`#${id}`} className="nav-link text-[10px] font-medium uppercase tracking-[.17em] opacity-70 transition-opacity hover:opacity-100" key={id} data-testid={`link-nav-${id}`}>{label}</a>
           ))}
         </nav>
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <NavKatana />
-          <a href="https://discord.gg/CSmrA5fbx9" target="_blank" rel="noopener noreferrer" aria-label="Join my community on Discord" className="button-primary hidden items-center gap-2 whitespace-nowrap px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform sm:flex" data-testid="link-header-discord">Join my community <FaDiscord size={14} /></a>
-          <button type="button" onClick={() => setOpen(!open)} className="flex h-9 w-9 shrink-0 items-center justify-center border border-current md:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="primary-navigation" data-testid="button-mobile-menu">
-            {open ? <X size={16} /> : <Menu size={16} />}
-          </button>
-        </div>
+        <NavKatana />
+        <a href="https://discord.gg/CSmrA5fbx9" target="_blank" rel="noopener noreferrer" aria-label="Join my community on Discord" className="nav-community button-primary inline-flex items-center justify-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-[.12em] transition-transform" data-testid="link-header-discord">Join my community <FaDiscord size={14} /></a>
+        <button ref={menuRef} type="button" onClick={() => setOpen(value => !value)} className="nav-menu-button" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="primary-navigation" data-testid="button-mobile-menu">
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
     </header>
   );
@@ -159,7 +188,7 @@ function Hero() {
         </Reveal>
       </div>
       <div className="katana-hero-photo">
-        <Reveal className="hero-photo-wrap relative min-h-[240px] sm:min-h-[320px]" delay={160}>
+        <Reveal className="hero-photo-wrap relative" delay={160}>
           <HeroPhoto />
         </Reveal>
       </div>
