@@ -30,6 +30,7 @@
     "wouter": "^3.3.5"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "animejs": "catalog:"
   }
 }

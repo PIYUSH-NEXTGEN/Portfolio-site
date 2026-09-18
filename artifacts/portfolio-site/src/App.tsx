@@ -2,6 +2,7 @@ import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 
 import { createPortal } from 'react-dom';
 import { ArrowUp, ArrowUpRight, Menu, MousePointerClick, Star, X } from 'lucide-react';
 import { FaDiscord, FaGithub } from 'react-icons/fa6';
+import { Analytics } from '@vercel/analytics/react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
@@ -535,7 +536,15 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  return <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}><Router /><IntroSequence /></WouterRouter>;
+  return (
+    <>
+      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+        <Router />
+        <IntroSequence />
+      </WouterRouter>
+      <Analytics />
+    </>
+  );
 }
 
 export default App;
