@@ -4,11 +4,11 @@ This is my personal portfolio website, showcasing my projects, skills, experienc
 and the work I'm building as an ML & backend engineer.
 
 **Like the design? Give the [repo a star ☆](https://github.com/PIYUSH-NEXTGEN/Portfolio-site)!**
-It means a lot and helps others discover the project.
+It means a lot.
 
-## Make it your own
+## Wanna use the design 
 
-Want to use this portfolio as a starting point? Fork the repository, set it up on
+Fork the repository, set it up on
 your device, and customize it with your own content.
 
 ### Prerequisites
