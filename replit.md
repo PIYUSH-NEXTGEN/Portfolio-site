@@ -4,29 +4,28 @@ A responsive personal portfolio for a full-stack developer and creative technolo
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm --filter @workspace/dual-theme-portfolio run dev` — run the portfolio preview
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080,
+  override with `PORT`)
+- `pnpm --filter @workspace/portfolio-site run dev` — run the portfolio preview
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
+- Validation: Zod (`zod/v4`)
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
-- Frontend: React + Vite + Tailwind CSS + Framer Motion
+- Frontend: React + Vite + Tailwind CSS + Framer Motion + anime.js
 
 ## Where things live
 
-- `artifacts/dual-theme-portfolio/src/App.tsx` — shared portfolio content and theme-specific rendering
-- `artifacts/dual-theme-portfolio/src/index.css` — theme tokens, responsive layout, motion, and visual treatments
-- `attached_assets/` — supplied visual references
+- `artifacts/portfolio-site/src/App.tsx` — section components and theme-specific rendering
+- `artifacts/portfolio-site/src/data/portfolio-content.tsx` — all static portfolio content (projects, skills, experience, links)
+- `artifacts/portfolio-site/src/index.css` — theme tokens, responsive layout, motion, and visual treatments
+- `attached_assets/` — supplied visual references; the five bundled `lumen-screenshot-*.png` files are imported through the `@assets` alias
 
 ## Architecture decisions
 
@@ -36,7 +35,7 @@ A responsive personal portfolio for a full-stack developer and creative technolo
 
 ## Product
 
-Visitors can explore Alex Morgan's work, capabilities, experience, and contact details through a warm editorial presentation inspired by printed portfolios and Japanese woodblock compositions.
+Visitors can explore Piyush Baraskar's work, capabilities, experience, and contact details through a warm editorial presentation inspired by printed portfolios and Japanese woodblock compositions.
 
 ## User preferences
 
@@ -45,7 +44,7 @@ Visitors can explore Alex Morgan's work, capabilities, experience, and contact d
 
 ## Gotchas
 
-- The portfolio is the root preview artifact; use the managed `artifacts/dual-theme-portfolio: web` workflow instead of starting Vite directly.
+- The portfolio is the root preview artifact; use the managed `artifacts/portfolio-site: web` workflow instead of starting Vite directly.
 - The app uses the artifact-provided `BASE_PATH` and `PORT` environment variables.
 
 ## Pointers

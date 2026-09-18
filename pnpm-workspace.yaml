@@ -37,7 +37,6 @@ minimumReleaseAgeExclude:
 packages:
   - artifacts/*
   - lib/*
-  - lib/integrations/*
   - scripts
 
 catalog:
@@ -45,7 +44,6 @@ catalog:
   '@replit/vite-plugin-dev-banner': ^0.1.1
   '@replit/vite-plugin-runtime-error-modal': ^0.0.6
   '@tailwindcss/vite': ^4.1.14
-  '@tanstack/react-query': ^5.90.21
   '@types/node': ^25.3.3
   '@types/react': ^19.2.0
   '@types/react-dom': ^19.2.0
@@ -53,9 +51,7 @@ catalog:
   animejs: ^4.5.0
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
-  drizzle-orm: ^0.45.2
   framer-motion: ^12.23.24
-  gsap: ^3.15.0
   lucide-react: ^0.545.0
   react-icons: ^5.4.0
   # Must be this exact version because expo requires it
@@ -73,6 +69,10 @@ catalog:
 autoInstallPeers: false
 
 overrides:
+  # qs <6.16.0 has two moderate advisories (GHSA-x5fp-wj9c-mxmx,
+  # GHSA-4mjr-xmp4-gh2g) reached transitively through express; pin the
+  # patched release until express's own dependency range moves past it.
+  qs: ^6.16.0
   # replit uses linux-x64 only, we can exclude all other platforms
   "esbuild>@esbuild/darwin-arm64": "-"
   "esbuild>@esbuild/darwin-x64": "-"
@@ -140,8 +140,6 @@ overrides:
   "@expo/ngrok-bin>@expo/ngrok-bin-linux-arm": "-"
   "@expo/ngrok-bin>@expo/ngrok-bin-linux-ia32": "-"
   "@expo/ngrok-bin>@expo/ngrok-bin-sunos-x64": "-"
-  # drizzle-kit uses esbuild internally on an older version that's vulnerable, this overrides it
-  "@esbuild-kit/esm-loader": "npm:tsx@^4.21.0"
   esbuild: "0.27.3"
 
 allowBuilds:

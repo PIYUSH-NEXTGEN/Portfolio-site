@@ -1,66 +1,123 @@
-# Ink Portfolio
+# Piyush Baraskar  Portfolio
 
-A responsive personal portfolio for an ML & backend engineer, presented as a
-tactile ink-and-paper editorial experience.
+This is my personal portfolio website, showcasing my projects, skills, experience,
+and the work I'm building as an ML & backend engineer.
 
-See `.env.example` for local environment variables (DB tooling only needs
-`DATABASE_URL`).
+**Like the design? Give the [repo a star ☆](https://github.com/PIYUSH-NEXTGEN/Portfolio-site)!**
+It means a lot and helps others discover the project.
 
-## Run & Operate
+## Make it your own
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080,
-  override with `PORT`)
-- `pnpm --filter @workspace/dual-theme-portfolio run dev` — run the portfolio
-  preview (port 5173 locally; the Replit artifact runtime provides `PORT` and
-  `BASE_PATH`)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and
-  Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only;
-  needs `DATABASE_URL`)
-- Required env for DB tooling only: `DATABASE_URL` — Postgres connection string
+Want to use this portfolio as a starting point? Fork the repository, set it up on
+your device, and customize it with your own content.
 
-## Stack
+### Prerequisites
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5 (health endpoint only: `GET /api/healthz`)
-- Frontend: React + Vite + Tailwind CSS + Framer Motion + GSAP intro
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle for API), Vite (static site)
+- [Node.js](https://nodejs.org/) 24 LTS
+- Git
+- pnpm 10 — install it with:
 
-## Where things live
+  ```sh
+  npm install -g pnpm@10
+  ```
 
-- `artifacts/dual-theme-portfolio/src/App.tsx` — portfolio content and
-  section rendering
-- `artifacts/dual-theme-portfolio/src/index.css` — theme tokens, responsive
-  layout, motion, and visual treatments
-- `artifacts/dual-theme-portfolio/public/` — only files referenced by the app
-  (`cat.png`, `favicon.svg`, `katana*.png`, `pfp.png`, `resume.*`, `robots.txt`)
-- `attached_assets/` — supplied visual references (source material, not served)
+Use **pnpm** to install this project's dependencies; the workspace enforces it.
 
-## Architecture decisions
+### 1. Fork and clone
 
-- The site is frontend-only by design; all portfolio content is static and
-  intentionally avoids backend dependencies. The Express server exists only for
-  platform health checks and is not called by the site.
-- The single visual direction is intentionally kept tactile and editorial, with
-  paper texture, ink branches, red accents, and illustrated details.
-- Decorative motion is subtle and respects the user's reduced-motion preference.
+Click **Fork** on [this repository](https://github.com/PIYUSH-NEXTGEN/Portfolio-site).
+On your fork, select **Code** and copy its HTTPS clone URL. Run `git clone`
+followed by that URL, then enter the cloned directory:
 
-## Product
+```sh
+cd Portfolio-site
+```
 
-Visitors can explore Piyush Baraskar's work, capabilities, experience, and
-contact details through a warm editorial presentation inspired by printed
-portfolios and Japanese woodblock compositions.
+Run the remaining commands from this repository root.
 
-## Gotchas
+### 2. Install dependencies
 
-- The portfolio is the root preview artifact; use the managed
-  `artifacts/dual-theme-portfolio: web` workflow instead of starting Vite
-  directly.
-- The app uses the artifact-provided `BASE_PATH` and `PORT` environment
-  variables (with local defaults: `/` and `5173`).
-- `mockup-sandbox` is a template/staging artifact and is intentionally not part
-  of `pnpm run build` / `typecheck` verification.
+```sh
+pnpm install
+```
+
+> **Platform note:** The workspace currently excludes several native build
+> packages for macOS, ARM, and Linux musl environments. If you're using one of
+> those platforms, remove only the matching platform-exclusion overrides from
+> `pnpm-workspace.yaml`, then run `pnpm install` again. Keep the security settings
+> and version overrides intact.
+
+### 3. Start the development server
+
+```sh
+pnpm --filter @workspace/portfolio-site run dev
+```
+
+Open **http://localhost:5173** in your browser. Changes to the source files will
+appear as you develop.
+
+The portfolio is a static frontend: you don't need an API server, database,
+API keys, or an `.env` file to run it. The default port is `5173` and the default
+base path is `/`. For a custom environment, set `PORT` and `BASE_PATH` in your
+shell before starting Vite.
+
+### 4. Customize your portfolio
+
+Paths below are relative to the repository root:
+
+| File or folder | What to update |
+| --- | --- |
+| `artifacts/portfolio-site/src/data/portfolio-content.tsx` | Projects, skills, experience, achievements, social links, and email address |
+| `artifacts/portfolio-site/src/App.tsx` | Name, introduction, section copy, and page components |
+| `artifacts/portfolio-site/src/index.css` | Colors, typography, layout, and visual effects |
+| `artifacts/portfolio-site/public/` | Profile images, favicon, and decorative artwork |
+| `artifacts/portfolio-site/index.html` | Page title and social preview metadata |
+| `attached_assets/` | Project screenshots and other imported assets |
+
+Replace my personal information, images, and project details with your own before
+publishing.
+
+### 5. Check and build
+
+Typecheck the portfolio:
+
+```sh
+pnpm --filter @workspace/portfolio-site run typecheck
+```
+
+Create a production build:
+
+```sh
+pnpm --filter @workspace/portfolio-site run build
+```
+
+The static output is generated in `artifacts/portfolio-site/dist/public/`.
+
+Preview that build locally:
+
+```sh
+pnpm --filter @workspace/portfolio-site run serve
+```
+
+Open **http://localhost:5173**. Stop the development server first if it is still
+using that port.
+
+## Tech stack
+
+- **React 19 + TypeScript** — UI components and type safety
+- **Vite 7** — development server and production builds
+- **Tailwind CSS 4 + custom CSS** — responsive styling and ink-and-paper visuals
+- **Framer Motion + anime.js** — animations and intro sequence
+- **Wouter** — client-side routing
+- **Lucide React + React Icons** — icons
+- **pnpm workspaces** — package management and workspace organization
+
+## A little credit :)
+
+If you use this design or build your portfolio from this project, please add a
+small credit in your portfolio with a link back here:
+
+> Inspired by [Piyush Baraskar Portfolio](https://github.com/PIYUSH-NEXTGEN/Portfolio-site) :)
+
+Thanks for checking out my work, and don't forget to star the repo if you like
+it!

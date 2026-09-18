@@ -48,5 +48,8 @@ Thumbs.db
 .cache/
 .local/
 
+# image-processing scratch output (artifacts/*/scripts)
+artifacts/portfolio-site/scripts/processed/
+
 # Local dev-server smoke logs
 *.log
