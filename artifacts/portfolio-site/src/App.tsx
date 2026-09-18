@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ArrowUp, ArrowUpRight, Menu, MousePointerClick, Star, X } from 'lucide-react';
 import { FaDiscord, FaGithub } from 'react-icons/fa6';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { CursorSlash, NavKatana } from '@/components/Katana';
@@ -543,6 +544,7 @@ function App() {
         <IntroSequence />
       </WouterRouter>
       <Analytics />
+      <SpeedInsights />
     </>
   );
 }
